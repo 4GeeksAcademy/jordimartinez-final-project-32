@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export const Navbar = () => {
 	return (
 
-		<nav className="navbar navbar-expand-lg bg-body-tertiary">
+		<nav className="navbar navbar-expand-lg bg-body-tertiary" style={{ backgroundColor: '#e3f2fd' }}>
 			<div className="container-fluid">
 
 				<Link className="me-3 ms-1" to="/">
@@ -21,9 +21,16 @@ export const Navbar = () => {
 						<a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							Productos
 						</a>
-						<ul className="dropdown-menu">
-							<li><a className="dropdown-item" href="#">Action</a></li>
-							<li><a className="dropdown-item" href="#">Another action</a></li>
+						<ul className="dropdown-menu dropdown-start">
+							<li><a className="dropdown-item" href="#">Analgésicos</a></li>
+							<li><a className="dropdown-item" href="#">Antibióticos</a></li>
+							<li><a className="dropdown-item" href="#">Dermatológicos y cosméticos</a></li>
+							<li><a className="dropdown-item" href="#">Nutrición/suplementos</a></li>
+							<li><a className="dropdown-item" href="#">Pediátricos</a></li>
+							<li><a className="dropdown-item" href="#">Primeros auxilios</a></li>
+							<li><a className="dropdown-item" href="#">Salud digestiva</a></li>
+							<li><a className="dropdown-item" href="#">Tratamientos</a></li>
+							<li><a className="dropdown-item" href="#">Vitaminas</a></li>
 							<li><hr className="dropdown-divider"/></li>
 							<li><a className="dropdown-item" href="#">Something else here</a></li>
 						</ul>
