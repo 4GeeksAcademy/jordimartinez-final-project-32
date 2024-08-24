@@ -16,7 +16,7 @@ export const Home = () => {
 					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
 					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
 				</div>
-				<div className="carousel-inner">
+					<div className="carousel-inner">
 					<div className="carousel-item active">
 					<img src="https://picsum.photos//900/300" className="d-block w-100" alt="..."/>
 					</div>
