@@ -32,7 +32,7 @@ export const Navbar = () => {
 							<li><a className="dropdown-item" href="#">Tratamientos</a></li>
 							<li><a className="dropdown-item" href="#">Vitaminas</a></li>
 							<li><hr className="dropdown-divider"/></li>
-							<li><a className="dropdown-item" href="#">Something else here</a></li>
+							<li><Link className="dropdown-item" to="/category">Prueba Plantilla Categorias</Link></li>
 						</ul>
 						</li>
 					</ul>
