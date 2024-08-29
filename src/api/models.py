@@ -40,9 +40,9 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
     status = db.Column(SQLAlchemyEnum(Status), unique=True, nullable=False)
 
-    carrito = db.relationship('Carrito', backref='user', uselist=True)
-    reviews = db.relationship('Reviews', backref='user', uselist=True)
-    order = db.relationship('Order', backref='user', uselist=True)
+    carrito = db.relationship('Carrito', back_populates='user', uselist=True)
+    reviews = db.relationship('Reviews', back_populates='user', uselist=True)
+    order = db.relationship('Order', back_populates='user', uselist=True)
 
     def serialize(self):
         return {
@@ -64,7 +64,7 @@ class Product(db.Model):
     product_id = db.Column(db.Integer, primary_key=True)
     generic_name = db.Column(db.String(120), unique=True, nullable=False)
     active_ingredient = db.Column(db.String(80), unique=False, nullable=False)
-    category_id = db.Column(db.Integer, unique=False, nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.category_id'), nullable=False)
     price = db.Column(db.Integer, unique=False, nullable=False)
     stock_quantity = db.Column(db.Integer, unique=False, nullable=False)
     image_url = db.Column(db.String(120), unique=True, nullable=False)
@@ -73,9 +73,9 @@ class Product(db.Model):
     
     carrito = db.relationship('Carrito', back_populates='product', uselist=True)
     reviews = db.relationship('Reviews', back_populates='product', uselist=True)
-    order_product = db.relationship('OrderProduct', back_populates='product', uselist=True)
+    order_products = db.relationship('OrderProduct', back_populates='product', uselist=True)
 
-    category = db.relationship('Category', backref='product', uselist=True)
+    category = db.relationship('Category', back_populates='product', uselist=True)
 
     def serialize(self):
         return {
@@ -92,13 +92,16 @@ class Product(db.Model):
 
 class Carrito(db.Model):
     carrito_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(120), unique=True, nullable=False)
-    product_id = db.Column(db.Integer, unique=False, nullable=False)
+    
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.product_id'), nullable=False)
+
     stock_quantity = db.Column(db.Integer, unique=False, nullable=False)
     order_status = db.Column(SQLAlchemyEnum(Order_Status), nullable=False)
     order_type = db.Column(SQLAlchemyEnum(Order_Type), nullable=False)
 
-    product = db.relationship('Product', backref='carrito', uselist=True)
+    user = db.relationship('User', back_populates='carrito', uselist=True)
+    product = db.relationship('Product', back_populates='carrito', uselist=True)
 
     def serialize(self):
         return {
@@ -112,11 +115,14 @@ class Carrito(db.Model):
 
 class Reviews(db.Model):
     review_id = db.Column(db.Integer, unique=True, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
-    product_id = db.Column(db.Integer, nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.product_id'), nullable=False)
+    
     comment = db.Column(db.String(120), nullable=False)
 
-    user = db.relationship('User', backref='reviews', uselist=True)
+    user = db.relationship('User', back_populates='reviews', uselist=True)
+    product = db.relationship('Product', back_populates='reviews', uselist=True)
 
     def serialize(self):
         return {
@@ -130,7 +136,7 @@ class Category(db.Model):
     category_id = db.Column(db.Integer, unique=True, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
 
-    product = db.relationship('Product', backref='category', uselist=True)
+    product = db.relationship('Product', back_populates='category', uselist=True)
 
     def serialize(self):
         return {
@@ -140,12 +146,13 @@ class Category(db.Model):
 
 class Order(db.Model):
     order_id = db.Column(db.Integer, unique=True, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
+
     order_status = db.Column(SQLAlchemyEnum(Order_Status), nullable=False)
     order_type = db.Column(SQLAlchemyEnum(Order_Type), nullable=False)
 
-    user = db.relationship('User', backref='order', uselist=True)
-    order_product = db.relationship('OrderProduct', backref='order', uselist=True)
+    user = db.relationship('User', back_populates='order', uselist=False)
+    order_products = db.relationship('OrderProduct', back_populates='order', uselist=True)
 
     def serialize(self):
         return {
@@ -157,12 +164,14 @@ class Order(db.Model):
 
 class OrderProduct(db.Model):
     order_product_id = db.Column(db.Integer, unique=True, primary_key=True)
-    order_id = db.Column(db.Integer, nullable=False)
-    product_id = db.Column(db.Integer, nullable=False)
+    
+    order_id = db.Column(db.Integer, db.ForeignKey('order.order_id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.product_id'), nullable=False)
+
     stock = db.Column(db.Integer, nullable=False)
 
-    order = db.relationship('Order', backref='orderproduct', uselist=True)
-    product = db.relationship('Product', backref='orderproduct', uselist=True)
+    order = db.relationship('Order', back_populates='order_products', uselist=True)
+    product = db.relationship('Product', back_populates='order_products', uselist=True)
 
     def serialize(self):
         return {
