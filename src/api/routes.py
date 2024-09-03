@@ -143,15 +143,20 @@ def populate_product():
 def add_product():
     
     data = request.json
+    print(data)
+    
     if data is not None:
         product = Product(generic_name=data['generic_name'], active_ingredient=data['active_ingredient'],
-                          category_id=data['category_id'], price=data['price'], stock_quantity=data['stock_quantity'],
-                          image_url=data['image_url'], description=data['description'])
+                          category_id=data['category_id'], price=data['price'], stock_quantity=data['stock'], description=data['description'],
+                        image_url="https://picsum.photos/200/300")
+                       
         db.session.add(product)
-        db.session.commit()
-        return jsonify({"message": "Adding a product"}), 201
-    else:
-        return jsonify({"message": "Couldnt add product"}), 400
+        try:
+            db.session.commit()
+            return jsonify({"message": "Adding a product"}), 201
+        except Exception as error:
+            print(error.args)
+            return jsonify({"message": "Couldnt add product"}), 400
     
 @api.route('/product/<int:theid>', methods=['GET'])
 def get_one_product(theid=None):
