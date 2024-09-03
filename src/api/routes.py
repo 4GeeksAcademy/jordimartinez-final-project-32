@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Category, Product, Carrito
+from api.models import db, User, Category, Product, Order
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime
@@ -121,16 +121,18 @@ def get_product():
 
 @api.route('/product/populate', methods=['GET'])
 def populate_product():
-   
-    product = Product()
-    product.generic_name = "Perifar 400"
-    product.active_ingredient = "Ibuprofeno"
-    product.category_id = 4
-    product.price = 50
-    product.stock_quantity = 13
-    product.image_url = 'url'
-    product.description = 'A nice laugh the best mecine'
-    db.session.add(product)
+    category = category.query(Category).first()
+    for i in range(8):
+        num = i
+        product = Product()
+        product.generic_name = "Perifar" + ' ' + str(num)
+        product.active_ingredient = "Ibuprofeno"
+        product.category_id = category.category_id
+        product.price = 50
+        product.stock_quantity = 13
+        product.image_url = 'url'
+        product.description = 'A nice laugh the best medicine'
+        db.session.add(product)
 
     try: 
         db.session.commit()
@@ -306,3 +308,81 @@ def update_user(theid=None):
         db.session.rollback()
         return jsonify({"message": "Error updating User", "error": str(e)}), 500
 
+@api.route('/order', methods=['GET'])
+def get_orders():
+    orders = Order()
+    orders = orders.query.all()
+    return jsonify([item.serialize() for item in orders]), 200
+
+@api.route('/order/<int:theid>', methods=['GET'])
+def get_one_order(theid = None):
+    if theid is not None:
+        order = Order()
+        order = order.query.get(theid)
+
+        if order is not None: 
+            return jsonify(order.serialize()), 200
+        else: 
+            return jsonify({"message": "Order not Found"}), 404
+    return jsonify({"message": "Id doesnt correspond to an order right now"}), 400
+
+@api.route('/order', methods=['POST'])
+def create_kart():
+    #Probablemente hay que reajustar esto cuando se cree la parte de logins y de jwt
+    data = request.json
+    if data is not None:
+        order = Order(user_id=data['user_id'], order_status='Kart', order_type='Pickup')
+        db.session.add(order)
+        db.session.commit()
+        return jsonify({"message": "Creating Kart"}), 200
+    else:
+        return jsonify({"message": "Kart Couldnt be Created"}), 400
+    
+@api.route('/order/<int:theid>', methods=['DELETE'])
+def delete_order(theid=None):
+    if theid is not None:
+        order = Order()
+        order = order.query.get(theid)
+        if order is not None:
+            db.session.delete(order)
+            db.session.commit()
+            return jsonify({"message": "Order Destroyed"}), 200
+        else:
+            return jsonify({"message": "Order Doesnt Exist"}), 404
+
+@api.route('/order/deleteall', methods=['DELETE'])
+def delete_orders():
+    orders = Order()
+    orders = orders.query.all()
+
+    for item in orders:
+        db.session.delete(item)
+        db.session.commit()
+
+    return jsonify({"message": "Orders Deleted"}), 200
+
+@api.route('/order/populate', methods=['GET'])
+def populate_order():
+    #order_id, user_id, order_status, order_type
+    
+    user = user.query(User).first()
+    order = Order()
+    order.user_id = user.user_id
+    order_status = 'Kart'
+    order_type = "Pickup"
+    db.session.add(order)
+
+    try:
+        db.session.commit()
+        return jsonify("Adding order"), 200
+    except Exception as error:
+        db.session.rollback()
+        return jsonify(f"{error}", 500)
+    
+    
+    
+
+    
+
+
+    

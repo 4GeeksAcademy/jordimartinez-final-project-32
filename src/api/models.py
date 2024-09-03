@@ -18,6 +18,7 @@ class Status(PyEnum):
     BANNED = "Banned"
 
 class Order_Status(PyEnum):
+    KART = "Kart"
     PENDING = "Pending"
     ACCEPTED = "Accepted"
     SENDING = "Sending"
@@ -40,7 +41,6 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
     status = db.Column(SQLAlchemyEnum(Status), unique=True, nullable=False)
 
-    carrito = db.relationship('Carrito', back_populates='user', uselist=True)
     reviews = db.relationship('Reviews', back_populates='user', uselist=True)
     order = db.relationship('Order', back_populates='user', uselist=True)
 
@@ -62,7 +62,7 @@ class User(db.Model):
     
 class Product(db.Model):
     product_id = db.Column(db.Integer, primary_key=True)
-    generic_name = db.Column(db.String(120), unique=True, nullable=False)
+    generic_name = db.Column(db.String(120), unique=False, nullable=False)
     active_ingredient = db.Column(db.String(80), unique=False, nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.category_id'), nullable=False)
     price = db.Column(db.Integer, unique=False, nullable=False)
@@ -71,7 +71,6 @@ class Product(db.Model):
     description = db.Column(db.String(200), unique=False, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     
-    carrito = db.relationship('Carrito', back_populates='product', uselist=True)
     reviews = db.relationship('Reviews', back_populates='product', uselist=True)
     order_products = db.relationship('OrderProduct', back_populates='product', uselist=True)
 
@@ -88,29 +87,6 @@ class Product(db.Model):
             "image_url": self.image_url,
             "description": self.description,
             "created_at": self.created_at,
-        }
-
-class Carrito(db.Model):
-    carrito_id = db.Column(db.Integer, primary_key=True)
-    
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.product_id'), nullable=False)
-
-    stock_quantity = db.Column(db.Integer, unique=False, nullable=False)
-    order_status = db.Column(SQLAlchemyEnum(Order_Status), nullable=False)
-    order_type = db.Column(SQLAlchemyEnum(Order_Type), nullable=False)
-
-    user = db.relationship('User', back_populates='carrito', uselist=True)
-    product = db.relationship('Product', back_populates='carrito', uselist=True)
-
-    def serialize(self):
-        return {
-            "carrito_id": self.carrito_id,
-            "user_id": self.user_id,
-            "product_id": self.product_id,
-            "stock_quantity": self.stock_quantity,
-            "order_status": self.order_status,
-            "order_type": self.order_type
         }
 
 class Reviews(db.Model):
