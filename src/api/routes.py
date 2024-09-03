@@ -121,7 +121,8 @@ def get_product():
 
 @api.route('/product/populate', methods=['GET'])
 def populate_product():
-    category = category.query(Category).first()
+    category = Category()
+    category = category.query.first()
     for i in range(8):
         num = i
         product = Product()
@@ -143,10 +144,7 @@ def populate_product():
 
 @api.route('/product', methods=['POST'])
 def add_product():
-    
     data = request.json
-    print(data)
-    
     if data is not None:
         product = Product(generic_name=data['generic_name'], active_ingredient=data['active_ingredient'],
                           category_id=data['category_id'], price=data['price'], stock_quantity=data['stock'], description=data['description'],
@@ -271,9 +269,9 @@ def populate_user():
     user.telephone = '555-1876'
     user.email = 'daniel.perdomo.1987@gmail.com'
     user.password = 'password'
-    user.rol = 'Admin'
+    user.rol = 'ADMIN'
     user.birthday = datetime(1987, 1, 18)
-    user.status = 'Active'
+    user.status = 'ACTIVE'
     db.session.add(user)
     
     try:
@@ -281,6 +279,7 @@ def populate_user():
         return jsonify("User has been added"), 200
     except Exception as error:
         db.session.rollback()
+        print(error.args)
         return jsonify(f"{error}"), 500
     
 @api.route('/user/<int:theid>', methods=['PUT'])
@@ -364,12 +363,12 @@ def delete_orders():
 @api.route('/order/populate', methods=['GET'])
 def populate_order():
     #order_id, user_id, order_status, order_type
-    
-    user = user.query(User).first()
+    user = User()
+    user = user.query.first()
     order = Order()
     order.user_id = user.user_id
-    order_status = 'Kart'
-    order_type = "Pickup"
+    order.order_status = "KART"
+    order.order_type = "PICKUP"
     db.session.add(order)
 
     try:
@@ -379,10 +378,25 @@ def populate_order():
         db.session.rollback()
         return jsonify(f"{error}", 500)
     
-    
-    
-
-    
-
-
-    
+@api.route('/order/update_status/<int:theid>', methods=['PUT'])
+def update_status(theid):
+    order = Order()
+    order = order.query.get(theid)
+    if order is not None:
+        if order.order_status == 'KART':
+            order.order_status = 'PENDING'
+        elif order.order_status == 'PENDING':
+            order.order_status = 'ACCEPTED'
+        elif order.order_status == 'ACCEPTED':
+            order.order_status = 'READY'
+        elif order.order_status == 'READY':
+            order.order_status = 'DONE'
+        else:
+            return jsonify({"message":"Order its done"}), 200
+        try:
+            db.session.commit()
+            return jsonify({"message": f"Order status updated successfully: {order.order_status}"}), 200
+        except Exception as error:
+            print(error.args)
+            return jsonify({"message": f"{error.args}"}), 500  
+    return jsonify({"message": "Order does not exist"}), 404
