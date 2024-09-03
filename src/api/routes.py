@@ -303,3 +303,49 @@ def update_user(theid=None):
         db.session.rollback()
         return jsonify({"message": "Error updating User", "error": str(e)}), 500
 
+@api.route('/order', methods=['GET'])
+def get_orders():
+    orders = Order()
+    orders = orders.query.all()
+    return jsonify([item.serialize() for item in orders]), 200
+
+@api.route('/order/<int:theid>', methods=['GET'])
+def get_one_order(theid = None):
+    if theid is not None:
+        order = Order()
+        order = order.query.get(theid)
+
+        if order is not None: 
+            return jsonify(order.serialize()), 200
+        else: 
+            return jsonify({"message": "Order not Found"}), 404
+    return jsonify({"message": "Id doesnt correspond to an order right now"}), 400
+
+@api.route('/order', methods=['POST'])
+def create_kart():
+    #Probablemente hay que reajustar esto cuando se cree la parte de logins y de jwt
+    data = request.json
+    if data is not None:
+        order = Order(user_id=data['user_id'], order_status='Kart', order_type='Pickup')
+        db.session.add(order)
+        db.session.commit()
+        return jsonify({"message": "Creating Kart"}), 200
+    else:
+        return jsonify({"message": "Kart Couldnt be Created"}), 400
+    
+@api.route('/order/<int:theid>', methods=['DELETE'])
+def delete_order(theid=None):
+    if theid is not None:
+        order = Order()
+        order = order.query.get(theid)
+        if order is not None:
+            db.session.delete(order)
+            db.session.commit()
+            return jsonify({"message": "Order Destroyed"}), 200
+        else:
+            return jsonify({"message": "Order Doesnt Exist"}), 404
+
+#@api.route('/order')
+
+
+    

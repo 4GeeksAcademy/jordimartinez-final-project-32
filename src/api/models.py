@@ -62,7 +62,7 @@ class User(db.Model):
     
 class Product(db.Model):
     product_id = db.Column(db.Integer, primary_key=True)
-    generic_name = db.Column(db.String(120), unique=True, nullable=False)
+    generic_name = db.Column(db.String(120), unique=False, nullable=False)
     active_ingredient = db.Column(db.String(80), unique=False, nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.category_id'), nullable=False)
     price = db.Column(db.Integer, unique=False, nullable=False)
