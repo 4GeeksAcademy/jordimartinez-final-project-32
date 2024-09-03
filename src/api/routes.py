@@ -123,7 +123,7 @@ def get_product():
 def populate_product():
    
     for i in range(8):
-        num = 0
+        num = i
         product = Product()
         product.generic_name = "Perifar" + ' ' + str(num)
         product.active_ingredient = "Ibuprofeno"
@@ -131,7 +131,7 @@ def populate_product():
         product.price = 50
         product.stock_quantity = 13
         product.image_url = 'url'
-        product.description = 'A nice laugh the best mecine'
+        product.description = 'A nice laugh the best medicine'
         db.session.add(product)
 
     try: 
@@ -345,7 +345,17 @@ def delete_order(theid=None):
         else:
             return jsonify({"message": "Order Doesnt Exist"}), 404
 
-#@api.route('/order')
+@api.route('/order/deleteall', methods=['DELETE'])
+def delete_orders():
+    orders = Order()
+    orders = orders.query.all()
 
+    for item in orders:
+        db.session.delete(item)
+        db.session.commit()
 
-    
+    return jsonify({"message": "Orders Deleted"}), 200
+
+@api.route('/order/populate', methods=['GET'])
+def populate_order():
+    pass
