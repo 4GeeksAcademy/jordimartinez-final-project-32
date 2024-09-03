@@ -477,3 +477,6 @@ def populate_reviews():
         db.session.rollback()
         return jsonify(f"{error.args}"), 500
 
+@api.route('/order_product', methods=['GET'])
+def get_product():
+    
