@@ -67,8 +67,8 @@ class Product(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.category_id'), nullable=False)
     price = db.Column(db.Integer, unique=False, nullable=False)
     stock_quantity = db.Column(db.Integer, unique=False, nullable=False)
-    image_url = db.Column(db.String(120), unique=True, nullable=False)
-    description = db.Column(db.String(200), unique=True, nullable=False)
+    image_url = db.Column(db.String(120), unique=False, nullable=False)
+    description = db.Column(db.String(200), unique=False, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     
     carrito = db.relationship('Carrito', back_populates='product', uselist=True)
