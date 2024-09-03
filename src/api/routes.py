@@ -376,7 +376,7 @@ def populate_order():
         return jsonify("Adding order"), 200
     except Exception as error:
         db.session.rollback()
-        return jsonify(f"{error}", 500)
+        return jsonify(f"{error}"), 500
     
 @api.route('/order/update_status/<int:theid>', methods=['PUT'])
 def update_status(theid):
@@ -452,4 +452,28 @@ def delete_reviews():
         db.session.commit()
 
     return jsonify({"message": "Reviews Completely Deleted"}), 200
+
+@api.route('/review/populate', methods=['GET'])
+def populate_reviews():
+    #review_id, user_id, product_id, comment
+    review = Reviews()
+    
+    user = User()
+    user = user.query.first()
+    product = Product()
+    product = product.query.first()
+
+    review.user_id = user.user_id
+    review.product_id = product.product_id
+    review.comment = "It was the best thing that ever happened to me. I was happier than the day my son was born."
+
+    db.session.add(review)
+
+    try:
+        db.session.commit()
+        return jsonify("Added review"), 200
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify(f"{error.args}"), 500
 

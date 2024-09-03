@@ -95,7 +95,7 @@ class Reviews(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.product_id'), nullable=False)
     
-    comment = db.Column(db.String(120), nullable=False)
+    comment = db.Column(db.String(255), nullable=False)
 
     user = db.relationship('User', back_populates='reviews', uselist=True)
     product = db.relationship('Product', back_populates='reviews', uselist=True)
