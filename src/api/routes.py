@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Category, Product
+from api.models import db, User, Category, Product, Carrito
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime
@@ -300,3 +300,4 @@ def update_user(theid=None):
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "Error updating User", "error": str(e)}), 500
+
