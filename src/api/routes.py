@@ -122,15 +122,17 @@ def get_product():
 @api.route('/product/populate', methods=['GET'])
 def populate_product():
    
-    product = Product()
-    product.generic_name = "Perifar 400"
-    product.active_ingredient = "Ibuprofeno"
-    product.category_id = 4
-    product.price = 50
-    product.stock_quantity = 13
-    product.image_url = 'url'
-    product.description = 'A nice laugh the best mecine'
-    db.session.add(product)
+    for i in range(8):
+        num = 0
+        product = Product()
+        product.generic_name = "Perifar" + ' ' + str(num)
+        product.active_ingredient = "Ibuprofeno"
+        product.category_id = 4
+        product.price = 50
+        product.stock_quantity = 13
+        product.image_url = 'url'
+        product.description = 'A nice laugh the best mecine'
+        db.session.add(product)
 
     try: 
         db.session.commit()
