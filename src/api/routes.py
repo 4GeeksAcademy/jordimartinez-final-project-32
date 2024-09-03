@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Category, Product, Order
+from api.models import db, User, Category, Product, Order, Reviews
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime
@@ -400,3 +400,23 @@ def update_status(theid):
             print(error.args)
             return jsonify({"message": f"{error.args}"}), 500  
     return jsonify({"message": "Order does not exist"}), 404
+
+@api.route('/review', methods=['GET'])
+def get_reviews():
+    reviews = Reviews()
+    reviews = reviews.query.all()
+    return jsonify([item.serialize() for item in reviews]), 200
+
+@api.route('/review/<int:theid>', methods=['GET'])
+def get_one_review(theid):
+    review = Reviews()
+    review = review.query.get(theid)
+
+    if review is not None:
+        return jsonify(review.serialize()), 200
+    else:
+        return jsonify({"message": "Review Id doesnt exist"}), 404
+
+@api.route('/review', methods=['POST'])
+def create_review():
+    pass
