@@ -383,13 +383,13 @@ def update_status(theid):
     order = Order()
     order = order.query.get(theid)
     if order is not None:
-        if order.order_status is 'KART':
+        if order.order_status == 'KART':
             order.order_status = 'PENDING'
-        elif order.order_status is 'PENDING':
+        elif order.order_status == 'PENDING':
             order.order_status = 'ACCEPTED'
-        elif order.order_status is 'ACCEPTED':
+        elif order.order_status == 'ACCEPTED':
             order.order_status = 'READY'
-        elif order.order_status is 'READY':
+        elif order.order_status == 'READY':
             order.order_status = 'DONE'
         else:
             return jsonify({"message":"Order its done"}), 200
