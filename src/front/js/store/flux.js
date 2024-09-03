@@ -46,7 +46,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				//reset the global store
 				setStore({ demo: demo });
-			}
+			},
+
+
+			addProduct: async (product) => {
+                try {
+                    const response = await fetch('https://crispy-winner-x54p4xjgvgrhvvp4-3001.app.github.dev/api/product', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(product)
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data;
+                    } else {
+                        console.error('Error al agregar el producto');
+                        return null;
+                    }
+                } catch (error) {
+                    console.error('Error en la solicitud:', error);
+                    return null;
+                }
+            }
+
 		}
 	};
 };

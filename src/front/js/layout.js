@@ -6,6 +6,8 @@ import { BackendURL } from "./component/backendURL";
 import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
+import { AddProduct } from "./pages/addProduct.jsx";
+import { BackOffice } from "./pages/backOffice.jsx";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
@@ -23,9 +25,13 @@ const Layout = () => {
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
+                    <br/>                    
+                    <br/>
                     <Routes>
                         <Route element={<Home />} path="/" />
-                        <Route element={<Demo />} path="/demo" />
+                        <Route element={<Demo />} path="/demo" />                       
+                        <Route element={<BackOffice />} path="/backoffice" />            
+                        <Route element={<AddProduct />} path="/addproduct" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<CategoriesTemplate />} path="/category" />
                         <Route element={<h1>Not found!</h1>} />

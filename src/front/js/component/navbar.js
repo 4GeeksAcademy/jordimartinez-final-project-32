@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export const Navbar = () => {
 	return (
 
-		<nav className="navbar navbar-expand-lg bg-body-tertiary" style={{ backgroundColor: '#e3f2fd' }}>
+		<nav className="navbar navbar-expand-lg bg-body-tertiary mb-5" style={{ backgroundColor: '#e3f2fd', position: 'fixed', top: '0', width: '100%', zIndex: '1000' }}>
 			<div className="container-fluid">
 
 				<Link className="me-3 ms-1" to="/">
@@ -33,6 +33,7 @@ export const Navbar = () => {
 							<li><a className="dropdown-item" href="#">Vitaminas</a></li>
 							<li><hr className="dropdown-divider"/></li>
 							<li><Link className="dropdown-item" to="/category">Prueba Plantilla Categorias</Link></li>
+
 						</ul>
 						</li>
 					</ul>
