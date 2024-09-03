@@ -430,5 +430,26 @@ def create_review():
         return jsonify({"message": "Review is not created"}), 500
     
 @api.route('/review/<int:theid>', methods=['DELETE'])
-def delete_review(theid):
-    pass
+def delete_review(theid=None):
+    if theid is not None:
+        review = Reviews()
+        review = review.query.get(theid)
+        if review is not None:
+            db.session.delete(review)
+            db.session.commit()
+            return jsonify({"message": "Review Destroyed"}), 200
+        else:
+            return jsonify({"message": "Review Doesnt Exist"}), 404
+    return jsonify({"message": "Id is None"}), 500        
+
+@api.route('/review/delete_all', methods=['DELETE'])
+def delete_reviews():
+    review = Reviews()
+    review = review.query.all()
+
+    for item in review:
+        db.session.delete(item)
+        db.session.commit()
+
+    return jsonify({"message": "Reviews Completely Deleted"}), 200
+
