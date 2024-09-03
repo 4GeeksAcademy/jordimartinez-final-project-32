@@ -121,13 +121,13 @@ def get_product():
 
 @api.route('/product/populate', methods=['GET'])
 def populate_product():
-   
+    category = category.query(Category).first()
     for i in range(8):
         num = i
         product = Product()
         product.generic_name = "Perifar" + ' ' + str(num)
         product.active_ingredient = "Ibuprofeno"
-        product.category_id = 4
+        product.category_id = category.category_id
         product.price = 50
         product.stock_quantity = 13
         product.image_url = 'url'
@@ -358,4 +358,26 @@ def delete_orders():
 
 @api.route('/order/populate', methods=['GET'])
 def populate_order():
-    pass
+    #order_id, user_id, order_status, order_type
+    
+    user = user.query(User).first()
+    order = Order()
+    order.user_id = user.user_id
+    order_status = 'Kart'
+    order_type = "Pickup"
+    db.session.add(order)
+
+    try:
+        db.session.commit()
+        return jsonify("Adding order"), 200
+    except Exception as error:
+        db.session.rollback()
+        return jsonify(f"{error}", 500)
+    
+    
+    
+
+    
+
+
+    
