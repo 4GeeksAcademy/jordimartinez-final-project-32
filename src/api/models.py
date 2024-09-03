@@ -30,7 +30,7 @@ class Order_Type(PyEnum):
 
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True, nullable=False)
+    name = db.Column(db.String(120), unique=False, nullable=False)
     address = db.Column(db.String(80), unique=False, nullable=False)
     telephone = db.Column(db.String(16), unique=False, nullable=False)
     email = db.Column(db.String(64), unique=False, nullable=False)
@@ -39,7 +39,7 @@ class User(db.Model):
     birthday = db.Column(db.DateTime, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
-    status = db.Column(SQLAlchemyEnum(Status), unique=True, nullable=False)
+    status = db.Column(SQLAlchemyEnum(Status), unique=False, nullable=False)
 
     reviews = db.relationship('Reviews', back_populates='user', uselist=True)
     order = db.relationship('Order', back_populates='user', uselist=True)

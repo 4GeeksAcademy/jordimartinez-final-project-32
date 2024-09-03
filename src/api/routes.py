@@ -121,7 +121,8 @@ def get_product():
 
 @api.route('/product/populate', methods=['GET'])
 def populate_product():
-    category = category.query(Category).first()
+    category = Category()
+    category = category.query.first()
     for i in range(8):
         num = i
         product = Product()
@@ -143,10 +144,7 @@ def populate_product():
 
 @api.route('/product', methods=['POST'])
 def add_product():
-    
     data = request.json
-    print(data)
-    
     if data is not None:
         product = Product(generic_name=data['generic_name'], active_ingredient=data['active_ingredient'],
                           category_id=data['category_id'], price=data['price'], stock_quantity=data['stock'], description=data['description'],
@@ -365,8 +363,8 @@ def delete_orders():
 @api.route('/order/populate', methods=['GET'])
 def populate_order():
     #order_id, user_id, order_status, order_type
-    
-    user = user.query(User).first()
+    user = User()
+    user = user.query.first()
     order = Order()
     order.user_id = user.user_id
     order_status = "KART"
