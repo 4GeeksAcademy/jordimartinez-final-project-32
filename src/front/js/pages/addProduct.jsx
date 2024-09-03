@@ -196,7 +196,7 @@ export const AddProduct = () => {
                 </div>
 
                 <div className="col-6">
-                    <Link className="ms-4 d-flex justify-content-end" to={`/backoffice`}>
+                    <Link className="ms-4 d-flex justify-content-end text-decoration-none" to={`/backoffice`}>
                         <button className="btn btn-outline-success" >Regresar al back office</button>
                     </Link>
                 </div>
