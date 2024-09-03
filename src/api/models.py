@@ -33,8 +33,8 @@ class User(db.Model):
     name = db.Column(db.String(120), unique=True, nullable=False)
     address = db.Column(db.String(80), unique=False, nullable=False)
     telephone = db.Column(db.String(16), unique=False, nullable=False)
-    email = db.Column(db.String(16), unique=False, nullable=False)
-    password = db.Column(db.String(16), unique=False, nullable=False)
+    email = db.Column(db.String(64), unique=False, nullable=False)
+    password = db.Column(db.String(64), unique=False, nullable=False)
     rol = db.Column(SQLAlchemyEnum(Rol), nullable=False) 
     birthday = db.Column(db.DateTime, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
@@ -52,11 +52,11 @@ class User(db.Model):
             "telephone": self.telephone,
             "email": self.email,
             "password": self.password,
-            "rol": self.rol,
+            "rol": self.rol.value,
             "birthday": self.birthday,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
-            "status": self.status
+            "status": self.status.value
             # do not serialize the password, its a security breach
         }
     

@@ -266,9 +266,9 @@ def populate_user():
     user.telephone = '555-1876'
     user.email = 'daniel.perdomo.1987@gmail.com'
     user.password = 'password'
-    user.rol = 'Admin'
+    user.rol = 'ADMIN'
     user.birthday = datetime(1987, 1, 18)
-    user.status = 'Active'
+    user.status = 'ACTIVE'
     db.session.add(user)
     
     try:
@@ -276,6 +276,7 @@ def populate_user():
         return jsonify("User has been added"), 200
     except Exception as error:
         db.session.rollback()
+        print(error.args)
         return jsonify(f"{error}"), 500
     
 @api.route('/user/<int:theid>', methods=['PUT'])
@@ -374,10 +375,4 @@ def populate_order():
         db.session.rollback()
         return jsonify(f"{error}", 500)
     
-    
-    
 
-    
-
-
-    
