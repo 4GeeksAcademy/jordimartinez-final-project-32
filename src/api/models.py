@@ -134,8 +134,8 @@ class Order(db.Model):
         return {
             "order_id": self.order_id,
             "user_id": self.user_id,
-            "order_status": self.order_status,
-            "order_type": self.order_type
+            "order_status": self.order_status.value,
+            "order_type": self.order_type.value
         }
 
 class OrderProduct(db.Model):
