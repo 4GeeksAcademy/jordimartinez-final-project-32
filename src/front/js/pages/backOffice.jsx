@@ -14,12 +14,12 @@ export const BackOffice = () => {
 						<input className="form-control me-2" type="search" placeholder="¿Qué estás buscando?" aria-label="Search"/>
 						<button className="btn btn-outline-success" type="submit">Buscar</button>
 					</form>
-                    <Link className=" col-3 ms-4 d-flex justify-content-end" to={`/addproduct`}>
+                    <Link className=" col-3 ms-4 d-flex justify-content-end text-decoration-none" to={`/addproduct`}>
                         <button className="btn btn-outline-success" >Agregar producto</button>
                     </Link>
                 </div>
                 
-                <table className="table">
+                <table className="table mt-3">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
