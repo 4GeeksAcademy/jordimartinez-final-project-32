@@ -378,4 +378,25 @@ def populate_order():
         db.session.rollback()
         return jsonify(f"{error}", 500)
     
-
+@api.route('/order/update_status/<int:theid>', methods=['PUT'])
+def update_status(theid):
+    order = Order()
+    order = order.query.get(theid)
+    if order is not None:
+        if order.order_status is 'KART':
+            order.order_status = 'PENDING'
+        elif order.order_status is 'PENDING':
+            order.order_status = 'ACCEPTED'
+        elif order.order_status is 'ACCEPTED':
+            order.order_status = 'READY'
+        elif order.order_status is 'READY':
+            order.order_status = 'DONE'
+        else:
+            return jsonify({"message":"Order its done"}), 200
+        try:
+            db.session.commit()
+            return jsonify({"message": f"Order status updated successfully: {order.order_status}"}), 200
+        except Exception as error:
+            print(error.args)
+            return jsonify({"message": f"{error.args}"}), 500  
+    return jsonify({"message": "Order does not exist"}), 404

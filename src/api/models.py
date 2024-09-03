@@ -21,7 +21,7 @@ class Order_Status(PyEnum):
     KART = "Kart"
     PENDING = "Pending"
     ACCEPTED = "Accepted"
-    SENDING = "Sending"
+    SENDING = "Ready"
     DONE = "Done"
 
 class Order_Type(PyEnum):
