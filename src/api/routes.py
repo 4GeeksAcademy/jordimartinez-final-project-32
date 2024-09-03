@@ -419,4 +419,16 @@ def get_one_review(theid):
 
 @api.route('/review', methods=['POST'])
 def create_review():
+    data = request.json
+    if data is not None:
+        review = Reviews(user_id=data['user_id'], product_id=data['product_id'], comment=data['comment'])
+        db.session.add(review)
+
+        db.session.commit()
+        return jsonify({"message": "Creating Review"}), 200
+    else:
+        return jsonify({"message": "Review is not created"}), 500
+    
+@api.route('/review/<int:theid>', methods=['DELETE'])
+def delete_review(theid):
     pass
