@@ -364,8 +364,8 @@ def populate_order():
     user = user.query(User).first()
     order = Order()
     order.user_id = user.user_id
-    order_status = 'Kart'
-    order_type = "Pickup"
+    order_status = "KART"
+    order_type = "PICKUP"
     db.session.add(order)
 
     try:
