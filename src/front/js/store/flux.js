@@ -51,12 +51,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			addProduct: async (product) => {
                 try {
-                    const response = await fetch('https://crispy-winner-x54p4xjgvgrhvvp4-3001.app.github.dev/api/product', {
+                    const response = await fetch( `${process.env.BACKEND_URL}/api/product`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(product)
+                        // headers: {
+                        //     'Content-Type': 'application/json'
+                        // },
+                        body: product
                     });
 
                     if (response.ok) {

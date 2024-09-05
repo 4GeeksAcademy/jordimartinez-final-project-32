@@ -68,6 +68,7 @@ class Product(db.Model):
     price = db.Column(db.Integer, unique=False, nullable=False)
     stock_quantity = db.Column(db.Integer, unique=False, nullable=False)
     image_url = db.Column(db.String(120), unique=False, nullable=False)
+    # public_image_id = db.Column(db.String(120), unique=True, nullable=False)
     description = db.Column(db.String(200), unique=False, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     
