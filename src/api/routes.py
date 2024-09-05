@@ -6,6 +6,7 @@ from api.models import db, User, Category, Product, Order
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime
+import cloudinary.uploader as uploader
 
 api = Blueprint('api', __name__)
 
@@ -144,13 +145,28 @@ def populate_product():
 @api.route('/product', methods=['POST'])
 def add_product():
     
-    data = request.json
-    print(data)
+    data_form = request.form
+    data_files = request.files
+
+   
+    data = {
+        "generic_name": data_form.get("generic_name"),
+        "active_ingredient":data_form.get("active_ingredient"),
+        "category_id":data_form.get("category_id"),
+        "price":data_form.get("price"),
+        "stock_quantity":data_form.get("stock"),
+        "description":data_form.get("description"),
+        "image_url":data_files.get("image")
+    }
+    # print(data)
     
+    result_cloud = uploader.upload(data.get("image_url"))
+
+
     if data is not None:
         product = Product(generic_name=data['generic_name'], active_ingredient=data['active_ingredient'],
-                          category_id=data['category_id'], price=data['price'], stock_quantity=data['stock'], description=data['description'],
-                        image_url="https://picsum.photos/200/300")
+                          category_id=data['category_id'], price=data['price'], stock_quantity=data['stock_quantity'], description=data['description'],
+                        image_url=result_cloud.get("secure_url"))
                        
         db.session.add(product)
         try:
