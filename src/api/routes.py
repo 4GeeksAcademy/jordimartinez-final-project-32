@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Category, Product, Order
+from api.models import db, User, Category, Product, Order, Reviews
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime
@@ -122,7 +122,8 @@ def get_product():
 
 @api.route('/product/populate', methods=['GET'])
 def populate_product():
-    category = category.query(Category).first()
+    category = Category()
+    category = category.query.first()
     for i in range(8):
         num = i
         product = Product()
@@ -161,6 +162,7 @@ def add_product():
     # print(data)
     
     result_cloud = uploader.upload(data.get("image_url"))
+
 
 
     if data is not None:
@@ -287,9 +289,9 @@ def populate_user():
     user.telephone = '555-1876'
     user.email = 'daniel.perdomo.1987@gmail.com'
     user.password = 'password'
-    user.rol = 'Admin'
+    user.rol = 'ADMIN'
     user.birthday = datetime(1987, 1, 18)
-    user.status = 'Active'
+    user.status = 'ACTIVE'
     db.session.add(user)
     
     try:
@@ -297,6 +299,7 @@ def populate_user():
         return jsonify("User has been added"), 200
     except Exception as error:
         db.session.rollback()
+        print(error.args)
         return jsonify(f"{error}"), 500
     
 @api.route('/user/<int:theid>', methods=['PUT'])
@@ -380,12 +383,12 @@ def delete_orders():
 @api.route('/order/populate', methods=['GET'])
 def populate_order():
     #order_id, user_id, order_status, order_type
-    
-    user = user.query(User).first()
+    user = User()
+    user = user.query.first()
     order = Order()
     order.user_id = user.user_id
-    order_status = 'Kart'
-    order_type = "Pickup"
+    order.order_status = "KART"
+    order.order_type = "PICKUP"
     db.session.add(order)
 
     try:
@@ -393,12 +396,107 @@ def populate_order():
         return jsonify("Adding order"), 200
     except Exception as error:
         db.session.rollback()
-        return jsonify(f"{error}", 500)
+        return jsonify(f"{error}"), 500
     
-    
-    
+@api.route('/order/update_status/<int:theid>', methods=['PUT'])
+def update_status(theid):
+    order = Order()
+    order = order.query.get(theid)
+    if order is not None:
+        if order.order_status == 'KART':
+            order.order_status = 'PENDING'
+        elif order.order_status == 'PENDING':
+            order.order_status = 'ACCEPTED'
+        elif order.order_status == 'ACCEPTED':
+            order.order_status = 'READY'
+        elif order.order_status == 'READY':
+            order.order_status = 'DONE'
+        else:
+            return jsonify({"message":"Order its done"}), 200
+        try:
+            db.session.commit()
+            return jsonify({"message": f"Order status updated successfully: {order.order_status}"}), 200
+        except Exception as error:
+            print(error.args)
+            return jsonify({"message": f"{error.args}"}), 500  
+    return jsonify({"message": "Order does not exist"}), 404
 
+@api.route('/review', methods=['GET'])
+def get_reviews():
+    reviews = Reviews()
+    reviews = reviews.query.all()
+    return jsonify([item.serialize() for item in reviews]), 200
+
+@api.route('/review/<int:theid>', methods=['GET'])
+def get_one_review(theid):
+    review = Reviews()
+    review = review.query.get(theid)
+
+    if review is not None:
+        return jsonify(review.serialize()), 200
+    else:
+        return jsonify({"message": "Review Id doesnt exist"}), 404
+
+@api.route('/review', methods=['POST'])
+def create_review():
+    data = request.json
+    if data is not None:
+        review = Reviews(user_id=data['user_id'], product_id=data['product_id'], comment=data['comment'])
+        db.session.add(review)
+
+        db.session.commit()
+        return jsonify({"message": "Creating Review"}), 200
+    else:
+        return jsonify({"message": "Review is not created"}), 500
     
+@api.route('/review/<int:theid>', methods=['DELETE'])
+def delete_review(theid=None):
+    if theid is not None:
+        review = Reviews()
+        review = review.query.get(theid)
+        if review is not None:
+            db.session.delete(review)
+            db.session.commit()
+            return jsonify({"message": "Review Destroyed"}), 200
+        else:
+            return jsonify({"message": "Review Doesnt Exist"}), 404
+    return jsonify({"message": "Id is None"}), 500        
 
+@api.route('/review/delete_all', methods=['DELETE'])
+def delete_reviews():
+    review = Reviews()
+    review = review.query.all()
 
+    for item in review:
+        db.session.delete(item)
+        db.session.commit()
+
+    return jsonify({"message": "Reviews Completely Deleted"}), 200
+
+@api.route('/review/populate', methods=['GET'])
+def populate_reviews():
+    #review_id, user_id, product_id, comment
+    review = Reviews()
+    
+    user = User()
+    user = user.query.first()
+    product = Product()
+    product = product.query.first()
+
+    review.user_id = user.user_id
+    review.product_id = product.product_id
+    review.comment = "It was the best thing that ever happened to me. I was happier than the day my son was born."
+
+    db.session.add(review)
+
+    try:
+        db.session.commit()
+        return jsonify("Added review"), 200
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify(f"{error.args}"), 500
+
+@api.route('/order_product', methods=['GET'])
+def get_product():
     

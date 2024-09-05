@@ -21,7 +21,7 @@ class Order_Status(PyEnum):
     KART = "Kart"
     PENDING = "Pending"
     ACCEPTED = "Accepted"
-    SENDING = "Sending"
+    SENDING = "Ready"
     DONE = "Done"
 
 class Order_Type(PyEnum):
@@ -30,16 +30,16 @@ class Order_Type(PyEnum):
 
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True, nullable=False)
+    name = db.Column(db.String(120), unique=False, nullable=False)
     address = db.Column(db.String(80), unique=False, nullable=False)
     telephone = db.Column(db.String(16), unique=False, nullable=False)
-    email = db.Column(db.String(16), unique=False, nullable=False)
-    password = db.Column(db.String(16), unique=False, nullable=False)
+    email = db.Column(db.String(64), unique=False, nullable=False)
+    password = db.Column(db.String(64), unique=False, nullable=False)
     rol = db.Column(SQLAlchemyEnum(Rol), nullable=False) 
     birthday = db.Column(db.DateTime, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
-    status = db.Column(SQLAlchemyEnum(Status), unique=True, nullable=False)
+    status = db.Column(SQLAlchemyEnum(Status), unique=False, nullable=False)
 
     reviews = db.relationship('Reviews', back_populates='user', uselist=True)
     order = db.relationship('Order', back_populates='user', uselist=True)
@@ -52,11 +52,11 @@ class User(db.Model):
             "telephone": self.telephone,
             "email": self.email,
             "password": self.password,
-            "rol": self.rol,
+            "rol": self.rol.value,
             "birthday": self.birthday,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
-            "status": self.status
+            "status": self.status.value
             # do not serialize the password, its a security breach
         }
     
@@ -96,7 +96,7 @@ class Reviews(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.product_id'), nullable=False)
     
-    comment = db.Column(db.String(120), nullable=False)
+    comment = db.Column(db.String(255), nullable=False)
 
     user = db.relationship('User', back_populates='reviews', uselist=True)
     product = db.relationship('Product', back_populates='reviews', uselist=True)
@@ -135,8 +135,8 @@ class Order(db.Model):
         return {
             "order_id": self.order_id,
             "user_id": self.user_id,
-            "order_status": self.order_status,
-            "order_type": self.order_type
+            "order_status": self.order_status.value,
+            "order_type": self.order_type.value
         }
 
 class OrderProduct(db.Model):
