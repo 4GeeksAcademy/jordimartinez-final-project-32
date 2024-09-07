@@ -11,3 +11,53 @@
 #carouselExample .carousel-control-next {
     border-radius: 50%; 
 }
+
+.circle-button {
+    width: 13px;
+    height: 13px; 
+    border-radius: 50%; 
+    border: 1px solid black;
+    background-color: white;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.circle-button:hover,
+.circle-button:focus {
+    background-color: black;
+    border-color: black;
+}
+
+.circle-button:active {
+    background-color: gray;
+}
+
+.circle-button-small {
+    width: 13px;
+    height: 13px; 
+    border-radius: 50%; 
+    border: 1px solid black;
+    background-color: white;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.circle-button-small:hover,
+.circle-button-small:focus {
+    background-color: black;
+    border-color: black;
+}
+
+.circle-button-small:active {
+    background-color: gray;
+}
+
+.subbuttons-container {
+    margin-left: 40px; 
+}
+
+.subbuttons-container .text-secondary {
+    font-size: 0.75rem;
+}
