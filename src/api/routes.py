@@ -7,6 +7,11 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime
 import cloudinary.uploader as uploader
+import random
+
+# import productopopulate.medicamentos as medicamentos
+
+from api.productopoputale import medicamentos
 
 api = Blueprint('api', __name__)
 
@@ -122,26 +127,57 @@ def get_product():
 
 @api.route('/product/populate', methods=['GET'])
 def populate_product():
-    category = Category()
-    category = category.query.first()
-    for i in range(8):
-        num = i
-        product = Product()
-        product.generic_name = "Perifar" + ' ' + str(num)
-        product.active_ingredient = "Ibuprofeno"
-        product.category_id = category.category_id
-        product.price = 50
-        product.stock_quantity = 13
-        product.image_url = 'url'
-        product.description = 'A nice laugh the best medicine'
-        db.session.add(product)
+    try:
+        category = Category()
+        category = category.query.all()
 
-    try: 
+        if not category:
+            return jsonify({"message": "No categories found"}), 404
+
+        print(medicamentos[0])
+
+        for med in medicamentos:            
+            product = Product(
+                generic_name=med["generic_name"],
+                active_ingredient=med["active_ingredient"],
+                category_id=med["category_id"], 
+                price=med["price"],
+                stock_quantity=med["stock_quantity"],
+                image_url=med["image_url"],
+                description=med["description"]
+            )
+            
+            
+
+            db.session.add(product)
+
         db.session.commit()
-        return jsonify("Adding product"), 200
-    except Exception as error:
+        return jsonify({"message": "Products populated successfully"}), 200
+
+    except Exception as e:
+        print(e.args)
         db.session.rollback()
-        return jsonify(f"{error}"), 500
+        return jsonify({"message": str(e)}), 500
+
+   
+    # for i in range(8):
+    #     num = i
+    #     product = Product()
+    #     product.generic_name = "Perifar" + ' ' + str(num)
+    #     product.active_ingredient = "Ibuprofeno"
+    #     product.category_id = category.category_id
+    #     product.price = 50
+    #     product.stock_quantity = 13
+    #     product.image_url = 'url'
+    #     product.description = 'A nice laugh the best medicine'
+    #     db.session.add(product)
+
+    # try: 
+    #     db.session.commit()
+    #     return jsonify("Adding product"), 200
+    # except Exception as error:
+    #     db.session.rollback()
+    #     return jsonify(f"{error}"), 500
 
 @api.route('/product', methods=['POST'])
 def add_product():

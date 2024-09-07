@@ -1,4 +1,3 @@
-from flask import Flask, request, jsonify
 
 medicamentos = [    
     {"generic_name": "Tylenol", "active_ingredient": "Paracetamol", "category_id": 1, "price": 50, "stock_quantity": 20, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725572644/tylenol-caja-con-frasco-20-tabletas-980-x-980-px-1_fggvd2.jpg", "description": "Analgésico y antipirético"},
@@ -97,6 +96,4 @@ medicamentos = [
     {"generic_name": "Redbelgy", "active_ingredient": "Cianocobalamina", "category_id": 9, "price": 80, "stock_quantity": 15, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725572626/Redbelgy_cgwwza.jpg", "description": "Suplemento de vitamina B12"},
     {"generic_name": "SulZinc", "active_ingredient": "Sulfato de zinc", "category_id": 9, "price": 50, "stock_quantity": 40, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725572634/SulZinc_muhbm7.jpg", "description": "Suplemento de zinc"},
     {"generic_name": "Electrolit", "active_ingredient": "Cloruro de potasio", "category_id": 9, "price": 85, "stock_quantity": 10, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725572577/Electrolit_d2hxry.webp", "description": "Suplemento de potasio"},
-],
-
-__all__ = ['medicamentos']
+]

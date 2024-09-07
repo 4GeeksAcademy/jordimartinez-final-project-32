@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 03f4a433f758
+Revision ID: a899badc5a74
 Revises: 
-Create Date: 2024-09-05 01:40:15.132750
+Create Date: 2024-09-07 02:43:54.810226
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '03f4a433f758'
+revision = 'a899badc5a74'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -29,16 +29,14 @@ def upgrade():
     sa.Column('name', sa.String(length=120), nullable=False),
     sa.Column('address', sa.String(length=80), nullable=False),
     sa.Column('telephone', sa.String(length=16), nullable=False),
-    sa.Column('email', sa.String(length=16), nullable=False),
-    sa.Column('password', sa.String(length=16), nullable=False),
+    sa.Column('email', sa.String(length=64), nullable=False),
+    sa.Column('password', sa.String(length=64), nullable=False),
     sa.Column('rol', sa.Enum('CLIENT', 'SELLER', 'ADMIN', name='rol'), nullable=False),
     sa.Column('birthday', sa.DateTime(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.Column('status', sa.Enum('ACTIVE', 'INACTIVE', 'BANNED', name='status'), nullable=False),
-    sa.PrimaryKeyConstraint('user_id'),
-    sa.UniqueConstraint('name'),
-    sa.UniqueConstraint('status')
+    sa.PrimaryKeyConstraint('user_id')
     )
     op.create_table('order',
     sa.Column('order_id', sa.Integer(), nullable=False),
@@ -56,7 +54,7 @@ def upgrade():
     sa.Column('category_id', sa.Integer(), nullable=False),
     sa.Column('price', sa.Integer(), nullable=False),
     sa.Column('stock_quantity', sa.Integer(), nullable=False),
-    sa.Column('image_url', sa.String(length=120), nullable=False),
+    sa.Column('image_url', sa.String(length=180), nullable=False),
     sa.Column('description', sa.String(length=200), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['category.category_id'], ),
@@ -76,7 +74,7 @@ def upgrade():
     sa.Column('review_id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('product_id', sa.Integer(), nullable=False),
-    sa.Column('comment', sa.String(length=120), nullable=False),
+    sa.Column('comment', sa.String(length=255), nullable=False),
     sa.ForeignKeyConstraint(['product_id'], ['product.product_id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.user_id'], ),
     sa.PrimaryKeyConstraint('review_id'),
