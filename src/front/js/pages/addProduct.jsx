@@ -30,7 +30,18 @@ export const AddProduct = () => {
         e.preventDefault();
         try {
             if (product.generic_name.trim() !== "" && product.active_ingredient.trim() !== "" && product.category_id.trim() !== "" && product.price.trim() !== "" && product.stock.trim() !== "" && product.description.trim() !== "") {
-                let response = await actions.addProduct(product);
+                
+                const formData = new FormData()
+                formData.append("generic_name", product.generic_name)
+                formData.append("active_ingredient", product.active_ingredient)
+                formData.append("category_id", product.category_id)
+                formData.append("price", product.price)
+                formData.append("stock", product.stock)
+                formData.append("description", product.description)
+                formData.append("image", product.image)
+                
+                
+                let response = await actions.addProduct(formData);
 
                 if (response) {
                     setProduct(initialProduct);
@@ -184,7 +195,9 @@ export const AddProduct = () => {
                         type="file" 
                         name="image"     
                         id="formFile"
-                        onChange={handleChange}
+                        onChange={(event)=>{
+                            setProduct({...product, image:event.target.files[0]})
+                        }}
                     />
                 </div>
 
