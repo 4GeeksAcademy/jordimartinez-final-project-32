@@ -2,10 +2,15 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Category, Product, Order, Reviews
+from api.models import db, User, Category, Product, Order, Reviews, OrderProduct
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime
+
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from werkzeug.security import check_password_hash
+from base64 import b64encode
+
 
 api = Blueprint('api', __name__)
 
@@ -477,6 +482,55 @@ def populate_reviews():
         db.session.rollback()
         return jsonify(f"{error.args}"), 500
 
-@api.route('/order_product', methods=['GET'])
-def get_product():
+@api.route('/order_product/<int:theid>', methods=['GET'])
+def get_products_in_order(theid):
+
+    order_product = OrderProduct()
+    order_product = order_product.query.all()
+    user_order_product = []
+
+    for op in order_product:
+        if op.order_id == theid:
+            user_order_product.append(op)
+      
+    return jsonify([item.serialize() for item in op]), 200
+
+@api.route('/order/<int:theid>', methods=['POST'])
+#@jwt_required()
+def add_product_in_order():
+    # 1 - JWT required 
+    # 2 - Llega con request
+    # 3 - Verificar los endpoints de Order
+    
+    # [Usuario Logeado] -> Order, Producto
+
+    user = User.query.get(get_jwt_identity())
+
+    order = Order() #Order deberia buscar la orden que diga 'Kart'que es el carrito
+    product = Product()    
+    data = request.json
+    # Product viene desde el json 
+    # Armar el login primero y despues vemos
+
+    pass
+
+
+@api.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    email = data.get("email", None)
+    password = data.get("password", None)
+
+    if email is None or password is None:
+        return jsonify({"message": "Email and password required"}), 400
+    else:
+        # Aca deberia chequear el pass, primero armar el acceso con salt
+
+
+    pass
+    
+
+
+    
+    
     
