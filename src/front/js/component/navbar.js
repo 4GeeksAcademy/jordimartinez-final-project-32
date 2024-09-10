@@ -22,7 +22,7 @@ export const Navbar = () => {
 							Productos
 						</a>
 						<ul className="dropdown-menu dropdown-start">
-							<li><a className="dropdown-item" href="#">Analgésicos</a></li>
+							<li><Link className="dropdown-item" to="category/1">Analgésicos</Link></li>
 							<li><a className="dropdown-item" href="#">Antibióticos</a></li>
 							<li><a className="dropdown-item" href="#">Dermatológicos y cosméticos</a></li>
 							<li><a className="dropdown-item" href="#">Nutrición/suplementos</a></li>
