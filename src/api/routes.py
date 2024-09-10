@@ -358,8 +358,7 @@ def populate_user():
     
 @api.route('/user/<int:theid>', methods=['PUT'])
 def update_user(theid=None):
-    user = User()
-    user = user.query.get(theid)
+    user = User.query.get(theid)
 
     if not user:
         return jsonify({"message": "User not found"}), 404
@@ -399,7 +398,6 @@ def get_one_order(theid = None):
             return jsonify({"message": "Order not Found"}), 404
     return jsonify({"message": "Id doesnt correspond to an order right now"}), 400
 
-    
 @api.route('/order/<int:theid>', methods=['DELETE'])
 def delete_order(theid=None):
     if theid is not None:
