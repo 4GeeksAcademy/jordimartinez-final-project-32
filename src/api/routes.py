@@ -462,16 +462,17 @@ def update_status(theid):
             return jsonify({"message": f"{error.args}"}), 500  
     return jsonify({"message": "Order does not exist"}), 404
 
-@api.route('/review', methods=['GET'])
-def get_reviews():
-    reviews = Reviews()
-    reviews = reviews.query.all()
+@api.route('/review/<int:theid>', methods=['GET'])
+def get_reviews(theid):
+    #theid is the product id in this case
+    reviews = Reviews.query.filter(Reviews.product_id==theid)
+    if reviews is None:
+        return jsonify("There is no product"), 404
     return jsonify([item.serialize() for item in reviews]), 200
 
 @api.route('/review/<int:theid>', methods=['GET'])
 def get_one_review(theid):
-    review = Reviews()
-    review = review.query.get(theid)
+    review = Reviews.query.get(theid)
     if review is not None:
         return jsonify(review.serialize()), 200
     else:
