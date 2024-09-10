@@ -31,7 +31,16 @@ export const BackOffice = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* Aquí puedes agregar las filas de tu tabla */}
+                        {products.map((product, index) => (
+                            <tr key={product.product_id}>
+                                <th scope="row">{index + 1}</th>
+                                <td>{product.generic_name}</td>
+                                <td>{product.active_ingredient}</td>
+                                <td>{product.category_id}</td>
+                                <td>{product.price}</td>
+                                <td>{product.stock_quantity}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
 
