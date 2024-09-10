@@ -90,7 +90,6 @@ def delete_categories():
 def populate_category():
     category_list = [u'Analgesico', u'Antibiotico', u'Dermatológico y cosmético', u'Nutrición', u'Pediátrico', 
                      u'Primeros auxilios', u'Salud digestiva', u'Tratamientos', u'Vitaminas']
-    #This list will be the first list just to populate the database, afterwards it will be redirected to the database to read the data
 
     for item in category_list:
         category = Category()
@@ -154,11 +153,7 @@ def populate_product():
                 image_url=med["image_url"],
                 description=med["description"]
             )
-            
-            
-
             db.session.add(product)
-
         db.session.commit()
         return jsonify({"message": "Products populated successfully"}), 200
 
@@ -166,26 +161,6 @@ def populate_product():
         print(e.args)
         db.session.rollback()
         return jsonify({"message": str(e)}), 500
-
-   
-    # for i in range(8):
-    #     num = i
-    #     product = Product()
-    #     product.generic_name = "Perifar" + ' ' + str(num)
-    #     product.active_ingredient = "Ibuprofeno"
-    #     product.category_id = category.category_id
-    #     product.price = 50
-    #     product.stock_quantity = 13
-    #     product.image_url = 'url'
-    #     product.description = 'A nice laugh the best medicine'
-    #     db.session.add(product)
-
-    # try: 
-    #     db.session.commit()
-    #     return jsonify("Adding product"), 200
-    # except Exception as error:
-    #     db.session.rollback()
-    #     return jsonify(f"{error}"), 500
 
 @api.route('/product', methods=['POST'])
 def add_product():
@@ -424,23 +399,6 @@ def get_one_order(theid = None):
             return jsonify({"message": "Order not Found"}), 404
     return jsonify({"message": "Id doesnt correspond to an order right now"}), 400
 
-@api.route('/order', methods=['POST'])
-@jwt_required
-def create_kart():
-    #Probablemente hay que reajustar esto cuando se cree la parte de logins y de jwt
-    user = User.query.get(get_jwt_identity())
-    data = request.json
-    if data is not None:
-        order = Order(user_id=user, order_status='Kart', order_type='Pickup')
-        try:
-            db.session.add(order)
-            return jsonify({"message": "Creating Kart"}), 201
-        except Exception as error:
-            print(error.args)
-            db.session.commit()
-            return jsonify({"message": "Problem commiting"}), 500
-    else:
-        return jsonify({"message": "Kart Couldnt be Created"}), 400
     
 @api.route('/order/<int:theid>', methods=['DELETE'])
 def delete_order(theid=None):
@@ -581,21 +539,6 @@ def populate_reviews():
         print(error.args)
         db.session.rollback()
         return jsonify(f"{error.args}"), 500
-
-
-@api.route('/order_product/<int:theid>', methods=['GET'])
-@jwt_required()
-def get_products_in_order(theid):
-    #Rehacer
-    order_product = OrderProduct()
-    order_product = order_product.query.all()
-    user_order_product = []
-
-    for op in order_product:
-        if op.order_id == theid:
-            user_order_product.append(op)
-      
-    return jsonify([item.serialize() for item in op]), 200
     
 def create_kart(user):
     if user is not None:
