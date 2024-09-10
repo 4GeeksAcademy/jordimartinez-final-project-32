@@ -40,6 +40,7 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
     status = db.Column(SQLAlchemyEnum(Status), unique=False, nullable=False)
+    salt = db.Column(db.String(180), nullable=False)
 
     reviews = db.relationship('Reviews', back_populates='user', uselist=True)
     order = db.relationship('Order', back_populates='user', uselist=True)
