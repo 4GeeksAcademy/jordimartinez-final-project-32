@@ -474,17 +474,18 @@ def get_reviews():
 def get_one_review(theid):
     review = Reviews()
     review = review.query.get(theid)
-
     if review is not None:
         return jsonify(review.serialize()), 200
     else:
         return jsonify({"message": "Review Id doesnt exist"}), 404
 
 @api.route('/review', methods=['POST'])
+@jwt_required()
 def create_review():
+    user = User.query.get(get_jwt_identity())
     data = request.json
     if data is not None:
-        review = Reviews(user_id=data['user_id'], product_id=data['product_id'], comment=data['comment'])
+        review = Reviews(user_id=user.user_id, product_id=data['product_id'], comment=data['comment'])
         db.session.add(review)
 
         db.session.commit()
@@ -493,14 +494,21 @@ def create_review():
         return jsonify({"message": "Review is not created"}), 500
     
 @api.route('/review/<int:theid>', methods=['DELETE'])
+@jwt_required()
 def delete_review(theid=None):
+    user=User.query.get(get_jwt_identity())
+
     if theid is not None:
-        review = Reviews()
-        review = review.query.get(theid)
-        if review is not None:
+        review = Reviews.query.get(theid)
+        if review is not None and user.user_id == review.user_id:
             db.session.delete(review)
-            db.session.commit()
-            return jsonify({"message": "Review Destroyed"}), 200
+            try:
+                db.session.commit()
+                return jsonify({"message": "Review Destroyed"}), 200
+            except Exception as error:
+                print(error.args)
+                db.session.rollback()
+                return jsonify({"message": f"{error.args}"}), 500
         else:
             return jsonify({"message": "Review Doesnt Exist"}), 404
     return jsonify({"message": "Id is None"}), 500        
@@ -518,7 +526,6 @@ def delete_reviews():
 
 @api.route('/review/populate', methods=['GET'])
 def populate_reviews():
-    #review_id, user_id, product_id, comment
     review = Reviews()
     
     user = User()
@@ -660,7 +667,7 @@ def delete_product_in_order(theid):
         else:
             return jsonify({"message": "This Product Does not Exist for this Order"}), 404
     else:
-        return jsonify({"message": "This Product Does not Exist for this Order"}), 404
+        return jsonify({"message": "Order Does Not Exist, something bad happened here"}), 400
     
     try:
         db.session.commit()
@@ -670,7 +677,3 @@ def delete_product_in_order(theid):
         db.session.rollback()
         return jsonify({"message": f"{error.args}"}), 500
                         
-
-
-
-#update product in order
