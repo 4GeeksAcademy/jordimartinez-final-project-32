@@ -596,41 +596,10 @@ def get_products_in_order(theid):
             user_order_product.append(op)
       
     return jsonify([item.serialize() for item in op]), 200
-
-@api.route('/order/<int:theid>', methods=['POST'])
-@jwt_required()
-def add_product_in_order():
-
-    user = User.query.get(get_jwt_identity())
-    if user is None:
-        return jsonify("User not found"), 404
-
-    data = request.json
-    cart_order = Order.query.filter(Order.user_id == user, Order.order_status == "KART").one_or_none()
-
-    if cart_order is None:
-        order_id = create_kart(user)
-        order_product = OrderProduct()
-        order_product = order_product(order_id=order_id, user_id=user, product_id=data['product_id'], stock=data['stock'])
-        db.session.add(order_product)
-    else:
-        order_product = OrderProduct()
-        order_product = order_product(order_id=cart_order.order_id, user_id=user, product_id=data['product_id'], stock=data['stock'])
-        db.session.add(order_product)
-
-    try:
-        db.session.commit()
-        return jsonify({"message":"Producto Agregado a la orden"}), 201
-    
-    except Exception as error:
-        print(error.args)
-        db.session.rollback()
-        return jsonify({"message":f"Error {error.args}"}), 500
     
 def create_kart(user):
-    # Este metodo, se vuelve metodo auxiliar para agregar productos al carrito
     if user is not None:
-        order = Order(user_id=user, order_status='KART', order_type='PICKUP')
+        order = Order(user_id=user.user_id, order_status='KART', order_type='PICKUP')
         db.session.add(order)
         try:
             db.session.commit()
@@ -652,7 +621,6 @@ def login():
     if email is None or password is None:
         return jsonify({"message": "Email and password required"}), 400
     else:
-        # Aca deberia chequear el pass, primero armar el acceso con salt
         user = User.query.filter_by(email=email).one_or_none()
 
         if user is None:
@@ -667,8 +635,13 @@ def login():
 @api.route('/update-password', methods=['PUT'])
 @jwt_required()
 def update_pass():
-    email = get_jwt_identity()
+    #Data que viene de entrada
+    user = get_jwt_identity()
     body = request.json
+
+    #Consiguiendo correo para actualizar la password
+    user = get_user(user)
+    email = user.get('email')
 
     user = User.query.filter_by(email=email).one_or_none()
 
@@ -689,13 +662,42 @@ def update_pass():
 @api.route('/order/<int:theid>', methods=['GET'])
 @jwt_required()
 def get_products_in_order(theid):
-    #Rehacer 
-    order_product = OrderProduct()
-    order_product = order_product.query.all()
-    user_order_product = []
+    #Se pide que tenga jwt, para evitar que alguien revise las ordenes individuales de las personas ?
+    products_in_order = OrderProduct.query.filter_by(order_id=theid).all()
+    if products_in_order is None:
+        return jsonify({"Message": "There are no products in this order"}), 400
+    return jsonify([item.serialize() for item in products_in_order]), 200
 
-    for op in order_product:
-        if op.order_id == theid:
-            user_order_product.append(op)
-      
-    return jsonify([item.serialize() for item in op]), 200
+@api.route('/order/<int:theid>', methods=['POST'])
+@jwt_required()
+def add_product_in_order(theid):
+    user = User.query.get(get_jwt_identity())
+    if user is None:
+        return jsonify({"message": "User not found"}), 404
+
+    data = request.json
+    if not data or 'stock' not in data or not isinstance(data['stock'], int):
+        return jsonify({"message": "Invalid data: 'stock' is required and must be an integer"}), 400
+
+    order = Order.query.filter_by(user_id=user.user_id, order_status='KART').first()
+    
+    if order is None:
+        order_id = create_kart(user)
+    else:
+        order_id = order.order_id
+
+    order_product = OrderProduct(
+        order_id=order_id,
+        user_id=user.user_id,
+        product_id=theid,  
+        stock=data['stock']
+    )
+
+    db.session.add(order_product)
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "Producto agregado a la orden"}), 201
+    except Exception as error:
+        db.session.rollback()
+        return jsonify({"message": f"Error: {error.args}"}), 500
