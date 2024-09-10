@@ -63,58 +63,12 @@ const CategoriesTemplate = () => {
                             <span className="ms-2">Categoria Mayor 1</span>
                         </div>
 
-                            <div className="mt-2 d-flex flex-column align-items-start subbuttons-container">
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 1</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 2</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 3</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 4</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 5</span>
-                                </div>
-                            </div>
-
 {/* Botones para Categoria Mayor 2 */}
 
                         <div className="mb-3 d-flex align-items-center">
                             <button className="circle-button"></button>
                             <span className="ms-2">Categoria Mayor 2</span>
                         </div>
-
-                            <div className="mt-2 d-flex flex-column align-items-start subbuttons-container">
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 1</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 2</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 3</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 4</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 5</span>
-                                </div>
-                            </div>
 
 {/* Botones para Categoria Mayor 3 */}
 
@@ -123,61 +77,22 @@ const CategoriesTemplate = () => {
                             <span className="ms-2">Categoria Mayor 3</span>
                         </div>
 
-                            <div className="mt-2 d-flex flex-column align-items-start subbuttons-container">
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 1</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 2</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 3</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 4</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 5</span>
-                                </div>
-                            </div>
-
 {/* Botones para Categoria Mayor 4 */}
 
                         <div className="mb-3 d-flex align-items-center">
                             <button className="circle-button"></button>
                             <span className="ms-2">Categoria Mayor 4</span>
                         </div>
-
-                            <div className="mt-2 d-flex flex-column align-items-start subbuttons-container">
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 1</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 2</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 3</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 4</span>
-                                </div>
-                                <div className="d-flex align-items-center mb-3">
-                                    <button className="circle-button-small"></button>
-                                    <span className="ms-2 text-secondary">Subcategoria 5</span>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
+                    {/* Cuadro de texto fijo con borde gris claro */}
+                    <div className="mt-4 p-3 border border-light" style={{ backgroundColor: '#f8f9fa' }}>
+                        <h4>Consejos y recomendaciones de cada categoria</h4>
+                        <p className="mb-0">
+                            Este es un texto fijo que se mostrará dentro de un cuadro con un borde gris claro.
+                        </p>
                     </div>
                 </div>
+            </div>
 
 {/* COLUMNAS DERECHA */}
 
