@@ -644,3 +644,33 @@ def add_product_in_order(theid):
     except Exception as error:
         db.session.rollback()
         return jsonify({"message": f"Error: {error.args}"}), 500
+
+@api.route('/order/<int:theid>', methods=['DELETE'])
+@jwt_required()
+def delete_product_in_order(theid):
+    user = User.query.get(get_jwt_identity())
+    if user is None:
+        return jsonify("You need to log in"), 400
+    
+    order = Order.query.filter(Order.user_id==user.user_id, Order.order_status=='KART').one_or_none()
+    if order is not None:
+        product = Product.query.filter(OrderProduct.order_id==order.order_id, OrderProduct.product_id==theid)
+        if product is not None:
+            db.session.delete(product)
+        else:
+            return jsonify({"message": "This Product Does not Exist for this Order"}), 404
+    else:
+        return jsonify({"message": "This Product Does not Exist for this Order"}), 404
+    
+    try:
+        db.session.commit()
+        return jsonify({"message": "Product has been deleted from this order"}), 200
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"{error.args}"}), 500
+                        
+
+
+
+#update product in order
