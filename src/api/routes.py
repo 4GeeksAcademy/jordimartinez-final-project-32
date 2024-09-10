@@ -2,21 +2,29 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Category, Product, Order, Reviews
+from api.models import db, User, Category, Product, Order, Reviews, OrderProduct
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
-from datetime import datetime
+
+from datetime import datetime, timedelta
+import os
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from werkzeug.security import check_password_hash
+from base64 import b64encode
+from api.utils import set_password
 import cloudinary.uploader as uploader
-import random
-
-# import productopopulate.medicamentos as medicamentos
-
 from api.productopoputale import medicamentos
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
+
+expires_in_minutes = 10
+expires_delta = timedelta(minutes=expires_in_minutes)
+
+def check_password(hash_password, password, salt):
+    return check_password_hash(hash_password, f"{password}{salt}")
 
 @api.route('/hello', methods=['POST', 'GET'])
 def handle_hello():
@@ -82,7 +90,6 @@ def delete_categories():
 def populate_category():
     category_list = [u'Analgesico', u'Antibiotico', u'Dermatológico y cosmético', u'Nutrición', u'Pediátrico', 
                      u'Primeros auxilios', u'Salud digestiva', u'Tratamientos', u'Vitaminas']
-    #This list will be the first list just to populate the database, afterwards it will be redirected to the database to read the data
 
     for item in category_list:
         category = Category()
@@ -146,11 +153,7 @@ def populate_product():
                 image_url=med["image_url"],
                 description=med["description"]
             )
-            
-            
-
             db.session.add(product)
-
         db.session.commit()
         return jsonify({"message": "Products populated successfully"}), 200
 
@@ -158,26 +161,6 @@ def populate_product():
         print(e.args)
         db.session.rollback()
         return jsonify({"message": str(e)}), 500
-
-   
-    # for i in range(8):
-    #     num = i
-    #     product = Product()
-    #     product.generic_name = "Perifar" + ' ' + str(num)
-    #     product.active_ingredient = "Ibuprofeno"
-    #     product.category_id = category.category_id
-    #     product.price = 50
-    #     product.stock_quantity = 13
-    #     product.image_url = 'url'
-    #     product.description = 'A nice laugh the best medicine'
-    #     db.session.add(product)
-
-    # try: 
-    #     db.session.commit()
-    #     return jsonify("Adding product"), 200
-    # except Exception as error:
-    #     db.session.rollback()
-    #     return jsonify(f"{error}"), 500
 
 @api.route('/product', methods=['POST'])
 def add_product():
@@ -275,10 +258,12 @@ def update_product(theid):
         return jsonify({"message": "Error updating product", "error": str(e)}), 500
     
 @api.route('/user', methods=['GET'])
+@jwt_required()
 def get_users():
-    users = User()
-    users = users.query.all()
-    return jsonify([item.serialize() for item in users]), 200
+    user = User.query.get(get_jwt_identity())
+    if user is None:
+        return jsonify({"message":"user not found"}), 404
+    return jsonify(user.serialize()), 200
 
 @api.route('/user/<int:theid>', methods=['GET'])
 def get_user(theid=None):
@@ -292,18 +277,51 @@ def get_user(theid=None):
     return jsonify({"message": "Id is None"}), 400
 
 @api.route('/user', methods=['POST'])
-def add_user():
-    # name, address, telephone, email, password, rol, birthday, status
-    data = request.json
-    if data is not None:
-        user = User(name=data['name'], address=data['address'], telephone=data['telephone'], email=data['email'],
-                    password=data['password'], rol=data['rol'], birthday=data['birthday'], status=data['status'])
-        db.session.add(user)
-        db.session.commit()
-        return jsonify({"message":"Adding user"}), 201
-    else:
-        return jsonify({"message": "Couldnt add user"}), 400
+def register_user():
+    data_form = request.form
     
+    data = { "name" : data_form.get("name"),
+        "address" : data_form("address"),
+        "telephone" : data_form("telephone"),
+        "email" : data_form("email"),
+        "password" : data_form("password"),
+        "rol" : data_form("rol"),
+        "birthday" : data_form("birthday"),
+        "status" : "ACTIVE"
+    }
+
+    #All data in variables
+    name = data.get("name", None)
+    address = data.get("address", None)
+    telephone = data.get("telephone", None)
+    email = data.get("email", None)
+    password = data.get("password", None)
+    rol = data.get("rol", None)
+    birthday = data.get("birthday", None)
+    status = data.get("status", None)
+
+    if email is None or password is None:
+        return jsonify("To login you need to provide an email and a password"), 400
+    else:
+        user = User.query.filter_by(email=email).one_or_none()
+
+        if user is not None:
+            return jsonify("User exists, please login!"), 400
+
+        salt = b64encode(os.urandom(32)).decode("utf-8")
+        password = set_password(password, salt)
+
+        user = User(name=name, address=address,telephone=telephone,email=email,password=password,rol=rol,birthday=birthday,status=status,salt=salt)
+
+        try:
+            db.session.add(user)
+            db.session.commit()
+            return jsonify({"message": "User created!!"}), 201
+        except Exception as error:
+            print(error.args)
+            db.session.rollback()
+            return jsonify({"message":f"error: {error.args}"}), 500
+
 @api.route('/user/<int:theid>', methods=['DELETE'])
 def delete_user(theid=None):
     if theid is not None:
@@ -381,17 +399,6 @@ def get_one_order(theid = None):
             return jsonify({"message": "Order not Found"}), 404
     return jsonify({"message": "Id doesnt correspond to an order right now"}), 400
 
-@api.route('/order', methods=['POST'])
-def create_kart():
-    #Probablemente hay que reajustar esto cuando se cree la parte de logins y de jwt
-    data = request.json
-    if data is not None:
-        order = Order(user_id=data['user_id'], order_status='Kart', order_type='Pickup')
-        db.session.add(order)
-        db.session.commit()
-        return jsonify({"message": "Creating Kart"}), 200
-    else:
-        return jsonify({"message": "Kart Couldnt be Created"}), 400
     
 @api.route('/order/<int:theid>', methods=['DELETE'])
 def delete_order(theid=None):
@@ -467,17 +474,18 @@ def get_reviews():
 def get_one_review(theid):
     review = Reviews()
     review = review.query.get(theid)
-
     if review is not None:
         return jsonify(review.serialize()), 200
     else:
         return jsonify({"message": "Review Id doesnt exist"}), 404
 
 @api.route('/review', methods=['POST'])
+@jwt_required()
 def create_review():
+    user = User.query.get(get_jwt_identity())
     data = request.json
     if data is not None:
-        review = Reviews(user_id=data['user_id'], product_id=data['product_id'], comment=data['comment'])
+        review = Reviews(user_id=user.user_id, product_id=data['product_id'], comment=data['comment'])
         db.session.add(review)
 
         db.session.commit()
@@ -486,14 +494,21 @@ def create_review():
         return jsonify({"message": "Review is not created"}), 500
     
 @api.route('/review/<int:theid>', methods=['DELETE'])
+@jwt_required()
 def delete_review(theid=None):
+    user=User.query.get(get_jwt_identity())
+
     if theid is not None:
-        review = Reviews()
-        review = review.query.get(theid)
-        if review is not None:
+        review = Reviews.query.get(theid)
+        if review is not None and user.user_id == review.user_id:
             db.session.delete(review)
-            db.session.commit()
-            return jsonify({"message": "Review Destroyed"}), 200
+            try:
+                db.session.commit()
+                return jsonify({"message": "Review Destroyed"}), 200
+            except Exception as error:
+                print(error.args)
+                db.session.rollback()
+                return jsonify({"message": f"{error.args}"}), 500
         else:
             return jsonify({"message": "Review Doesnt Exist"}), 404
     return jsonify({"message": "Id is None"}), 500        
@@ -511,7 +526,6 @@ def delete_reviews():
 
 @api.route('/review/populate', methods=['GET'])
 def populate_reviews():
-    #review_id, user_id, product_id, comment
     review = Reviews()
     
     user = User()
@@ -532,7 +546,134 @@ def populate_reviews():
         print(error.args)
         db.session.rollback()
         return jsonify(f"{error.args}"), 500
-
-# @api.route('/order_product', methods=['GET'])
-# def get_product():
     
+def create_kart(user):
+    if user is not None:
+        order = Order(user_id=user.user_id, order_status='KART', order_type='PICKUP')
+        db.session.add(order)
+        try:
+            db.session.commit()
+            return order.order_id
+        except Exception as error:
+            print(error.args)
+            db.session.rollback()
+            return jsonify({"message": "Problem commiting"}), 500
+    else:
+        return jsonify({"message": "User doesnt Exist"}), 400
+    
+@api.route('/login', methods=['POST'])
+def login():
+
+    data = request.json
+    email = data.get("email", None)
+    password = data.get("password", None)
+
+    if email is None or password is None:
+        return jsonify({"message": "Email and password required"}), 400
+    else:
+        user = User.query.filter_by(email=email).one_or_none()
+
+        if user is None:
+            return jsonify({"message":"Incorrect Email or Password"}), 400
+        else:
+            if check_password(user.password, password, user.salt):
+                token = create_access_token(identity=user.user_id)
+                return jsonify({"token":token}), 200
+            else:
+                return jsonify({"message": "Bad Info"}), 400    
+    
+@api.route('/update-password', methods=['PUT'])
+@jwt_required()
+def update_pass():
+    #Data que viene de entrada
+    user = get_jwt_identity()
+    body = request.json
+
+    #Consiguiendo correo para actualizar la password
+    user = get_user(user)
+    email = user.get('email')
+
+    user = User.query.filter_by(email=email).one_or_none()
+
+    if user is not None:
+        salt = b64encode(os.urandom(32).decode("utf-8"))
+        password = set_password(body, salt)
+
+        user.salt=salt
+        user.password=password
+
+        try:
+            db.session.commit()
+            return jsonify("Password has been updated"), 201
+        except Exception as error:
+            print(error.args)
+            return jsonify("Password couldnt be updated"), 500
+
+@api.route('/order/<int:theid>', methods=['GET'])
+@jwt_required()
+def get_products_in_order(theid):
+    #Se pide que tenga jwt, para evitar que alguien revise las ordenes individuales de las personas ?
+    products_in_order = OrderProduct.query.filter_by(order_id=theid).all()
+    if products_in_order is None:
+        return jsonify({"Message": "There are no products in this order"}), 400
+    return jsonify([item.serialize() for item in products_in_order]), 200
+
+@api.route('/order/<int:theid>', methods=['POST'])
+@jwt_required()
+def add_product_in_order(theid):
+    user = User.query.get(get_jwt_identity())
+    if user is None:
+        return jsonify({"message": "User not found"}), 404
+
+    data = request.json
+    if not data or 'stock' not in data or not isinstance(data['stock'], int):
+        return jsonify({"message": "Invalid data: 'stock' is required and must be an integer"}), 400
+
+    order = Order.query.filter_by(user_id=user.user_id, order_status='KART').first()
+    
+    if order is None:
+        order_id = create_kart(user)
+    else:
+        order_id = order.order_id
+
+    order_product = OrderProduct(
+        order_id=order_id,
+        user_id=user.user_id,
+        product_id=theid,  
+        stock=data['stock']
+    )
+
+    db.session.add(order_product)
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "Producto agregado a la orden"}), 201
+    except Exception as error:
+        db.session.rollback()
+        return jsonify({"message": f"Error: {error.args}"}), 500
+
+@api.route('/order/<int:theid>', methods=['DELETE'])
+@jwt_required()
+def delete_product_in_order(theid):
+    user = User.query.get(get_jwt_identity())
+    if user is None:
+        return jsonify("You need to log in"), 400
+    
+    order = Order.query.filter(Order.user_id==user.user_id, Order.order_status=='KART').one_or_none()
+    if order is not None:
+        product = Product.query.filter(OrderProduct.order_id==order.order_id, OrderProduct.product_id==theid)
+        if product is not None:
+            db.session.delete(product)
+        else:
+            return jsonify({"message": "This Product Does not Exist for this Order"}), 404
+    else:
+        return jsonify({"message": "Order Does Not Exist, something bad happened here"}), 400
+    
+    try:
+        db.session.commit()
+        return jsonify({"message": "Product has been deleted from this order"}), 200
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"{error.args}"}), 500
+                        

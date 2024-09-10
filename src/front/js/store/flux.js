@@ -72,7 +72,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				try {
 					let response = await fetch(`${process.env.BACKEND_URL}/api/product`);
 					let data = await response.json();
-					
 			
 					setStore({
 						product: data
