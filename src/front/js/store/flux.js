@@ -56,7 +56,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				try {
 					let response = await fetch(`${process.env.BACKEND_URL}/api/category`);
 					let data = await response.json();
-					console.log(data);
 			
 					setStore({
 						category: data
@@ -73,7 +72,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				try {
 					let response = await fetch(`${process.env.BACKEND_URL}/api/product`);
 					let data = await response.json();
-					console.log(data);
+					
 			
 					setStore({
 						product: data
@@ -106,7 +105,45 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error('Error en la solicitud:', error);
                     return null;
                 }
-            }
+            },
+
+
+			deleteProduct: async (id) => {
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/product/${id}`, {
+						method: "DELETE"
+					})
+
+					if (response.ok) {
+						getActions().getAllProducts()
+						return true
+					}
+
+				} catch (error) {
+					console.log(error)
+				}
+			},
+
+			putProduct: async (product, id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/product/${id}`, {
+						method: "PUT",
+						body: product
+					});
+			
+					if (response.ok) {
+						getActions().getAllProducts();
+						return true;
+					} else {
+						console.log("Error al actualizar producto");
+						return false;
+					}
+				} catch (error) {
+					console.log(error);
+					return false;
+				}
+			},
+
 
 		}
 	};
