@@ -372,24 +372,6 @@ def get_one_order(theid = None):
             return jsonify({"message": "Order not Found"}), 404
     return jsonify({"message": "Id doesnt correspond to an order right now"}), 400
 
-@api.route('/order', methods=['POST'])
-@jwt_required
-def create_kart():
-    #Probablemente hay que reajustar esto cuando se cree la parte de logins y de jwt
-    user = User.query.get(get_jwt_identity())
-    data = request.json
-    if data is not None:
-        order = Order(user_id=user, order_status='Kart', order_type='Pickup')
-        try:
-            db.session.add(order)
-            return jsonify({"message": "Creating Kart"}), 201
-        except Exception as error:
-            print(error.args)
-            db.session.commit()
-            return jsonify({"message": "Problem commiting"}), 500
-    else:
-        return jsonify({"message": "Kart Couldnt be Created"}), 400
-    
 @api.route('/order/<int:theid>', methods=['DELETE'])
 def delete_order(theid=None):
     if theid is not None:
@@ -547,6 +529,7 @@ def get_products_in_order(theid):
 @api.route('/order/<int:theid>', methods=['POST'])
 @jwt_required()
 def add_product_in_order():
+    # 0 - el id que llega tiene que ser el del producto
     # 1 - JWT required 
     # 2 - Llega con request
     # 3 - Verificar los endpoints de Order
@@ -558,20 +541,49 @@ def add_product_in_order():
         return jsonify("User not found"), 404
 
     data = request.json
-    
     cart_order = Order.query.filter(Order.user_id == user, Order.order_status == "KART").one_or_none()
 
     if cart_order is None:
-
-        #Crear una orden nueva aca
-
+        order_id = create_kart(user)
+        order_product = OrderProduct()
+        order_product = order_product(order_id=order_id, user_id=user, product_id=data['product_id'], stock=data['stock'])
+        db.session.add(order_product)
     else:
-        pass
-        #agregar producto a la orden existente
-    pass
+        order_product = OrderProduct()
+        order_product = order_product(order_id=cart_order.order_id, user_id=user, product_id=data['product_id'], stock=data['stock'])
+        db.session.add(order_product)
+
+    try:
+        db.session.commit()
+        return jsonify({"message":"Producto Agregado a la orden"}), 201
+    
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message":f"Error {error.args}"}), 500
+    
+
+
+def create_kart(user):
+    # Este metodo, se vuelve metodo auxiliar para agregar productos al carrito
+    if user is not None:
+        order = Order(user_id=user, order_status='KART', order_type='PICKUP')
+        db.session.add(order)
+        try:
+            db.session.commit()
+            return order.order_id
+        except Exception as error:
+            print(error.args)
+            db.session.rollback()
+            return jsonify({"message": "Problem commiting"}), 500
+    else:
+        return jsonify({"message": "User doesnt Exist"}), 400
+    
+
 
 @api.route('/login', methods=['POST'])
 def login():
+
     data = request.json
     email = data.get("email", None)
     password = data.get("password", None)
@@ -583,13 +595,13 @@ def login():
         user = User.query.filter_by(email=email).one_or_none()
 
         if user is None:
-            return jsonify({"message":"Incorrect Email"}), 400
+            return jsonify({"message":"Incorrect Email or Password"}), 400
         else:
             if check_password(user.password, password, user.salt):
                 token = create_access_token(identity=user.user_id)
                 return jsonify({"token":token}), 200
             else:
-                return jsonify({"message": "Bad Password"}), 400    
+                return jsonify({"message": "Bad Info"}), 400    
     
 @api.route('/update-password', methods=['PUT'])
 @jwt_required()
