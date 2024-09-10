@@ -512,29 +512,9 @@ def populate_reviews():
         db.session.rollback()
         return jsonify(f"{error.args}"), 500
 
-@api.route('/order_product/<int:theid>', methods=['GET'])
-@jwt_required()
-def get_products_in_order(theid):
-    #Rehacer
-    order_product = OrderProduct()
-    order_product = order_product.query.all()
-    user_order_product = []
-
-    for op in order_product:
-        if op.order_id == theid:
-            user_order_product.append(op)
-      
-    return jsonify([item.serialize() for item in op]), 200
-
 @api.route('/order/<int:theid>', methods=['POST'])
 @jwt_required()
 def add_product_in_order():
-    # 0 - el id que llega tiene que ser el del producto
-    # 1 - JWT required 
-    # 2 - Llega con request
-    # 3 - Verificar los endpoints de Order
-    
-    # [Usuario Logeado] -> Order, Producto
 
     user = User.query.get(get_jwt_identity())
     if user is None:
@@ -562,8 +542,6 @@ def add_product_in_order():
         db.session.rollback()
         return jsonify({"message":f"Error {error.args}"}), 500
     
-
-
 def create_kart(user):
     # Este metodo, se vuelve metodo auxiliar para agregar productos al carrito
     if user is not None:
@@ -579,8 +557,6 @@ def create_kart(user):
     else:
         return jsonify({"message": "User doesnt Exist"}), 400
     
-
-
 @api.route('/login', methods=['POST'])
 def login():
 
@@ -625,3 +601,16 @@ def update_pass():
             print(error.args)
             return jsonify("Password couldnt be updated"), 500
 
+@api.route('/order/<int:theid>', methods=['GET'])
+@jwt_required()
+def get_products_in_order(theid):
+    #Rehacer 
+    order_product = OrderProduct()
+    order_product = order_product.query.all()
+    user_order_product = []
+
+    for op in order_product:
+        if op.order_id == theid:
+            user_order_product.append(op)
+      
+    return jsonify([item.serialize() for item in op]), 200
