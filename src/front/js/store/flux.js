@@ -13,7 +13,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					background: "white",
 					initial: "white"
 				}
-			]
+				
+			],
+			category: JSON.parse(localStorage.getItem("category")) || [],
+			product: JSON.parse(localStorage.getItem("product")) || []
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -48,6 +51,39 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ demo: demo });
 			},
 
+			getAllCategories: async () => {
+				const store = getStore();
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/category`);
+					let data = await response.json();
+					console.log(data);
+			
+					setStore({
+						category: data
+					});
+			
+					localStorage.setItem("category", JSON.stringify(data));
+				} catch (error) {
+					console.log(error);
+				}
+			},
+
+			getAllProducts: async () => {
+				const store = getStore();
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/product`);
+					let data = await response.json();
+					console.log(data);
+			
+					setStore({
+						product: data
+					});
+			
+					localStorage.setItem("product", JSON.stringify(data));
+				} catch (error) {
+					console.log(error);
+				}
+			},
 
 			addProduct: async (product) => {
                 try {
