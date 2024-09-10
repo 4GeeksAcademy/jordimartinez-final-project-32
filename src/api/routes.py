@@ -260,7 +260,7 @@ def register_user():
         "password" : data_form("password"),
         "rol" : data_form("rol"),
         "birthday" : data_form("birthday"),
-        "status" : data_form("status")
+        "status" : "ACTIVE"
     }
 
     #All data in variables
@@ -562,7 +562,7 @@ def add_product_in_order():
     cart_order = Order.query.filter(Order.user_id == user, Order.order_status == "KART").one_or_none()
 
     if cart_order is None:
-        
+
         #Crear una orden nueva aca
 
     else:
