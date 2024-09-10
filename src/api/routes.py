@@ -2,21 +2,29 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Category, Product, Order, Reviews
+from api.models import db, User, Category, Product, Order, Reviews, OrderProduct
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
-from datetime import datetime
+
+from datetime import datetime, timedelta
+import os
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from werkzeug.security import check_password_hash
+from base64 import b64encode
+from api.utils import set_password
 import cloudinary.uploader as uploader
-import random
-
-# import productopopulate.medicamentos as medicamentos
-
 from api.productopoputale import medicamentos
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
+
+expires_in_minutes = 10
+expires_delta = timedelta(minutes=expires_in_minutes)
+
+def check_password(hash_password, password, salt):
+    return check_password_hash(hash_password, f"{password}{salt}")
 
 @api.route('/hello', methods=['POST', 'GET'])
 def handle_hello():
@@ -275,10 +283,12 @@ def update_product(theid):
         return jsonify({"message": "Error updating product", "error": str(e)}), 500
     
 @api.route('/user', methods=['GET'])
+@jwt_required()
 def get_users():
-    users = User()
-    users = users.query.all()
-    return jsonify([item.serialize() for item in users]), 200
+    user = User.query.get(get_jwt_identity())
+    if user is None:
+        return jsonify({"message":"user not found"}), 404
+    return jsonify(user.serialize()), 200
 
 @api.route('/user/<int:theid>', methods=['GET'])
 def get_user(theid=None):
@@ -292,18 +302,51 @@ def get_user(theid=None):
     return jsonify({"message": "Id is None"}), 400
 
 @api.route('/user', methods=['POST'])
-def add_user():
-    # name, address, telephone, email, password, rol, birthday, status
-    data = request.json
-    if data is not None:
-        user = User(name=data['name'], address=data['address'], telephone=data['telephone'], email=data['email'],
-                    password=data['password'], rol=data['rol'], birthday=data['birthday'], status=data['status'])
-        db.session.add(user)
-        db.session.commit()
-        return jsonify({"message":"Adding user"}), 201
-    else:
-        return jsonify({"message": "Couldnt add user"}), 400
+def register_user():
+    data_form = request.form
     
+    data = { "name" : data_form.get("name"),
+        "address" : data_form("address"),
+        "telephone" : data_form("telephone"),
+        "email" : data_form("email"),
+        "password" : data_form("password"),
+        "rol" : data_form("rol"),
+        "birthday" : data_form("birthday"),
+        "status" : "ACTIVE"
+    }
+
+    #All data in variables
+    name = data.get("name", None)
+    address = data.get("address", None)
+    telephone = data.get("telephone", None)
+    email = data.get("email", None)
+    password = data.get("password", None)
+    rol = data.get("rol", None)
+    birthday = data.get("birthday", None)
+    status = data.get("status", None)
+
+    if email is None or password is None:
+        return jsonify("To login you need to provide an email and a password"), 400
+    else:
+        user = User.query.filter_by(email=email).one_or_none()
+
+        if user is not None:
+            return jsonify("User exists, please login!"), 400
+
+        salt = b64encode(os.urandom(32)).decode("utf-8")
+        password = set_password(password, salt)
+
+        user = User(name=name, address=address,telephone=telephone,email=email,password=password,rol=rol,birthday=birthday,status=status,salt=salt)
+
+        try:
+            db.session.add(user)
+            db.session.commit()
+            return jsonify({"message": "User created!!"}), 201
+        except Exception as error:
+            print(error.args)
+            db.session.rollback()
+            return jsonify({"message":f"error: {error.args}"}), 500
+
 @api.route('/user/<int:theid>', methods=['DELETE'])
 def delete_user(theid=None):
     if theid is not None:
@@ -382,14 +425,20 @@ def get_one_order(theid = None):
     return jsonify({"message": "Id doesnt correspond to an order right now"}), 400
 
 @api.route('/order', methods=['POST'])
+@jwt_required
 def create_kart():
     #Probablemente hay que reajustar esto cuando se cree la parte de logins y de jwt
+    user = User.query.get(get_jwt_identity())
     data = request.json
     if data is not None:
-        order = Order(user_id=data['user_id'], order_status='Kart', order_type='Pickup')
-        db.session.add(order)
-        db.session.commit()
-        return jsonify({"message": "Creating Kart"}), 200
+        order = Order(user_id=user, order_status='Kart', order_type='Pickup')
+        try:
+            db.session.add(order)
+            return jsonify({"message": "Creating Kart"}), 201
+        except Exception as error:
+            print(error.args)
+            db.session.commit()
+            return jsonify({"message": "Problem commiting"}), 500
     else:
         return jsonify({"message": "Kart Couldnt be Created"}), 400
     
@@ -533,6 +582,86 @@ def populate_reviews():
         db.session.rollback()
         return jsonify(f"{error.args}"), 500
 
-# @api.route('/order_product', methods=['GET'])
-# def get_product():
+
+@api.route('/order_product/<int:theid>', methods=['GET'])
+@jwt_required()
+def get_products_in_order(theid):
+    #Rehacer
+    order_product = OrderProduct()
+    order_product = order_product.query.all()
+    user_order_product = []
+
+    for op in order_product:
+        if op.order_id == theid:
+            user_order_product.append(op)
+      
+    return jsonify([item.serialize() for item in op]), 200
+
+@api.route('/order/<int:theid>', methods=['POST'])
+@jwt_required()
+def add_product_in_order():
+    # 1 - JWT required 
+    # 2 - Llega con request
+    # 3 - Verificar los endpoints de Order
     
+    # [Usuario Logeado] -> Order, Producto
+
+    user = User.query.get(get_jwt_identity())
+    if user is None:
+        return jsonify("User not found"), 404
+
+    data = request.json
+    
+    cart_order = Order.query.filter(Order.user_id == user, Order.order_status == "KART").one_or_none()
+
+    if cart_order is None:
+
+        #Crear una orden nueva aca
+
+    else:
+        pass
+        #agregar producto a la orden existente
+    pass
+
+@api.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    email = data.get("email", None)
+    password = data.get("password", None)
+
+    if email is None or password is None:
+        return jsonify({"message": "Email and password required"}), 400
+    else:
+        # Aca deberia chequear el pass, primero armar el acceso con salt
+        user = User.query.filter_by(email=email).one_or_none()
+
+        if user is None:
+            return jsonify({"message":"Incorrect Email"}), 400
+        else:
+            if check_password(user.password, password, user.salt):
+                token = create_access_token(identity=user.user_id)
+                return jsonify({"token":token}), 200
+            else:
+                return jsonify({"message": "Bad Password"}), 400    
+    
+@api.route('/update-password', methods=['PUT'])
+@jwt_required()
+def update_pass():
+    email = get_jwt_identity()
+    body = request.json
+
+    user = User.query.filter_by(email=email).one_or_none()
+
+    if user is not None:
+        salt = b64encode(os.urandom(32).decode("utf-8"))
+        password = set_password(body, salt)
+
+        user.salt=salt
+        user.password=password
+
+        try:
+            db.session.commit()
+            return jsonify("Password has been updated"), 201
+        except Exception as error:
+            print(error.args)
+            return jsonify("Password couldnt be updated"), 500
