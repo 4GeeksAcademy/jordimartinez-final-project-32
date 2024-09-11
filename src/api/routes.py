@@ -7,7 +7,7 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
 from datetime import datetime, timedelta
-import os
+import os, random
 
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
@@ -15,7 +15,7 @@ from werkzeug.security import check_password_hash
 from base64 import b64encode
 from api.utils import set_password
 import cloudinary.uploader as uploader
-from api.populate import meds, category_list, clients, orders_list
+from api.populate import meds, category_list, clients, orders_list, reviews_list
 
 api = Blueprint('api', __name__)
 
@@ -738,10 +738,8 @@ def populate_user():
 def populate_order():
     #order_id, user_id, order_status, order_type
 
-
     for order in orders_list:
         db.session.add(order)
-
     try:
         db.session.commit()
         return jsonify("Adding order"), 200
@@ -751,17 +749,17 @@ def populate_order():
 
 @api.route('/review/populate', methods=['GET'])
 def populate_reviews():
-    review = Reviews()
     
-    user = User()
-    user = user.query.first()
-    product = Product()
-    product = product.query.first()
+    rand_id_user = random.randint(1,10)
+    rand_id_prod = random.randint(1,15)
+    for item in reviews_list:
 
-    review.user_id = user.user_id
-    review.product_id = product.product_id
-    review.comment = "It was the best thing that ever happened to me. I was happier than the day my son was born."
-
+        review = Reviews(
+            user_id = rand_id_user,
+            product_id = rand_id_prod,
+            comment = item['comment']
+        )
+        
     db.session.add(review)
 
     try:
@@ -774,4 +772,25 @@ def populate_reviews():
 
 @api.route('/order/product', methods=['GET'])
 def populate_order_products():
-    pass
+
+    for i in range(15):
+        rand_id_prod = random.randint(1,15)
+        rand_id_user = random.randint(1,10)
+        rand_stock = random.randint(1,25)
+        rand_order_id  = random.randint(1,10)
+        # Aca tengo que crear las ordenes
+        order_product = OrderProduct(
+            order_id=rand_order_id,
+            user_id=rand_id_user,
+            product_id=rand_id_prod,  
+            stock=rand_stock
+        )
+
+        db.session.add(order_product)
+        try:
+            db.session.commit()
+            return jsonify("Everything its okay"), 200
+        except Exception as e:
+            print(e.args)
+            db.session.rollback()
+            return jsonify({"Error":f"{e.args}"}), 500

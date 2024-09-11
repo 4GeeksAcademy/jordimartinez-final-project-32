@@ -112,20 +112,48 @@ clients = [{"name":"Daniel Perdomo", "address":"Rincon 3451", "telephone":"555-7
         {"name":"Walter de Leon", "address":"18 de Julio 481", "telephone":"555-1234","email":"walter.deleon@gmail.com","password":"12345678","rol":"Client","birthday":"1988, 7, 1","status":"Active"},
         {"name":"Hugo Carrizo", "address":"Soriano 4598", "telephone":"555-8521","email":"hugo.carrizo@gmail.com","password":"12345678","rol":"Client","birthday":"2005, 4, 4","status":"Active"}]
 
+
+# user_id, product_id, comment
+reviews_list = [{"user_id":"3", "product_id": "6", "comment": "My best decision ever"},
+                {"user_id":"1", "product_id": "6","comment": "Couldnt stop using this"},
+                {"user_id":"2", "product_id":"6", "comment": "The pain went away"},
+                {"user_id":"6", "product_id":"4", "comment": "Nice way to spend a weekend"},
+                {"user_id":"5", "product_id":"4", "comment": "Easy med against the pain"},
+                {"user_id":"4", "product_id":"8", "comment": "My wife couldnt believe we bought this"},
+                {"user_id":"3", "product_id":"8", "comment": "Unreasonably priced"},
+                {"user_id":"8", "product_id":"7", "comment": "It hurt when i breath, but after buying this i was the happiest man alive"},
+                {"user_id":"9", "product_id":"3", "comment": "Batman should buy this"},
+                {"user_id":"9", "product_id":"1", "comment": "Like a flash"},
+                {"user_id":"3", "product_id":"2", "comment": "At first i was decided not to buy this"},
+                {"user_id":"3", "product_id":"2", "comment": "It was a different approach"},
+                {"user_id":"2", "product_id":"9", "comment": "Worked"},
+                {"user_id":"1", "product_id":"13", "comment": "Took a few days"},
+                {"user_id":"2", "product_id":"2", "comment": "This is a review"}]
+
+
+# #order_id, product_id, stock
+# products_in_order = [{"order_id":"1","product_id":"4","stock":"3"},
+#                     {"order_id":"4","product_id":"2","stock":"4"},
+#                     {"order_id":"6","product_id":"5","stock":"7"},
+#                     {"order_id":"8","product_id":"2","stock":"1"},
+#                     {"order_id":"3","product_id":"6","stock":"10"},
+#                     {"order_id":"3","product_id":"1","stock":"1"},
+#                     {"order_id":"2","product_id":"3","stock":"6"},
+#                     {"order_id":"2","product_id":"7","stock":"2"},
+#                     {"order_id":"2","product_id":"9","stock":"2"},
+#                     {"order_id":"9","product_id":"17","stock":"2"},
+#                      ]
+
+
 orders_list = [{"user_id":"4","order_status":"KART","order_type":"Pickup"},
-               {"user_id":"8","order_status":"PENDING","order_type":"Delivery"},
-               {"user_id":"6","order_status":"KART","order_type":"Pickup"},
-               {"user_id":"3","order_status":"KART","order_type":"Pickup"},
-               {"user_id":"4","order_status":"SENDING","order_type":"Delivery"},
-               {"user_id":"8","order_status":"KART","order_type":"Delivery"},
-               {"user_id":"2","order_status":"PENDING","order_type":"Pickup"},
-               {"user_id":"3","order_status":"KART","order_type":"Pickup"},
-               {"user_id":"1","order_status":"KART","order_type":"Delivery"},
-               {"user_id":"7","order_status":"DONE","order_type":"Delivery"},
-               {"user_id":"9","order_status":"SENDING","order_type":"Pickup"}]
-
-
-
-
-
+                {"user_id":"8","order_status":"PENDING","order_type":"Delivery"},
+                {"user_id":"6","order_status":"KART","order_type":"Pickup"},
+                {"user_id":"3","order_status":"KART","order_type":"Pickup"},
+                {"user_id":"4","order_status":"SENDING","order_type":"Delivery"},
+                {"user_id":"8","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"2","order_status":"PENDING","order_type":"Pickup"},
+                {"user_id":"3","order_status":"KART","order_type":"Pickup"},
+                {"user_id":"1","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"7","order_status":"DONE","order_type":"Delivery"},
+                {"user_id":"9","order_status":"SENDING","order_type":"Pickup"}]
 
