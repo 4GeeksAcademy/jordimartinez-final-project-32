@@ -686,7 +686,7 @@ def populate_product():
 def populate_user():
 
     for client in clients:
-        salt = b64encode(os.urandom(32)).decode("utf-8")
+        salt = b64encode(os.urandom(32)).decode("utf-8") 
         user = User(
             name=client['name'],
             address=client['address'],
@@ -696,7 +696,7 @@ def populate_user():
             birthday=client['birthday'],
             status=client['status'],
             salt = salt,
-            password = set_password(user['password'], salt)
+            password = set_password(client['password'], salt)
         )
 
         db.session.add(user)
