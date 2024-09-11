@@ -72,6 +72,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				try {
 					let response = await fetch(`${process.env.BACKEND_URL}/api/product`);
 					let data = await response.json();
+					
 			
 					setStore({
 						product: data
@@ -142,6 +143,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
+			searchProduct: (query) => {
+                const store = getStore();
+                let searchResult = store.product.filter((item) =>
+                    item.generic_name.toLowerCase().includes(query.toLowerCase()) ||
+                    item.active_ingredient.toLowerCase().includes(query.toLowerCase()) ||
+                    item.category_id.toString().includes(query)
+                );
+                setStore({ search: searchResult });		
+			}
 
 
 		}

@@ -69,11 +69,7 @@ export const BackOffice = () => {
                         </tr>
                     </thead>
                     <tbody>
-
                         {filteredProducts.map((product, index) => (
-
-                        {products.map((product, index) => (
-
                             <tr key={product.product_id}>
                                 <th scope="row">{index + 1}</th>
                                 <td>{product.generic_name}</td>
@@ -81,14 +77,12 @@ export const BackOffice = () => {
                                 <td>{product.category_id}</td>
                                 <td>{product.price}</td>
                                 <td>{product.stock_quantity}</td>
-
                                 <td>
                                     <div className="d-flex justify-content-evenly">
                                         {/* <Link to={`/editproduct/${product.product_id}`}><i className="fas fa-pencil-alt right-icons me-2"></i></Link> */}
                                         <a onClick={() => deleteProduct(product.product_id)}><i className="fas fa-trash-alt right-icons"></i></a>
                                     </div>
                                 </td>
-
                             </tr>
                         ))}
                     </tbody>
