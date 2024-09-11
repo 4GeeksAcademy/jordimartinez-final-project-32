@@ -65,7 +65,7 @@ export const BackOffice = () => {
                             <th scope="col">Categoría</th>
                             <th scope="col">Precio</th>
                             <th scope="col">Stock</th>
-                            <th scope="col">Borrar</th>
+                            <th scope="col">Edicion</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,7 +79,7 @@ export const BackOffice = () => {
                                 <td>{product.stock_quantity}</td>
                                 <td>
                                     <div className="d-flex justify-content-evenly">
-                                        {/* <Link to={`/editproduct/${product.product_id}`}><i className="fas fa-pencil-alt right-icons me-2"></i></Link> */}
+                                        <Link to={`/editproduct/${product.product_id}`}><i className="fas fa-pencil-alt right-icons me-2"></i></Link>
                                         <a onClick={() => deleteProduct(product.product_id)}><i className="fas fa-trash-alt right-icons"></i></a>
                                     </div>
                                 </td>
