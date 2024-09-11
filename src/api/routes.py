@@ -66,8 +66,12 @@ def add_category():
     if data is not None:
         category = Category(name=data['name'])
         db.session.add(category)
-        db.session.commit()
-        return jsonify({"message": "Adding a Category"}), 201
+        try:
+            db.session.commit()
+            return jsonify({"message": "Adding a Category"}), 201
+        except Exception as e:
+            print(e.args)
+            return jsonify(f"{e.args}"), 500
     else:
         return jsonify({"message": "Couldnt add category"}), 400
     
@@ -85,8 +89,12 @@ def delete_category(theid=None):
         category = category.query.get(theid)
         if category is not None:
             db.session.delete(category)
-            db.session.commit()
-            return jsonify({"message": "Category Deleted"}), 200
+            try: 
+                db.session.commit()
+                return jsonify({"message": "Category Deleted"}), 200
+            except Exception as e:
+                print(e.args)
+                return jsonify(f"{e.args}"), 500
         else:
             return jsonify({"message": "Category not found"}), 404
 
@@ -105,7 +113,12 @@ def delete_categories():
 
     for item in category:
         db.session.delete(item)
-        db.session.commit()
+        try:
+            db.session.commit()
+            return jsonify("Categories Deleted"), 200
+        except Exception as e:
+            print(e.args)
+            return jsonify(f"{e.args}"), 500
     
     return jsonify({"message": "Categories Deleted"}), 200
 
@@ -210,8 +223,12 @@ def delete_product(theid=None):
         product = product.query.get(theid)
         if product is not None:
             db.session.delete(product)
-            db.session.commit()
-            return jsonify({"message": "Product Deleted"}), 200
+            try:
+                db.session.commit()
+                return jsonify({"message": "Product Deleted"}), 200
+            except Exception as e:
+                print(e.args)
+                return jsonify(f"{e.args}"), 500
         else:
             return jsonify({"message": "Product not found"}), 404
 
@@ -222,10 +239,14 @@ def delete_products():
 
     for item in products:
         db.session.delete(item)
-        db.session.commit()
-    
-    return jsonify({"message": "Products Deleted"}), 200
-
+       
+        try:
+            db.session.commit()
+            return jsonify({"message": "Products Deleted"}), 200
+        except Exception as e:
+            print(e.args)    
+            return jsonify(f"{e.args}"), 500
+        
 @api.route('/product/<int:theid>', methods=['PUT'])
 @jwt_required()
 def update_product(theid):
@@ -319,8 +340,9 @@ def register_user():
 
         user = User(name=name, address=address,telephone=telephone,email=email,password=password,rol=rol,birthday=birthday,status=status,salt=salt)
 
+        
+        db.session.add(user)
         try:
-            db.session.add(user)
             db.session.commit()
             return jsonify({"message": "User created!!"}), 201
         except Exception as error:
@@ -713,6 +735,7 @@ def populate_user():
 @api.route('/order/populate', methods=['GET'])
 def populate_order():
     #order_id, user_id, order_status, order_type
+
 
     for order in orders_list:
         db.session.add(order)
