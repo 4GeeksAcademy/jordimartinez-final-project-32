@@ -101,28 +101,30 @@ meds = [
 category_list = ['Analgesico', 'Antibiotico', 'Dermatológico y cosmético', 'Nutrición', 'Pediátrico', 
                  'Primeros auxilios', 'Salud digestiva', 'Tratamientos', 'Vitaminas']
 
-clients = [{"name":"Daniel Perdomo", "address":"Rincon 3451", "telephone":"555-7891","email":"daniel.perdomo@gmail.com","password":"87001498110","rol":"ADMIN","birthday":"1987, 1, 18","status":"ACTIVE"},
-        {"name":"Jordi Beppe", "address":"Gral Flores 1450", "telephone":"555-9123","email":"jordi.beppe@gmail.com","password":"45678213","rol":"ADMIN","birthday":"1994, 2, 23","status":"ACTIVE"},
-        {"name":"Anthonny Miranda", "address":"Avda. Artigas 874", "telephone":"555-3249","email":"anthonny.miranda@gmail.com","password":"asdewfgqer123","rol":"ADMIN","birthday":"1997, 5, 13","status":"ACTIVE"},
-        {"name":"Ana Carreño", "address":"Ituzaingo 2341", "telephone":"555-8421","email":"ana.carrenio@gmail.com","password":"xxmmanammxx","rol":"ADMIN","birthday":"1997, 8, 16","status":"ADMIN"},
-        {"name":"Luis Madero", "address":"Manuel de lobos 388", "telephone":"555-1234","email":"luis.ma@gmail.com","password":"dsadsa","rol":"SELLER","birthday":"1987, 12, 23","status":"ACTIVE"},
-        {"name":"Reina Cuadrado", "address":"Rivadavia 456", "telephone":"555-9456","email":"reina.cuadrado@gmail.com","password":"grgrgrgr123","rol":"SELLER","birthday":"1999, 5, 16","status":"ACTIVE"},
-        {"name":"Linda Gonzalez", "address":"Gral Flores 1654", "telephone":"555-8432","email":"linda.gonzalez@gmail.com","password":"12346578","rol":"CLIENT","birthday":"2002, 5, 26","status":"ACTIVE"},
-        {"name":"Manuel Iglesias", "address":"Cassanello 832", "telephone":"555-8712","email":"manu.iglesias@gmail.com","password":"12345678","rol":"CLIENT","birthday":"2001, 12, 5","status":"ACTIVE"},
-        {"name":"Walter de Leon", "address":"18 de Julio 481", "telephone":"555-1234","email":"walter.deleon@gmail.com","password":"12345678","rol":"CLIENT","birthday":"1988, 7, 1","status":"ACTIVE"},
-        {"name":"Hugo Carrizo", "address":"Soriano 4598", "telephone":"555-8521","email":"hugo.carrizo@gmail.com","password":"12345678","rol":"CLIENT","birthday":"2005, 4, 4","status":"CLIENT"}]
+clients = [{"name":"Daniel Perdomo", "address":"Rincon 3451", "telephone":"555-7891","email":"daniel.perdomo@gmail.com","password":"87001498110","rol":"Admin","birthday":"1987, 1, 18","status":"Active"},
+        {"name":"Jordi Beppe", "address":"Gral Flores 1450", "telephone":"555-9123","email":"jordi.beppe@gmail.com","password":"45678213","rol":"Admin","birthday":"1994, 2, 23","status":"Active"},
+        {"name":"Anthonny Miranda", "address":"Avda. Artigas 874", "telephone":"555-3249","email":"anthonny.miranda@gmail.com","password":"asdewfgqer123","rol":"Admin","birthday":"1997, 5, 13","status":"Active"},
+        {"name":"Ana Carreño", "address":"Ituzaingo 2341", "telephone":"555-8421","email":"ana.carrenio@gmail.com","password":"xxmmanammxx","rol":"Admin","birthday":"1997, 8, 16","status":"Active"},
+        {"name":"Luis Madero", "address":"Manuel de lobos 388", "telephone":"555-1234","email":"luis.ma@gmail.com","password":"dsadsa","rol":"Seller","birthday":"1987, 12, 23","status":"Active"},
+        {"name":"Reina Cuadrado", "address":"Rivadavia 456", "telephone":"555-9456","email":"reina.cuadrado@gmail.com","password":"grgrgrgr123","rol":"Seller","birthday":"1999, 5, 16","status":"Active"},
+        {"name":"Linda Gonzalez", "address":"Gral Flores 1654", "telephone":"555-8432","email":"linda.gonzalez@gmail.com","password":"12346578","rol":"Client","birthday":"2002, 5, 26","status":"Active"},
+        {"name":"Manuel Iglesias", "address":"Cassanello 832", "telephone":"555-8712","email":"manu.iglesias@gmail.com","password":"12345678","rol":"Client","birthday":"2001, 12, 5","status":"Active"},
+        {"name":"Walter de Leon", "address":"18 de Julio 481", "telephone":"555-1234","email":"walter.deleon@gmail.com","password":"12345678","rol":"Client","birthday":"1988, 7, 1","status":"Active"},
+        {"name":"Hugo Carrizo", "address":"Soriano 4598", "telephone":"555-8521","email":"hugo.carrizo@gmail.com","password":"12345678","rol":"Client","birthday":"2005, 4, 4","status":"Active"}]
 
-orders_list = [{"user_id":"4","order_status":"KART","order_type":"PICKUP"},
-               {"user_id":"8","order_status":"PENDING","order_type":"DELIVERY"},
-               {"user_id":"6","order_status":"KART","order_type":"PICKUP"},
-               {"user_id":"3","order_status":"KART","order_type":"PICKUP"},
-               {"user_id":"4","order_status":"SENDING","order_type":"DELIVERY"},
-               {"user_id":"8","order_status":"KART","order_type":"DELIVERY"},
-               {"user_id":"2","order_status":"PENDING","order_type":"PICKUP"},
-               {"user_id":"3","order_status":"KART","order_type":"PICKUP"},
-               {"user_id":"1","order_status":"KART","order_type":"DELIVERY"},
-               {"user_id":"7","order_status":"DONE","order_type":"DELIVERY"},
-               {"user_id":"9","order_status":"SENDING","order_type":"PICKUP"}]
+orders_list = [{"user_id":"4","order_status":"KART","order_type":"Pickup"},
+               {"user_id":"8","order_status":"PENDING","order_type":"Delivery"},
+               {"user_id":"6","order_status":"KART","order_type":"Pickup"},
+               {"user_id":"3","order_status":"KART","order_type":"Pickup"},
+               {"user_id":"4","order_status":"SENDING","order_type":"Delivery"},
+               {"user_id":"8","order_status":"KART","order_type":"Delivery"},
+               {"user_id":"2","order_status":"PENDING","order_type":"Pickup"},
+               {"user_id":"3","order_status":"KART","order_type":"Pickup"},
+               {"user_id":"1","order_status":"KART","order_type":"Delivery"},
+               {"user_id":"7","order_status":"DONE","order_type":"Delivery"},
+               {"user_id":"9","order_status":"SENDING","order_type":"Pickup"}]
+
+
 
 
 

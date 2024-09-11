@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Category, Product, Order, Reviews, OrderProduct
+from api.models import db, User, Category, Product, Order, Reviews, OrderProduct, Rol, Status, Order_Status, Order_Type
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
@@ -708,15 +708,17 @@ def populate_product():
 def populate_user():
 
     for client in clients:
-        salt = b64encode(os.urandom(32)).decode("utf-8") 
+        salt = b64encode(os.urandom(32)).decode("utf-8")
+        rol_enum = Rol(client['rol'])
+        status_enum = Status(client['status'])
         user = User(
             name=client['name'],
             address=client['address'],
             telephone=client['telephone'],
             email=client['email'],
-            rol=client['rol'],
+            rol=rol_enum,
             birthday=client['birthday'],
-            status=client['status'],
+            status=status_enum,
             salt = salt,
             password = set_password(client['password'], salt)
         )
