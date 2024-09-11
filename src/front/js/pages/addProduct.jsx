@@ -120,14 +120,13 @@ export const AddProduct = () => {
                         <option selected disabled value="">Categorías</option>
                         <option value="1">Analgésico</option>
                         <option value="2">Antibiótico</option>
-                        <option>Dermatológico y cosmético</option>
-                        <option>Nutrición/suplementos</option>
-                        <option>Pediátrico</option>
-                        <option>Primeros auxilios</option>
-                        <option>Salud digestiva</option>
-                        <option>Tratamientos</option>
-                        <option>Vitaminas</option>
-                        <option>1</option>
+                        <option value="3">Dermatológico y cosmético</option>
+                        <option value="4">Nutrición/suplementos</option>
+                        <option value="5">Pediátrico</option>
+                        <option value="6">Primeros auxilios</option>
+                        <option value="7">Salud digestiva</option>
+                        <option value="8">Tratamientos</option>
+                        <option value="9">Vitaminas</option>
                     </select>
                     <div className="invalid-feedback">
                         Please select a valid state.
