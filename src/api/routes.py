@@ -734,6 +734,7 @@ def populate_user():
         
         return jsonify(f"{error.args}"), 500
     
+@api.route('/order/populate', methods=['GET'])
 def populate_order():
     #order_id, user_id, order_status, order_type
 
@@ -790,24 +791,3 @@ def populate_reviews():
         db.session.rollback()
         return jsonify(f"{error.args}"), 500
 
-@api.route('/order/product', methods=['GET'])
-def populate_order_products():
-
-    for i in range(15):
-        rand_id_prod = random.randint(1,15)
-        rand_stock = random.randint(1,25)
-        rand_order_id  = random.randint(1,10)
-        order_product = OrderProduct(
-            order_id=rand_order_id,
-            product_id=rand_id_prod,  
-            stock=rand_stock
-        )
-
-        db.session.add(order_product)
-        try:
-            db.session.commit()
-            return jsonify("Everything its okay"), 200
-        except Exception as e:
-            print(e.args)
-            db.session.rollback()
-            return jsonify({"Error":f"{e.args}"}), 500
