@@ -13,7 +13,7 @@ from werkzeug.security import check_password_hash
 from base64 import b64encode
 from api.utils import set_password
 import cloudinary.uploader as uploader
-from api.productopoputale import medicamentos
+from api.populate import meds, category_list, clients
 
 api = Blueprint('api', __name__)
 
@@ -638,8 +638,6 @@ def delete_product_in_order(theid):
                         
 @api.route('/category/populate', methods=['GET'])
 def populate_category():
-    category_list = [u'Analgesico', u'Antibiotico', u'Dermatológico y cosmético', u'Nutrición', u'Pediátrico', 
-                     u'Primeros auxilios', u'Salud digestiva', u'Tratamientos', u'Vitaminas']
 
     for item in category_list:
         category = Category()
@@ -656,47 +654,38 @@ def populate_category():
 
 @api.route('/product/populate', methods=['GET'])
 def populate_product():
-    try:
-        category = Category()
-        category = category.query.all()
+    
+    category = Category()
+    category = category.query.all()
 
-        if not category:
-            return jsonify({"message": "No categories found"}), 404
+    if not category:
+        return jsonify({"message": "No categories found"}), 404
 
-        print(medicamentos[0])
-
-        for med in medicamentos:            
-            product = Product(
-                generic_name=med["generic_name"],
-                active_ingredient=med["active_ingredient"],
-                category_id=med["category_id"], 
-                price=med["price"],
-                stock_quantity=med["stock_quantity"],
-                image_url=med["image_url"],
-                description=med["description"]
+    for med in meds:            
+        product = Product(
+            generic_name=med["generic_name"],
+            active_ingredient=med["active_ingredient"],
+            category_id=med["category_id"], 
+            price=med["price"],
+            stock_quantity=med["stock_quantity"],
+            image_url=med["image_url"],
+            description=med["description"]
             )
-            db.session.add(product)
-        db.session.commit()
-        return jsonify({"message": "Products populated successfully"}), 200
-
-    except Exception as e:
-        print(e.args)
-        db.session.rollback()
-        return jsonify({"message": str(e)}), 500
+        db.session.add(product)
+        try:
+            db.session.commit()
+            return jsonify({"message": "Products populated successfully"}), 200
+        except Exception as e:
+            print(e.args)
+            db.session.rollback()
+            return jsonify({"message": str(e)}), 500
     
 @api.route('/user/populate', methods=['GET'])
 def populate_user():
-    # name, address, telephone, email, password, rol, birthday, status
-    user = User()
-    user.name = 'Daniel Perdomo'
-    user.address = 'Manuel de Lobos 789'
-    user.telephone = '555-1876'
-    user.email = 'daniel.perdomo.1987@gmail.com'
-    user.password = 'password'
-    user.rol = 'ADMIN'
-    user.birthday = datetime(1987, 1, 18)
-    user.status = 'ACTIVE'
-    db.session.add(user)
+    for user in clients:
+        salt = b64encode(os.urandom(32)).decode("utf-8")
+        user.password = set_password(user.password, user.salt)
+        db.session.add(user)
     
     try:
         db.session.commit()

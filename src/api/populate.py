@@ -1,5 +1,5 @@
 
-medicamentos = [    
+meds = [    
     {"generic_name": "Tylenol", "active_ingredient": "Paracetamol", "category_id": 1, "price": 50, "stock_quantity": 20, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725572644/tylenol-caja-con-frasco-20-tabletas-980-x-980-px-1_fggvd2.jpg", "description": "Analgésico y antipirético"},
     {"generic_name": "Advil", "active_ingredient": "Ibuprofeno", "category_id": 1, "price": 60, "stock_quantity": 30, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725572538/7607_Advil_Max_400mg_10_c%C3%A1psulas_ynvlin.avif", "description": "Analgésico y antiinflamatorio"},
     {"generic_name": "Amoxil", "active_ingredient": "Amoxicilina", "category_id": 2, "price": 70, "stock_quantity": 25, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725573078/amoxil_y2mtsv.jpg", "description": "Antibiótico de amplio espectro"},
@@ -97,3 +97,18 @@ medicamentos = [
     {"generic_name": "SulZinc", "active_ingredient": "Sulfato de zinc", "category_id": 9, "price": 50, "stock_quantity": 40, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725572634/SulZinc_muhbm7.jpg", "description": "Suplemento de zinc"},
     {"generic_name": "Electrolit", "active_ingredient": "Cloruro de potasio", "category_id": 9, "price": 85, "stock_quantity": 10, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725572577/Electrolit_d2hxry.webp", "description": "Suplemento de potasio"},
 ]
+
+category_list = [u'Analgesico', u'Antibiotico', u'Dermatológico y cosmético', u'Nutrición', u'Pediátrico', 
+                 u'Primeros auxilios', u'Salud digestiva', u'Tratamientos', u'Vitaminas']
+
+clients = [{"name":"Daniel Perdomo", "address":"Rincon 3451", "telephone":"555-7891","email":"daniel.perdomo@gmail.com","password":"87001498110","rol":"ADMIN","birthday":"18 1 1987","status":"ACTIVE"},
+        {"name":"Jordi Beppe", "address":"Gral Flores 1450", "telephone":"555-9123","email":"jordi.beppe@gmail.com","password":"45678213","rol":"ADMIN","birthday":"23 9 1994","status":"ACTIVE"},
+        {"name":"Anthonny Miranda", "address":"Avda. Artigas 874", "telephone":"555-3249","email":"anthonny.miranda@gmail.com","password":"asdewfgqer123","rol":"ADMIN","birthday":"13 5 1997","status":"ACTIVE"},
+        {"name":"Ana Carreño", "address":"Ituzaingo 2341", "telephone":"555-8421","email":"ana.carrenio@gmail.com","password":"xxmmanammxx","rol":"ADMIN","birthday":"16 8 1997","status":"ADMIN"},
+        {"name":"Luis Madero", "address":"Manuel de lobos 388", "telephone":"555-1234","email":"luis.ma@gmail.com","password":"dsadsa","rol":"SELLER","birthday":"23 12 1987","status":"ACTIVE"},
+        {"name":"Reina Cuadrado", "address":"Rivadavia 456", "telephone":"555-9456","email":"reina.cuadrado@gmail.com","password":"grgrgrgr123","rol":"SELLER","birthday":"16 5 1999","status":"ACTIVE"},
+        {"name":"Linda Gonzalez", "address":"Gral Flores 1654", "telephone":"555-8432","email":"linda.gonzalez@gmail.com","password":"12346578","rol":"CLIENT","birthday":"25 5 2002","status":"ACTIVE"},
+        {"name":"Manuel Iglesias", "address":"Cassanello 832", "telephone":"555-8712","email":"manu.iglesias@gmail.com","password":"12345678","rol":"CLIENT","birthday":"5 12 2001","status":"ACTIVE"},
+        {"name":"Walter de Leon", "address":"18 de Julio 481", "telephone":"555-1234","email":"walter.deleon@gmail.com","password":"12345678","rol":"CLIENT","birthday":"1 07 1988","status":"ACTIVE"},
+        {"name":"Hugo Carrizo", "address":"Soriano 4598", "telephone":"555-8521","email":"hugo.carrizo@gmail.com","password":"12345678","rol":"CLIENT","birthday":"4 4 2005","status":"CLIENT"}]
+
