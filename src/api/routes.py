@@ -2,18 +2,20 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Category, Product, Order, Reviews, OrderProduct
+from api.models import db, User, Category, Product, Order, Reviews, OrderProduct, Rol, Status, Order_Status, Order_Type
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
 from datetime import datetime, timedelta
-import os
+import os, random
+
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+
 from werkzeug.security import check_password_hash
 from base64 import b64encode
 from api.utils import set_password
 import cloudinary.uploader as uploader
-from api.productopoputale import medicamentos
+from api.populate import meds, category_list, clients, orders_list, reviews_list
 
 api = Blueprint('api', __name__)
 
@@ -64,8 +66,12 @@ def add_category():
     if data is not None:
         category = Category(name=data['name'])
         db.session.add(category)
-        db.session.commit()
-        return jsonify({"message": "Adding a Category"}), 201
+        try:
+            db.session.commit()
+            return jsonify({"message": "Adding a Category"}), 201
+        except Exception as e:
+            print(e.args)
+            return jsonify(f"{e.args}"), 500
     else:
         return jsonify({"message": "Couldnt add category"}), 400
     
@@ -83,8 +89,12 @@ def delete_category(theid=None):
         category = category.query.get(theid)
         if category is not None:
             db.session.delete(category)
-            db.session.commit()
-            return jsonify({"message": "Category Deleted"}), 200
+            try: 
+                db.session.commit()
+                return jsonify({"message": "Category Deleted"}), 200
+            except Exception as e:
+                print(e.args)
+                return jsonify(f"{e.args}"), 500
         else:
             return jsonify({"message": "Category not found"}), 404
 
@@ -103,7 +113,12 @@ def delete_categories():
 
     for item in category:
         db.session.delete(item)
-        db.session.commit()
+        try:
+            db.session.commit()
+            return jsonify("Categories Deleted"), 200
+        except Exception as e:
+            print(e.args)
+            return jsonify(f"{e.args}"), 500
     
     return jsonify({"message": "Categories Deleted"}), 200
 
@@ -208,8 +223,12 @@ def delete_product(theid=None):
         product = product.query.get(theid)
         if product is not None:
             db.session.delete(product)
-            db.session.commit()
-            return jsonify({"message": "Product Deleted"}), 200
+            try:
+                db.session.commit()
+                return jsonify({"message": "Product Deleted"}), 200
+            except Exception as e:
+                print(e.args)
+                return jsonify(f"{e.args}"), 500
         else:
             return jsonify({"message": "Product not found"}), 404
 
@@ -220,10 +239,14 @@ def delete_products():
 
     for item in products:
         db.session.delete(item)
-        db.session.commit()
-    
-    return jsonify({"message": "Products Deleted"}), 200
-
+       
+        try:
+            db.session.commit()
+            return jsonify({"message": "Products Deleted"}), 200
+        except Exception as e:
+            print(e.args)    
+            return jsonify(f"{e.args}"), 500
+        
 @api.route('/product/<int:theid>', methods=['PUT'])
 @jwt_required()
 def update_product(theid):
@@ -317,8 +340,9 @@ def register_user():
 
         user = User(name=name, address=address,telephone=telephone,email=email,password=password,rol=rol,birthday=birthday,status=status,salt=salt)
 
+        
+        db.session.add(user)
         try:
-            db.session.add(user)
             db.session.commit()
             return jsonify({"message": "User created!!"}), 201
         except Exception as error:
@@ -638,8 +662,6 @@ def delete_product_in_order(theid):
                         
 @api.route('/category/populate', methods=['GET'])
 def populate_category():
-    category_list = [u'Analgesico', u'Antibiotico', u'Dermatológico y cosmético', u'Nutrición', u'Pediátrico', 
-                     u'Primeros auxilios', u'Salud digestiva', u'Tratamientos', u'Vitaminas']
 
     for item in category_list:
         category = Category()
@@ -650,73 +672,74 @@ def populate_category():
         db.session.commit()
         return jsonify("Adding categories"), 200
     except Exception as error:
-        print(error)
+        print(error.args)
         db.session.rollback()
-        return jsonify("Error"), 500
+        return jsonify(f"{error.args}"), 500
 
 @api.route('/product/populate', methods=['GET'])
 def populate_product():
-    try:
-        category = Category()
-        category = category.query.all()
+    
+    category = Category()
+    category = category.query.all()
 
-        if not category:
-            return jsonify({"message": "No categories found"}), 404
+    if not category:
+        return jsonify({"message": "No categories found"}), 404
 
-        print(medicamentos[0])
-
-        for med in medicamentos:            
-            product = Product(
-                generic_name=med["generic_name"],
-                active_ingredient=med["active_ingredient"],
-                category_id=med["category_id"], 
-                price=med["price"],
-                stock_quantity=med["stock_quantity"],
-                image_url=med["image_url"],
-                description=med["description"]
+    for med in meds:            
+        product = Product(
+            generic_name=med["generic_name"],
+            active_ingredient=med["active_ingredient"],
+            category_id=med["category_id"], 
+            price=med["price"],
+            stock_quantity=med["stock_quantity"],
+            image_url=med["image_url"],
+            description=med["description"]
             )
-            db.session.add(product)
-        db.session.commit()
-        return jsonify({"message": "Products populated successfully"}), 200
-
-    except Exception as e:
-        print(e.args)
-        db.session.rollback()
-        return jsonify({"message": str(e)}), 500
+        db.session.add(product)
+        try:
+            db.session.commit()
+            return jsonify({"message": "Products populated successfully"}), 200
+        except Exception as e:
+            print(e.args)
+            db.session.rollback()
+            return jsonify({"message": str(e)}), 500
     
 @api.route('/user/populate', methods=['GET'])
 def populate_user():
-    # name, address, telephone, email, password, rol, birthday, status
-    user = User()
-    user.name = 'Daniel Perdomo'
-    user.address = 'Manuel de Lobos 789'
-    user.telephone = '555-1876'
-    user.email = 'daniel.perdomo.1987@gmail.com'
-    user.password = 'password'
-    user.rol = 'ADMIN'
-    user.birthday = datetime(1987, 1, 18)
-    user.status = 'ACTIVE'
-    db.session.add(user)
+
+    for client in clients:
+        salt = b64encode(os.urandom(32)).decode("utf-8")
+        rol_enum = Rol(client['rol'])
+        status_enum = Status(client['status'])
+        user = User(
+            name=client['name'],
+            address=client['address'],
+            telephone=client['telephone'],
+            email=client['email'],
+            rol=rol_enum,
+            birthday=client['birthday'],
+            status=status_enum,
+            salt = salt,
+            password = set_password(client['password'], salt)
+        )
+
+        db.session.add(user)
     
     try:
         db.session.commit()
         return jsonify("User has been added"), 200
     except Exception as error:
-        db.session.rollback()
         print(error.args)
-        return jsonify(f"{error}"), 500
+        db.session.rollback()
+        
+        return jsonify(f"{error.args}"), 500
     
 @api.route('/order/populate', methods=['GET'])
 def populate_order():
     #order_id, user_id, order_status, order_type
-    user = User()
-    user = user.query.first()
-    order = Order()
-    order.user_id = user.user_id
-    order.order_status = "KART"
-    order.order_type = "PICKUP"
-    db.session.add(order)
 
+    for order in orders_list:
+        db.session.add(order)
     try:
         db.session.commit()
         return jsonify("Adding order"), 200
@@ -726,17 +749,17 @@ def populate_order():
 
 @api.route('/review/populate', methods=['GET'])
 def populate_reviews():
-    review = Reviews()
     
-    user = User()
-    user = user.query.first()
-    product = Product()
-    product = product.query.first()
+    rand_id_user = random.randint(1,10)
+    rand_id_prod = random.randint(1,15)
+    for item in reviews_list:
 
-    review.user_id = user.user_id
-    review.product_id = product.product_id
-    review.comment = "It was the best thing that ever happened to me. I was happier than the day my son was born."
-
+        review = Reviews(
+            user_id = rand_id_user,
+            product_id = rand_id_prod,
+            comment = item['comment']
+        )
+        
     db.session.add(review)
 
     try:
@@ -749,4 +772,25 @@ def populate_reviews():
 
 @api.route('/order/product', methods=['GET'])
 def populate_order_products():
-    pass
+
+    for i in range(15):
+        rand_id_prod = random.randint(1,15)
+        rand_id_user = random.randint(1,10)
+        rand_stock = random.randint(1,25)
+        rand_order_id  = random.randint(1,10)
+        # Aca tengo que crear las ordenes
+        order_product = OrderProduct(
+            order_id=rand_order_id,
+            user_id=rand_id_user,
+            product_id=rand_id_prod,  
+            stock=rand_stock
+        )
+
+        db.session.add(order_product)
+        try:
+            db.session.commit()
+            return jsonify("Everything its okay"), 200
+        except Exception as e:
+            print(e.args)
+            db.session.rollback()
+            return jsonify({"Error":f"{e.args}"}), 500

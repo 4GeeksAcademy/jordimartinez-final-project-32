@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: a899badc5a74
+Revision ID: 7b77d4d4e4c1
 Revises: 
-Create Date: 2024-09-07 02:43:54.810226
+Create Date: 2024-09-11 05:07:44.451670
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a899badc5a74'
+revision = '7b77d4d4e4c1'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -27,15 +27,16 @@ def upgrade():
     op.create_table('user',
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=120), nullable=False),
-    sa.Column('address', sa.String(length=80), nullable=False),
+    sa.Column('address', sa.String(length=200), nullable=False),
     sa.Column('telephone', sa.String(length=16), nullable=False),
-    sa.Column('email', sa.String(length=64), nullable=False),
-    sa.Column('password', sa.String(length=64), nullable=False),
+    sa.Column('email', sa.String(length=200), nullable=False),
+    sa.Column('password', sa.String(length=200), nullable=False),
     sa.Column('rol', sa.Enum('CLIENT', 'SELLER', 'ADMIN', name='rol'), nullable=False),
     sa.Column('birthday', sa.DateTime(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.Column('status', sa.Enum('ACTIVE', 'INACTIVE', 'BANNED', name='status'), nullable=False),
+    sa.Column('salt', sa.String(length=180), nullable=False),
     sa.PrimaryKeyConstraint('user_id')
     )
     op.create_table('order',
