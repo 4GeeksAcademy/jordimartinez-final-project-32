@@ -112,3 +112,18 @@ clients = [{"name":"Daniel Perdomo", "address":"Rincon 3451", "telephone":"555-7
         {"name":"Walter de Leon", "address":"18 de Julio 481", "telephone":"555-1234","email":"walter.deleon@gmail.com","password":"12345678","rol":"CLIENT","birthday":"1 07 1988","status":"ACTIVE"},
         {"name":"Hugo Carrizo", "address":"Soriano 4598", "telephone":"555-8521","email":"hugo.carrizo@gmail.com","password":"12345678","rol":"CLIENT","birthday":"4 4 2005","status":"CLIENT"}]
 
+orders_list = [{"user_id":"4","order_status":"KART","order_type":"PICKUP"},
+               {"user_id":"8","order_status":"PENDING","order_type":"DELIVERY"},
+               {"user_id":"6","order_status":"KART","order_type":"PICKUP"},
+               {"user_id":"3","order_status":"KART","order_type":"PICKUP"},
+               {"user_id":"4","order_status":"SENDING","order_type":"DELIVERY"},
+               {"user_id":"8","order_status":"KART","order_type":"DELIVERY"},
+               {"user_id":"2","order_status":"PENDING","order_type":"PICKUP"},
+               {"user_id":"3","order_status":"KART","order_type":"PICKUP"},
+               {"user_id":"1","order_status":"KART","order_type":"DELIVERY"},
+               {"user_id":"7","order_status":"DONE","order_type":"DELIVERY"},
+               {"user_id":"9","order_status":"SENDING","order_type":"PICKUP"}]
+
+
+
+
