@@ -734,11 +734,21 @@ def populate_user():
         
         return jsonify(f"{error.args}"), 500
     
-@api.route('/order/populate', methods=['GET'])
 def populate_order():
     #order_id, user_id, order_status, order_type
 
-    for order in orders_list:
+    order = Order()
+    for item in orders_list:
+        # aca llamo al metodo aux product_in_order
+        rand_user_id = random.randint(1,10)
+        status_enum = Order_Status.KART
+        type_enum = Order_Type.DELIVERY
+        order = Order(
+            user_id = rand_user_id,
+            order_status = status_enum,
+            order_type = type_enum
+        )
+        product_in_order(order.order_id)
         db.session.add(order)
     try:
         db.session.commit()
@@ -746,6 +756,16 @@ def populate_order():
     except Exception as error:
         db.session.rollback()
         return jsonify(f"{error}"), 500
+    
+def product_in_order(new_order):
+    rand_id_prod = random.randint(1,15)
+    rand_stock = random.randint(1,25)
+    order_product = OrderProduct(
+        order_id = new_order,
+        product_id=rand_id_prod,  
+        stock=rand_stock
+    )
+    return
 
 @api.route('/review/populate', methods=['GET'])
 def populate_reviews():
@@ -775,13 +795,10 @@ def populate_order_products():
 
     for i in range(15):
         rand_id_prod = random.randint(1,15)
-        rand_id_user = random.randint(1,10)
         rand_stock = random.randint(1,25)
         rand_order_id  = random.randint(1,10)
-        # Aca tengo que crear las ordenes
         order_product = OrderProduct(
             order_id=rand_order_id,
-            user_id=rand_id_user,
             product_id=rand_id_prod,  
             stock=rand_stock
         )
