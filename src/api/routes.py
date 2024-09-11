@@ -13,7 +13,7 @@ from werkzeug.security import check_password_hash
 from base64 import b64encode
 from api.utils import set_password
 import cloudinary.uploader as uploader
-from api.populate import meds, category_list, clients
+from api.populate import meds, category_list, clients, orders_list
 
 api = Blueprint('api', __name__)
 
@@ -698,13 +698,9 @@ def populate_user():
 @api.route('/order/populate', methods=['GET'])
 def populate_order():
     #order_id, user_id, order_status, order_type
-    user = User()
-    user = user.query.first()
-    order = Order()
-    order.user_id = user.user_id
-    order.order_status = "KART"
-    order.order_type = "PICKUP"
-    db.session.add(order)
+
+    for order in orders_list:
+        db.session.add(order)
 
     try:
         db.session.commit()
