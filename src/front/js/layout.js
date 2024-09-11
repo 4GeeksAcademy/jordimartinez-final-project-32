@@ -8,7 +8,10 @@ import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
 import { AddProduct } from "./pages/addProduct.jsx";
 import { BackOffice } from "./pages/backOffice.jsx";
+import { ProductView } from "./pages/productView.jsx";
 import injectContext from "./store/appContext";
+
+import { SearchResults } from "./component/searchResult.jsx";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
@@ -35,6 +38,8 @@ const Layout = () => {
 						<Route element={<AddProduct />} path="/editproduct/:id" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<CategoriesTemplate />} path="/category/:theid" />
+                        <Route element={<ProductView />} path="/product/:theid" />
+                        <Route element={<SearchResults />} path="/search-results" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />

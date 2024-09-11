@@ -1,20 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
-    const { store } = useContext(Context);
-    const { theid } = useParams();
-    const [details, setDetails] = useState({});
+    const { store, actions } = useContext(Context);
+    const [searchTerm, setSearchTerm] = useState("");
+    const navigate = useNavigate();
 
-    const searchCategory = () => {
-        let category = store.category.find((item) => item.category_id === parseInt(theid));
-        setDetails(category);
+    const handleSearch = (e) => {
+        e.preventDefault();
+        actions.searchProduct(searchTerm);
+        navigate("/search-results");
     };
-
-    useEffect(() => {
-        searchCategory();
-    }, [theid, store.category]);
 
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary mb-5" style={{ backgroundColor: '#e3f2fd', position: 'fixed', top: '0', width: '100%', zIndex: '1000' }}>
@@ -40,39 +37,41 @@ export const Navbar = () => {
                                     </li>
                                 ))}
                             </ul>
-						</li>
-					</ul>
+                        </li>
+                    </ul>
 
-					<form className="d-flex justify-content-center col-5 me-3" role="search">
-						<input className="form-control me-2" type="search" placeholder="¿Qué estás buscando?" aria-label="Search"/>
-						<button className="btn btn-outline-success" type="submit">Buscar</button>
-					</form>
+                    <form className="d-flex justify-content-center col-5 me-3" role="search" onSubmit={handleSearch}>
+                        <input
+                            className="form-control me-2"
+                            type="search"
+                            placeholder="¿Qué estás buscando?"
+                            aria-label="Search"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <button className="btn btn-outline-success" type="submit">Buscar</button>
+                    </form>
 
-					<div className="col-2">
+                    <div className="col-2"></div>
 
-					</div>
+                    <div className="nav-item dropdown col-1">
+                        <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i className="fas fa-user"></i>
+                        </a>
+                        <ul className="dropdown-menu dropdown-start">
+                            <li><Link className="dropdown-item" to="#">Login</Link></li>
+                            <li><hr className="dropdown-divider" /></li>
+                            <li><a className="dropdown-item" href="#">Registrarse</a></li>
+                        </ul>
+                    </div>
 
-
-					<div className="nav-item dropdown col-1">
-						<a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						<i className="fas fa-user"></i>
-						</a>
-						<ul className="dropdown-menu dropdown-start">
-							<li><Link className="dropdown-item" to="#">Login</Link></li>
-							<li><hr className="dropdown-divider"/></li>
-							<li><a className="dropdown-item" href="#">Registrarse</a></li>
-						</ul>
-					</div>
-
-					<Link to="/">
-						<span className="col-1 me-4 ms-2">
-							<i className="fas fa-shopping-cart"></i>
-						</span>
-					</Link>
-
-				</div>
-			</div>
-
-		</nav>
-	);
+                    <Link to="/">
+                        <span className="col-1 me-4 ms-2">
+                            <i className="fas fa-shopping-cart"></i>
+                        </span>
+                    </Link>
+                </div>
+            </div>
+        </nav>
+    );
 };

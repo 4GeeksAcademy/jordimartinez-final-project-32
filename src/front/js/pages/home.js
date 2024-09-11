@@ -1,11 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
-import "../../styles/home.css";
 import { Link } from "react-router-dom";
+import "../../styles/home.css";
 
 export const Home = () => {
-	const { store, actions } = useContext(Context);
+    const { store, actions } = useContext(Context);
+    const [recommendedProducts, setRecommendedProducts] = useState([]);
+
+    useEffect(() => {
+        // Seleccionar 15 productos aleatorios
+        const shuffledProducts = store.product.sort(() => 0.5 - Math.random());
+        const selectedProducts = shuffledProducts.slice(0, 15);
+        setRecommendedProducts(selectedProducts);
+    }, [store.product]);
+	
 
 	return (
 
@@ -16,12 +24,12 @@ export const Home = () => {
 					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
 					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
 					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 4"></button>
-					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 5"></button>
-					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 6"></button>
-					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 7"></button>
-					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 8"></button>
-					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 9"></button>
+					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="5" aria-label="Slide 6"></button>
+					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="6" aria-label="Slide 7"></button>
+					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="7" aria-label="Slide 8"></button>
+					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="8" aria-label="Slide 9"></button>
 				</div>
 					<div className="carousel-inner">
 						<Link to="/category/1" className="carousel-item active">
@@ -60,26 +68,25 @@ export const Home = () => {
 						<span className="carousel-control-next-icon" aria-hidden="true"></span>
 						<span className="visually-hidden">Next</span>
 					</button>
-				</div>
-
-			<div className="text-center mt-5">
-				<h1>Hello Rigo!!</h1>
-
-				<h1>Hola, Que tal?</h1>
-
-				<p>
-					<img src={rigoImageUrl} />
-				</p>
-				<div className="alert alert-info">
-					{store.message || "Loading message from the backend (make sure your python backend is running)..."}
-				</div>
-				<p>
-					This boilerplate comes with lots of documentation:{" "}
-					<a href="https://start.4geeksacademy.com/starters/react-flask">
-						Read documentation
-					</a>
-				</p>
-			</div>
-		</>
-	);
+				</div>	
+				<div className="container mt-5">
+                <h2>Productos Recomendados</h2>
+                <div className="row flex-row flex-nowrap overflow-auto mt-3">
+                    {recommendedProducts.map((product) => (
+                        <div key={product.product_id} className="col-3">
+                            <div className="card">
+                                <img src={product.image_url} style={{ width:"80%", height:"200px", objectFit:"contain"}} className="card-img-top" alt={product.generic_name} />
+                                <div className="card-body">
+                                <h5 className="card-title">{product.generic_name}</h5>
+                                <p className="card-text col-5">${product.price}.00</p>
+                                <p className="card-text">{product.description}</p>
+                                    <Link to={`/product/${product.product_id}`} className="btn btn-primary">Ver Producto</Link>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </>
+    );
 };
