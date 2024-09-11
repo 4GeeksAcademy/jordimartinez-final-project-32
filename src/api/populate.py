@@ -98,8 +98,8 @@ meds = [
     {"generic_name": "Electrolit", "active_ingredient": "Cloruro de potasio", "category_id": 9, "price": 85, "stock_quantity": 10, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725572577/Electrolit_d2hxry.webp", "description": "Suplemento de potasio"},
 ]
 
-category_list = [u'Analgesico', u'Antibiotico', u'Dermatológico y cosmético', u'Nutrición', u'Pediátrico', 
-                 u'Primeros auxilios', u'Salud digestiva', u'Tratamientos', u'Vitaminas']
+category_list = ['Analgesico', 'Antibiotico', 'Dermatológico y cosmético', 'Nutrición', 'Pediátrico', 
+                 'Primeros auxilios', 'Salud digestiva', 'Tratamientos', 'Vitaminas']
 
 clients = [{"name":"Daniel Perdomo", "address":"Rincon 3451", "telephone":"555-7891","email":"daniel.perdomo@gmail.com","password":"87001498110","rol":"ADMIN","birthday":"18 1 1987","status":"ACTIVE"},
         {"name":"Jordi Beppe", "address":"Gral Flores 1450", "telephone":"555-9123","email":"jordi.beppe@gmail.com","password":"45678213","rol":"ADMIN","birthday":"23 9 1994","status":"ACTIVE"},

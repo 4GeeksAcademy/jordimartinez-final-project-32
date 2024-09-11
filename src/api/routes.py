@@ -8,7 +8,9 @@ from flask_cors import CORS
 
 from datetime import datetime, timedelta
 import os
+
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+
 from werkzeug.security import check_password_hash
 from base64 import b64encode
 from api.utils import set_password
@@ -648,9 +650,9 @@ def populate_category():
         db.session.commit()
         return jsonify("Adding categories"), 200
     except Exception as error:
-        print(error)
+        print(error.args)
         db.session.rollback()
-        return jsonify("Error"), 500
+        return jsonify(f"{error.args}"), 500
 
 @api.route('/product/populate', methods=['GET'])
 def populate_product():
@@ -682,18 +684,31 @@ def populate_product():
     
 @api.route('/user/populate', methods=['GET'])
 def populate_user():
-    for user in clients:
+
+    for client in clients:
         salt = b64encode(os.urandom(32)).decode("utf-8")
-        user.password = set_password(user.password, salt)
+        user = User(
+            name=client['name'],
+            address=client['address'],
+            telephone=client['telephone'],
+            email=client['email'],
+            rol=client['rol'],
+            birthday=client['birthday'],
+            status=client['status'],
+            salt = salt,
+            password = set_password(user['password'], salt)
+        )
+
         db.session.add(user)
     
     try:
         db.session.commit()
         return jsonify("User has been added"), 200
     except Exception as error:
-        db.session.rollback()
         print(error.args)
-        return jsonify(f"{error}"), 500
+        db.session.rollback()
+        
+        return jsonify(f"{error.args}"), 500
     
 @api.route('/order/populate', methods=['GET'])
 def populate_order():
