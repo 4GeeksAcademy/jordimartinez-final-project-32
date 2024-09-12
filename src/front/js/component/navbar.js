@@ -23,17 +23,14 @@ export const Navbar = () => {
 						</a>
 						<ul className="dropdown-menu dropdown-start">
 							<li><Link className="dropdown-item" to="category/1">Analgésicos</Link></li>
-							<li><a className="dropdown-item" href="#">Antibióticos</a></li>
-							<li><a className="dropdown-item" href="#">Dermatológicos y cosméticos</a></li>
-							<li><a className="dropdown-item" href="#">Nutrición/suplementos</a></li>
-							<li><a className="dropdown-item" href="#">Pediátricos</a></li>
-							<li><a className="dropdown-item" href="#">Primeros auxilios</a></li>
-							<li><a className="dropdown-item" href="#">Salud digestiva</a></li>
-							<li><a className="dropdown-item" href="#">Tratamientos</a></li>
-							<li><a className="dropdown-item" href="#">Vitaminas</a></li>
-							<li><hr className="dropdown-divider"/></li>
-							<li><Link className="dropdown-item" to="/category">Prueba Plantilla Categorias</Link></li>
-
+							<li><Link className="dropdown-item" to="category/2">Antibióticos</Link></li>
+							<li><Link className="dropdown-item" to="category/3">Dermatológicos y cosméticos</Link></li>
+							<li><Link className="dropdown-item" to="category/4">Nutrición/suplementos</Link></li>
+							<li><Link className="dropdown-item" to="category/5">Pediátricos</Link></li>
+							<li><Link className="dropdown-item" to="category/6">Primeros auxilios</Link></li>
+							<li><Link className="dropdown-item" to="category/7">Salud digestiva</Link></li>
+							<li><Link className="dropdown-item" to="category/8">Tratamientos</Link></li>
+							<li><Link className="dropdown-item" to="category/9">Vitaminas</Link></li>
 						</ul>
 						</li>
 					</ul>

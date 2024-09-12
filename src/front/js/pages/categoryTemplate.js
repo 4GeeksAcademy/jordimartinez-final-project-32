@@ -1,13 +1,31 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 
 const CategoriesTemplate = () => {
+    const { theid } = useParams(); 
+
+    const categoryTitles = {
+        1: "Analgésicos",
+        2: "Antibióticos",
+        3: "Dermatológicos y cosméticos",
+        4: "Nutrición/suplementos",
+        5: "Pediátricos",
+        6: "Primeros auxilios",
+        7: "Salud digestiva",
+        8: "Tratamientos",
+        9: "Vitaminas",
+ 
+    };
+
+    const categoryTitle = categoryTitles[theid] || "Categoría Desconocida";
+
     return (
      <div className="container pt-4">
         
 {/*PLANTILLA TITULO*/}
 
         <div className="mb-3">
-            <h2>Titulo para cada categoria</h2>
+            <h2>{categoryTitle}</h2>
         </div>
 
 {/*PLANTILLA CARRUSEL*/}
@@ -42,8 +60,8 @@ const CategoriesTemplate = () => {
 {/* COLUMNAS IZQUIERDA */}
 
                 <div className="col-md-3">
-                    <div className="bg-secondary text-white p-3 position-relative" style={{ height: '50px' }}>
-                        <h4 className="m-0">Título prueba</h4>
+                    <div className="bg-secondary text-white p-3 position-relative" style={{ height: '75px' }}>
+                        <h4 className="m-0 text-center">{categoryTitle}</h4>
 
 {/* Línea vertical extendida */}
 
@@ -97,7 +115,7 @@ const CategoriesTemplate = () => {
 {/* COLUMNAS DERECHA */}
 
             <div className="col-md-9 text-gray">
-                <h3 className="fw-bold text-secondary">Titulo prueba</h3>
+                <h3 className="fw-bold text-secondary">{categoryTitle}</h3>
 
 {/* CARRUSEL CON IMÁGENES EN MINIATURA */}
 
