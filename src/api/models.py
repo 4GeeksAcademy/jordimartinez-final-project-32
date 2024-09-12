@@ -21,7 +21,7 @@ class Order_Status(PyEnum):
     KART = "Kart"
     PENDING = "Pending"
     ACCEPTED = "Accepted"
-    SENDING = "Ready"
+    SENDING = "Sending"
     DONE = "Done"
 
 class Order_Type(PyEnum):
@@ -31,15 +31,16 @@ class Order_Type(PyEnum):
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=False, nullable=False)
-    address = db.Column(db.String(80), unique=False, nullable=False)
+    address = db.Column(db.String(200), unique=False, nullable=False)
     telephone = db.Column(db.String(16), unique=False, nullable=False)
-    email = db.Column(db.String(64), unique=False, nullable=False)
-    password = db.Column(db.String(64), unique=False, nullable=False)
+    email = db.Column(db.String(200), unique=False, nullable=False)
+    password = db.Column(db.String(200), unique=False, nullable=False)
     rol = db.Column(SQLAlchemyEnum(Rol), nullable=False) 
     birthday = db.Column(db.DateTime, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
     status = db.Column(SQLAlchemyEnum(Status), unique=False, nullable=False)
+    salt = db.Column(db.String(180), nullable=False)
 
     reviews = db.relationship('Reviews', back_populates='user', uselist=True)
     order = db.relationship('Order', back_populates='user', uselist=True)
@@ -67,7 +68,8 @@ class Product(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.category_id'), nullable=False)
     price = db.Column(db.Integer, unique=False, nullable=False)
     stock_quantity = db.Column(db.Integer, unique=False, nullable=False)
-    image_url = db.Column(db.String(120), unique=False, nullable=False)
+    image_url = db.Column(db.String(180), unique=False, nullable=False)
+    # public_image_id = db.Column(db.String(120), unique=True, nullable=False)
     description = db.Column(db.String(200), unique=False, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     
