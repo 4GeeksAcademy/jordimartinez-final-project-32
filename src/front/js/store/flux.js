@@ -13,7 +13,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					background: "white",
 					initial: "white"
 				}
-			]
+				
+			],
+			category: JSON.parse(localStorage.getItem("category")) || [],
+			product: JSON.parse(localStorage.getItem("product")) || []
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -48,15 +51,49 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ demo: demo });
 			},
 
+			getAllCategories: async () => {
+				const store = getStore();
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/category`);
+					let data = await response.json();
+					console.log(data);
+			
+					setStore({
+						category: data
+					});
+			
+					localStorage.setItem("category", JSON.stringify(data));
+				} catch (error) {
+					console.log(error);
+				}
+			},
+
+			getAllProducts: async () => {
+				const store = getStore();
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/product`);
+					let data = await response.json();
+
+					console.log(data);
+			
+					setStore({
+						product: data
+					});
+			
+					localStorage.setItem("product", JSON.stringify(data));
+				} catch (error) {
+					console.log(error);
+				}
+			},
 
 			addProduct: async (product) => {
                 try {
-                    const response = await fetch('https://crispy-winner-x54p4xjgvgrhvvp4-3001.app.github.dev/api/product', {
+                    const response = await fetch( `${process.env.BACKEND_URL}/api/product`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(product)
+                        // headers: {
+                        //     'Content-Type': 'application/json'
+                        // },
+                        body: product
                     });
 
                     if (response.ok) {
@@ -70,7 +107,54 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error('Error en la solicitud:', error);
                     return null;
                 }
-            }
+            },
+
+
+			deleteProduct: async (id) => {
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/product/${id}`, {
+						method: "DELETE"
+					})
+
+					if (response.ok) {
+						getActions().getAllProducts()
+						return true
+					}
+
+				} catch (error) {
+					console.log(error)
+				}
+			},
+
+			putProduct: async (product, id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/product/${id}`, {
+						method: "PUT",
+						body: product
+					});
+			
+					if (response.ok) {
+						getActions().getAllProducts();
+						return true;
+					} else {
+						console.log("Error al actualizar producto");
+						return false;
+					}
+				} catch (error) {
+					console.log(error);
+					return false;
+				}
+			},
+			searchProduct: (query) => {
+                const store = getStore();
+                let searchResult = store.product.filter((item) =>
+                    item.generic_name.toLowerCase().includes(query.toLowerCase()) ||
+                    item.active_ingredient.toLowerCase().includes(query.toLowerCase()) ||
+                    item.category_id.toString().includes(query)
+                );
+                setStore({ search: searchResult });		
+			}
+
 
 		}
 	};
