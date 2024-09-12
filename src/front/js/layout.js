@@ -14,27 +14,38 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import CategoriesTemplate from "./pages/categoryTemplate";
 
+import { Login } from "./pages/login.js";
+import { Register } from "./pages/register.js";
+import { ResetPass } from "./pages/resetpass.js";
+import { UpdatePassword } from "./pages/updatepass.js";
+import { Profile } from "./pages/profile.js";
+
 const Layout = () => {
-  
+
     const basename = process.env.BASENAME || "";
 
-    if(!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
+    if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
 
     return (
         <div>
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
-                    <br/>                    
-                    <br/>
+                    <br />
+                    <br />
                     <Routes>
                         <Route element={<Home />} path="/" />
-                        <Route element={<Demo />} path="/demo" />                       
-                        <Route element={<BackOffice />} path="/backoffice" />            
+                        <Route element={<Demo />} path="/demo" />
+                        <Route element={<BackOffice />} path="/backoffice" />
                         <Route element={<AddProduct />} path="/addproduct" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<CategoriesTemplate />} path="/category" />
                         <Route element={<h1>Not found!</h1>} />
+                        <Route element={<Login />} path="/login" />
+                        <Route element={<Register />} path="/register" />
+                        <Route element={<ResetPass />} path="/resetPass" />
+                        <Route element={<UpdatePassword />} path="/passwordUpdate" />
+                        <Route element={<Profile />} path="/profile" />
                     </Routes>
                     <Footer />
                 </ScrollToTop>
