@@ -819,7 +819,6 @@ def populate_all():
     product_in_order()
     return jsonify("Everything has been created, even the universe"), 200
 
-
 @api.route("/reset-password", methods=["POST"])
 def reset_password():
     body = request.json
@@ -841,13 +840,12 @@ def reset_password():
     print(sended_email)
     return jsonify("Trabajando por un mejor servicio =) "), 200
 
-
 def status_order_update(user, order):
     message = f"""Congratz! Your order #{order.order_id} has changed status to: {order.order_status}
                                     We hope to keep hearing from you! {user.name}
     """
     data = {
-        "subject": "Order Status Update",
+        "subject": f"Order {order.order_id} Status Update",
         "to": user.email,
         "message": message
     }
@@ -855,3 +853,4 @@ def status_order_update(user, order):
     sended_email = send_email(data.get("subject"), data.get("to"), data.get("message"))
     print(sended_email)
     return jsonify("Trabajando por un mejor servicio =) "), 200
+
