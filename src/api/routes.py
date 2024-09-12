@@ -476,6 +476,11 @@ def get_reviews(theid):
         return jsonify("There is no product"), 404
     return jsonify([item.serialize() for item in reviews]), 200
 
+@api.route('/all_reviews', methods=['GET'])
+def get_all_reviews():
+    review = Reviews.query.all()
+    return jsonify([item.serialize() for item in review]), 200
+
 @api.route('/review/<int:theid>', methods=['GET'])
 def get_one_review(theid):
     review = Reviews.query.get(theid)
@@ -592,10 +597,9 @@ def update_pass():
             print(error.args)
             return jsonify("Password couldnt be updated"), 500
 
-@api.route('/order/<int:theid>', methods=['GET'])
+@api.route('/order/products/<int:theid>', methods=['GET'])
 @jwt_required()
 def get_products_in_order(theid):
-    #Se pide que tenga jwt, para evitar que alguien revise las ordenes individuales de las personas ?
     products_in_order = OrderProduct.query.filter_by(order_id=theid).all()
     if products_in_order is None:
         return jsonify({"Message": "There are no products in this order"}), 400
@@ -696,13 +700,13 @@ def populate_product():
             description=med["description"]
             )
         db.session.add(product)
-        try:
-            db.session.commit()
-            return jsonify({"message": "Products populated successfully"}), 200
-        except Exception as e:
-            print(e.args)
-            db.session.rollback()
-            return jsonify({"message": str(e)}), 500
+    try:
+        db.session.commit()
+        return jsonify({"message": "Products populated successfully"}), 200
+    except Exception as e:
+        print(e.args)
+        db.session.rollback()
+        return jsonify({"message": str(e)}), 500
     
 @api.route('/user/populate', methods=['GET'])
 def populate_user():
@@ -749,7 +753,6 @@ def populate_order():
             order_status = status_enum,
             order_type = type_enum
         )
-        product_in_order(order.order_id)
         db.session.add(order)
     try:
         db.session.commit()
@@ -758,30 +761,41 @@ def populate_order():
         db.session.rollback()
         return jsonify(f"{error}"), 500
     
-def product_in_order(new_order):
+def product_in_order():
+    rand_id_order = random.randint(1,8)
     rand_id_prod = random.randint(1,15)
     rand_stock = random.randint(1,25)
     order_product = OrderProduct(
-        order_id = new_order,
+        order_id = rand_id_order,
         product_id=rand_id_prod,  
         stock=rand_stock
     )
-    return
+    db.session.add(order_product)
+    try: 
+        db.session.commit()
+        return jsonify({"Message": "Product in order, correct"}), 200
+    except Exception as e:
+        print(e.args)
+        db.session.rollback()
+        return jsonify({"Error":f"{e.args}"}),500
+
+@api.route('/all_products_in_orders', methods=['GET'])
+def all_products_in_orders():
+    order_product = OrderProduct.query.all()
+    return jsonify([item.serialize() for item in order_product]), 200
 
 @api.route('/review/populate', methods=['GET'])
 def populate_reviews():
     
-    rand_id_user = random.randint(1,10)
-    rand_id_prod = random.randint(1,15)
     for item in reviews_list:
-
+        rand_id_user = random.randint(1,10)
+        rand_id_prod = random.randint(1,15)
         review = Reviews(
             user_id = rand_id_user,
             product_id = rand_id_prod,
             comment = item['comment']
         )
-        
-    db.session.add(review)
+        db.session.add(review)
 
     try:
         db.session.commit()
@@ -798,4 +812,5 @@ def populate_all():
     populate_user()
     populate_order()
     populate_reviews()
-    return
+    product_in_order()
+    return jsonify("Everything has been created, even the universe"), 200
