@@ -52,13 +52,11 @@ class User(db.Model):
             "address": self.address,
             "telephone": self.telephone,
             "email": self.email,
-            "password": self.password,
             "rol": self.rol.value,
             "birthday": self.birthday,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "status": self.status.value
-            # do not serialize the password, its a security breach
         }
     
 class Product(db.Model):
@@ -69,7 +67,6 @@ class Product(db.Model):
     price = db.Column(db.Integer, unique=False, nullable=False)
     stock_quantity = db.Column(db.Integer, unique=False, nullable=False)
     image_url = db.Column(db.String(180), unique=False, nullable=False)
-    # public_image_id = db.Column(db.String(120), unique=True, nullable=False)
     description = db.Column(db.String(200), unique=False, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     
@@ -88,7 +85,20 @@ class Product(db.Model):
             "stock_quantity": self.stock_quantity,
             "image_url": self.image_url,
             "description": self.description,
-            "created_at": self.created_at,
+            "created_at": self.created_at
+        }
+    
+    def serialize_review(self):
+        return {
+            "product_id": self.product_id,
+            "generic_name": self.generic_name,
+            "active_ingredient": self.active_ingredient,
+            "categories": list(map(lambda item: item.serialize(), self.category)),
+            "price": self.price,
+            "stock_quantity": self.stock_quantity,
+            "image_url": self.image_url,
+            "description": self.description,
+            "reviews": list(map(lambda item: item.serialize(), self.reviews))
         }
 
 class Reviews(db.Model):
@@ -107,6 +117,14 @@ class Reviews(db.Model):
             "review_id": self.review_id,
             "user_id": self.user_id,
             "product_id": self.product_id,
+            "comment": self.comment
+        }
+
+    def serialize_complete(self):
+        return {
+            "review_id": self.review_id,
+            "user": list(map(lambda item: item.serialize(), self.user)),
+            "product": list(map(lambda item: item.serialize(), self.product)),
             "comment": self.comment
         }
 
@@ -139,7 +157,15 @@ class Order(db.Model):
             "order_status": self.order_status.value,
             "order_type": self.order_type.value
         }
-
+    
+    def serialize_complete(self):
+        return {
+            "order_id": self.order_id,
+            "user": list(map(lambda item: item.serialize(), self.user)),
+            "order_status": self.order_status.value,
+            "order_type": self.order_type.value
+        }
+    
 class OrderProduct(db.Model):
     order_product_id = db.Column(db.Integer, unique=True, primary_key=True)
     
@@ -158,4 +184,10 @@ class OrderProduct(db.Model):
             "product_id": self.product_id,
             "stock": self.stock
         }
-    
+    def serialize_complete(self):
+        return{
+            "order_product_id": self.order_product_id,
+            "order_id": self.order_id,
+            "product": list(map(lambda item: item.serialize(), self.product)),
+            "stock": self.stock
+        }
