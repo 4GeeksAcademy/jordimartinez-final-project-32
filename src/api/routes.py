@@ -13,7 +13,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 
 from werkzeug.security import check_password_hash
 from base64 import b64encode
-from api.utils import set_password
+from api.utils import set_password, send_email
 import cloudinary.uploader as uploader
 from api.populate import meds, category_list, clients, orders_list, reviews_list
 
@@ -460,13 +460,15 @@ def update_status(theid):
             order.order_status = 'DONE'
         else:
             return jsonify({"message":"Order its done"}), 200
-        try:
-            db.session.commit()
-            return jsonify({"message": f"Order status updated successfully: {order.order_status}"}), 200
-        except Exception as error:
-            print(error.args)
-            return jsonify({"message": f"{error.args}"}), 500  
-    return jsonify({"message": "Order does not exist"}), 404
+        
+    status_order_update(user, order)
+
+    try:
+        db.session.commit()
+        return jsonify({"message": f"Order status updated successfully: {order.order_status}"}), 200
+    except Exception as error:
+        print(error.args)
+        return jsonify({"message": f"{error.args}"}), 500  
 
 @api.route('/review/<int:theid>', methods=['GET'])
 def get_reviews(theid):
@@ -479,7 +481,7 @@ def get_reviews(theid):
 @api.route('/all_reviews', methods=['GET'])
 def get_all_reviews():
     review = Reviews.query.all()
-    return jsonify([item.serialize() for item in review]), 200
+    return jsonify([item.serialize_complete() for item in review]), 200
 
 @api.route('/review/<int:theid>', methods=['GET'])
 def get_one_review(theid):
@@ -817,3 +819,39 @@ def populate_all():
     product_in_order()
     return jsonify("Everything has been created, even the universe"), 200
 
+
+@api.route("/reset-password", methods=["POST"])
+def reset_password():
+    body = request.json
+    access_token = create_access_token(identity=body, expires_delta=expires_delta)
+    message = f"""
+        <h1> Si solicito recuperar la contraseña, ingrese al siguiente link</h1>
+        <a href="{os.getenv("FRONTEND_URL")}password-update?token={access_token}">
+            ir a recuperar contraseña
+        </a>
+    """
+
+    data = {
+        "subject": "Recuperación de contraseña",
+        "to": body,
+        "message": message
+    }
+
+    sended_email = send_email(data.get("subject"), data.get("to"), data.get("message"))
+    print(sended_email)
+    return jsonify("Trabajando por un mejor servicio =) "), 200
+
+
+def status_order_update(user, order):
+    message = f"""Congratz! Your order #{order.order_id} has changed status to: {order.order_status}
+                                    We hope to keep hearing from you! {user.name}
+    """
+    data = {
+        "subject": "Order Status Update",
+        "to": user.email,
+        "message": message
+    }
+
+    sended_email = send_email(data.get("subject"), data.get("to"), data.get("message"))
+    print(sended_email)
+    return jsonify("Trabajando por un mejor servicio =) "), 200

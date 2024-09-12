@@ -1,6 +1,9 @@
 from flask import jsonify, url_for
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import os
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import smtplib, ssl
 
 class APIException(Exception):
     status_code = 400
@@ -44,4 +47,42 @@ def generate_sitemap(app):
 
 def set_password(password, salt):
     return generate_password_hash(f"{password}{salt}")
+
+def send_email(subject, to, body):
+
+    smtp_address =os.getenv("SMTP_ADDRESS")
+    smtp_port = os.getenv("SMTP_PORT")
+    smtp_email= os.getenv("EMAIL_ADDRESS")
+    smtp_password=os.getenv("EMAIL_PASSWORD")
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = subject
+    message["From"] = smtp_email
+    message["To"] = to
+
+
+    html = """
+            <html>
+                <body>
+                    """ + body + """
+                </body>
+            </html>
+        """
+    
+    html_mime = MIMEText(html, "html")
+    message.attach(html_mime)
+
+    try:
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL(smtp_address, smtp_port, context=context) as server:
+            server.login(smtp_email, smtp_password)
+            server.sendmail(smtp_address, to, message.as_string())
+            print("message sended")
+
+        return True
+
+    except Exception as error:
+        print(error.args)
+
+        return False
 
