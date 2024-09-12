@@ -1,5 +1,6 @@
 import React from "react";
 import login from "../pages/login.js"
+import { Link } from "react-router-dom";
 
 export const Login = () => {
     return (
@@ -24,9 +25,14 @@ export const Login = () => {
             </div>
             <button type="submit" className="btn btn-success">Ingresar</button>
         </form>
-        <div className="dropdown-divider"></div>        
-            <a className="dropdown-item" href="#">Registrate</a>
-            <a className="dropdown-item" href="#">Recuperar contraseña</a>
+        <div className="dropdown-divider"></div>   
+            <div className="col-12 col-md-6 d-flex justify-content-between my-1">   
+            
+               <Link to={"/register"}>Registrate</Link> 
+               <Link to={"/resetpass.js"}>Recuperar contraseña</Link>
+               <Link to={"/home.js"}>Regresar</Link>
+                           
+            </div>
             <button type="button" class="btn-close" aria-label="Close"> </button>
         </div>
         

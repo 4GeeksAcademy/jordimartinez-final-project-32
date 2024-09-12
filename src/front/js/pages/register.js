@@ -1,5 +1,4 @@
 import React from "react";
-
 import register from "./register.js"
 
 export const Register = () => {

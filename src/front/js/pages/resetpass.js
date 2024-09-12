@@ -2,6 +2,8 @@ import React from "react";
 import Resetpass from "./resetpass.js"
 
 export const ResetPass = () => {
+
+    
     return (
         <div className="container">
             <div className="row justify-content-center">
@@ -25,7 +27,7 @@ export const ResetPass = () => {
                     </form>
                 </div>
 
-                <div className="w-100"></div>
+                
 
               
             </div>
