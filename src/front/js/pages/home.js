@@ -75,7 +75,7 @@ export const Home = () => {
                     {recommendedProducts.map((product) => (
                         <div key={product.product_id} className="col-3">
                             <div className="card">
-                                <img src={product.image_url} style={{ width:"80%", height:"200px", objectFit:"contain"}} className="card-img-top" alt={product.generic_name} />
+                                <img src={product.image_url} style={{ width:"80%", height:"200px", objectFit:"contain"}} className="card-img-top d-flex justify-content-center" alt={product.generic_name} />
                                 <div className="card-body">
                                 <h5 className="card-title">{product.generic_name}</h5>
                                 <p className="card-text col-5">${product.price}.00</p>
