@@ -765,11 +765,12 @@ def product_in_order():
     rand_id_order = random.randint(1,8)
     rand_id_prod = random.randint(1,15)
     rand_stock = random.randint(1,25)
-    order_product = OrderProduct(
-        order_id = rand_id_order,
-        product_id=rand_id_prod,  
-        stock=rand_stock
-    )
+    for i in range(32):
+        order_product = OrderProduct(
+            order_id = rand_id_order,
+            product_id=rand_id_prod,  
+            stock=rand_stock
+        )
     db.session.add(order_product)
     try: 
         db.session.commit()
