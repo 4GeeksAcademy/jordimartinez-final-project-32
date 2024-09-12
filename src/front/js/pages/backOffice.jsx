@@ -69,7 +69,6 @@ export const BackOffice = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {products.map((product, index) => (
                         {filteredProducts.map((product, index) => (
                             <tr key={product.product_id}>
                                 <th scope="row">{index + 1}</th>
