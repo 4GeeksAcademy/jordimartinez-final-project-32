@@ -59,47 +59,12 @@ export const Navbar = () => {
                             <i className="fas fa-user"></i>
                         </a>
                         <ul className="dropdown-menu dropdown-start">
-                            <li><Link className="dropdown-item" to="#">Login</Link></li>
+                            <li><Link className="dropdown-item" to="login">Login</Link></li>
                             <li><hr className="dropdown-divider" /></li>
-                            <li><a className="dropdown-item" href="#">Registrarse</a></li>
+                            <li><Link className="dropdown-item" to="register">Registrarse</Link></li>
                         </ul>
                     </div>
 
-<<<<<<< HEAD
-					<form className="d-flex justify-content-center col-5 me-3" role="search">
-						<input className="form-control me-2" type="search" placeholder="¿Qué estás buscando?" aria-label="Search"/>
-						<button className="btn btn-outline-success" type="submit">Buscar</button>
-					</form>
-
-					<div className="col-2">
-
-					</div>
-
-
-					<div className="nav-item dropdown col-1">
-						<a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						<i className="fas fa-user"></i>
-						</a>
-						<ul className="dropdown-menu dropdown-start">
-							<li><Link className="dropdown-item" to="/login">Ingresar</Link></li>
-							<li><hr className="dropdown-divider"/></li>
-							<li><Link className="dropdown-item" to="/register"></Link></li>
-							
-						</ul>
-					</div>
-
-					<Link to="/">
-						<span className="col-1 me-4 ms-2">
-							<i className="fas fa-shopping-cart"></i>
-						</span>
-					</Link>
-
-				</div>
-			</div>
-
-		</nav>
-	);
-=======
                     <Link to="/">
                         <span className="col-1 me-4 ms-2">
                             <i className="fas fa-shopping-cart"></i>
@@ -109,5 +74,4 @@ export const Navbar = () => {
             </div>
         </nav>
     );
->>>>>>> origin
 };
