@@ -308,17 +308,19 @@ def register_user():
     data_form = request.form
     
     data = { "name" : data_form.get("name"),
-        "address" : data_form("address"),
-        "telephone" : data_form("telephone"),
-        "email" : data_form("email"),
-        "password" : data_form("password"),
-        "rol" : data_form.get("rol", "CLIENT").upper(),
-        "birthday" : data_form("birthday"),
-        "status" : "ACTIVE"
-    }
+            "document_number" : data_form("document_number"),
+            "address" : data_form("address"),
+            "telephone" : data_form("telephone"),
+            "email" : data_form("email"),
+            "password" : data_form("password"),
+            "rol" : data_form.get("rol", "CLIENT").upper(),
+            "birthday" : data_form("birthday"),
+            "status" : "ACTIVE"
+            }
 
     #All data in variables
     name = data.get("name", None)
+    document_number = data.get("document_number", None)
     address = data.get("address", None)
     telephone = data.get("telephone", None)
     email = data.get("email", None)
@@ -338,7 +340,8 @@ def register_user():
         salt = b64encode(os.urandom(32)).decode("utf-8")
         password = set_password(password, salt)
 
-        user = User(name=name, address=address,telephone=telephone,email=email,password=password,rol=rol,birthday=birthday,status=status,salt=salt)
+        user = User(name=name,document_number=document_number,address=address,telephone=telephone,email=email,
+                    password=password,rol=rol,birthday=birthday,status=status,salt=salt)
 
         
         db.session.add(user)
@@ -719,6 +722,7 @@ def populate_user():
         user = User(
             name=client['name'],
             address=client['address'],
+            document_number=client['document_number'],
             telephone=client['telephone'],
             email=client['email'],
             rol=rol_enum,

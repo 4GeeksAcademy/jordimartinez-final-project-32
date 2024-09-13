@@ -101,16 +101,16 @@ meds = [
 category_list = ['Analgesico', 'Antibiotico', 'Dermatológico y cosmético', 'Nutrición', 'Pediátrico', 
                  'Primeros auxilios', 'Salud digestiva', 'Tratamientos', 'Vitaminas']
 
-clients = [{"name":"Daniel Perdomo", "address":"Rincon 3451", "telephone":"555-7891","email":"daniel.perdomo@gmail.com","password":"87001498110","rol":"Admin","birthday":"1987, 1, 18","status":"Active"},
-        {"name":"Jordi Beppe", "address":"Gral Flores 1450", "telephone":"555-9123","email":"jordi.beppe@gmail.com","password":"45678213","rol":"Admin","birthday":"1994, 2, 23","status":"Active"},
-        {"name":"Anthonny Miranda", "address":"Avda. Artigas 874", "telephone":"555-3249","email":"anthonny.miranda@gmail.com","password":"asdewfgqer123","rol":"Admin","birthday":"1997, 5, 13","status":"Active"},
-        {"name":"Ana Carreño", "address":"Ituzaingo 2341", "telephone":"555-8421","email":"ana.carrenio@gmail.com","password":"xxmmanammxx","rol":"Admin","birthday":"1997, 8, 16","status":"Active"},
-        {"name":"Luis Madero", "address":"Manuel de lobos 388", "telephone":"555-1234","email":"luis.ma@gmail.com","password":"dsadsa","rol":"Seller","birthday":"1987, 12, 23","status":"Active"},
-        {"name":"Reina Cuadrado", "address":"Rivadavia 456", "telephone":"555-9456","email":"reina.cuadrado@gmail.com","password":"grgrgrgr123","rol":"Seller","birthday":"1999, 5, 16","status":"Active"},
-        {"name":"Linda Gonzalez", "address":"Gral Flores 1654", "telephone":"555-8432","email":"linda.gonzalez@gmail.com","password":"12346578","rol":"Client","birthday":"2002, 5, 26","status":"Active"},
-        {"name":"Manuel Iglesias", "address":"Cassanello 832", "telephone":"555-8712","email":"manu.iglesias@gmail.com","password":"12345678","rol":"Client","birthday":"2001, 12, 5","status":"Active"},
-        {"name":"Walter de Leon", "address":"18 de Julio 481", "telephone":"555-1234","email":"walter.deleon@gmail.com","password":"12345678","rol":"Client","birthday":"1988, 7, 1","status":"Active"},
-        {"name":"Hugo Carrizo", "address":"Soriano 4598", "telephone":"555-8521","email":"hugo.carrizo@gmail.com","password":"12345678","rol":"Client","birthday":"2005, 4, 4","status":"Active"}]
+clients = [{"name":"Daniel Perdomo", "address":"Rincon 3451", "document_number": "4567891", "telephone":"555-7891","email":"daniel.perdomo@gmail.com","password":"87001498110","rol":"Admin","birthday":"1987, 1, 18","status":"Active"},
+        {"name":"Jordi Beppe", "address":"Gral Flores 1450",  "document_number": "123336548", "telephone":"555-9123","email":"jordi.beppe@gmail.com","password":"45678213","rol":"Admin","birthday":"1994, 2, 23","status":"Active"},
+        {"name":"Anthonny Miranda", "address":"Avda. Artigas 874", "document_number": "12354876", "telephone":"555-3249","email":"anthonny.miranda@gmail.com","password":"asdewfgqer123","rol":"Admin","birthday":"1997, 5, 13","status":"Active"},
+        {"name":"Ana Carreño", "address":"Ituzaingo 2341", "document_number": "15687456", "telephone":"555-8421","email":"ana.carrenio@gmail.com","password":"xxmmanammxx","rol":"Admin","birthday":"1997, 8, 16","status":"Active"},
+        {"name":"Luis Madero", "address":"Manuel de lobos 388", "document_number": "00456786", "telephone":"555-1234","email":"luis.ma@gmail.com","password":"dsadsa","rol":"Seller","birthday":"1987, 12, 23","status":"Active"},
+        {"name":"Reina Cuadrado", "address":"Rivadavia 456", "document_number": "78964123", "telephone":"555-9456","email":"reina.cuadrado@gmail.com","password":"grgrgrgr123","rol":"Seller","birthday":"1999, 5, 16","status":"Active"},
+        {"name":"Linda Gonzalez", "address":"Gral Flores 1654", "document_number": "15948756", "telephone":"555-8432","email":"linda.gonzalez@gmail.com","password":"12346578","rol":"Client","birthday":"2002, 5, 26","status":"Active"},
+        {"name":"Manuel Iglesias", "address":"Cassanello 832", "document_number": "12245456", "telephone":"555-8712","email":"manu.iglesias@gmail.com","password":"12345678","rol":"Client","birthday":"2001, 12, 5","status":"Active"},
+        {"name":"Walter de Leon", "address":"18 de Julio 481", "document_number": "78884565", "telephone":"555-1234","email":"walter.deleon@gmail.com","password":"12345678","rol":"Client","birthday":"1988, 7, 1","status":"Active"},
+        {"name":"Hugo Carrizo", "address":"Soriano 4598", "document_number": "123546875", "telephone":"555-8521","email":"hugo.carrizo@gmail.com","password":"12345678","rol":"Client","birthday":"2005, 4, 4","status":"Active"}]
 
 
 # user_id, product_id, comment
