@@ -400,9 +400,8 @@ def update_user():
 
 @api.route('/order', methods=['GET'])
 def get_orders():
-    orders = Order()
-    orders = orders.query.all()
-    return jsonify([item.serialize() for item in orders]), 200
+    orders = Order.query.all()
+    return jsonify([item.serialize_complete() for item in orders]), 200
 
 @api.route('/order/<int:theid>', methods=['GET'])
 def get_one_order(theid = None):
