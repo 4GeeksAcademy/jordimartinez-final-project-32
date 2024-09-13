@@ -3,7 +3,7 @@ import { Context } from "../store/appContext";
 import { Link } from "react-router-dom";
 
 export const SearchResults = () => {
-    const { store } = useContext(Context);
+    const { store, actions } = useContext(Context);
 
     return (
         <div className="container mt-5">
@@ -18,6 +18,9 @@ export const SearchResults = () => {
                                 <p className="card-text col-5">${product.price}.00</p>
                                 <p className="card-text">{product.description}</p>
                                 <Link to={`/product/${product.product_id}`} className="btn btn-primary">Ver Producto</Link>
+                                <button className="btn btn-success ms-5" onClick={() => actions.addToKart(product)}>
+                                    <i className="fas fa-shopping-cart"></i>
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -74,15 +74,18 @@ export const Home = () => {
                 <div className="row flex-row flex-nowrap overflow-auto mt-3">
                     {recommendedProducts.map((product) => (
                         <div key={product.product_id} className="col-3">
-                            <div className="card">
-                                <img src={product.image_url} style={{ width:"80%", height:"200px", objectFit:"contain"}} className="card-img-top d-flex justify-content-center" alt={product.generic_name} />
-                                <div className="card-body">
+                            <div className="card mt-4">
+                            <img src={product.image_url} style={{ width:"80%", height:"200px", objectFit:"contain"}} className="card-img-top" alt={product.generic_name} />
+                            <div className="card-body">
                                 <h5 className="card-title">{product.generic_name}</h5>
                                 <p className="card-text col-5">${product.price}.00</p>
                                 <p className="card-text">{product.description}</p>
-                                    <Link to={`/product/${product.product_id}`} className="btn btn-primary">Ver Producto</Link>
-                                </div>
+                                <Link to={`/product/${product.product_id}`} className="btn btn-primary">Ver Producto</Link>
+                                <button className="btn btn-success ms-5" onClick={() => actions.addToKart(product)}>
+                                    <i className="fas fa-shopping-cart"></i>
+                                </button>
                             </div>
+                        </div>
                         </div>
                     ))}
                 </div>
