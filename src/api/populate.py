@@ -131,19 +131,6 @@ reviews_list = [{"user_id":"3", "product_id": "6", "comment": "My best decision 
                 {"user_id":"2", "product_id":"2", "comment": "This is a review"}]
 
 
-# #order_id, product_id, stock
-# products_in_order = [{"order_id":"1","product_id":"4","stock":"3"},
-#                     {"order_id":"4","product_id":"2","stock":"4"},
-#                     {"order_id":"6","product_id":"5","stock":"7"},
-#                     {"order_id":"8","product_id":"2","stock":"1"},
-#                     {"order_id":"3","product_id":"6","stock":"10"},
-#                     {"order_id":"3","product_id":"1","stock":"1"},
-#                     {"order_id":"2","product_id":"3","stock":"6"},
-#                     {"order_id":"2","product_id":"7","stock":"2"},
-#                     {"order_id":"2","product_id":"9","stock":"2"},
-#                     {"order_id":"9","product_id":"17","stock":"2"},
-#                      ]
-
 
 orders_list = [{"user_id":"4","order_status":"KART","order_type":"Pickup"},
                 {"user_id":"8","order_status":"PENDING","order_type":"Delivery"},
@@ -155,5 +142,18 @@ orders_list = [{"user_id":"4","order_status":"KART","order_type":"Pickup"},
                 {"user_id":"3","order_status":"KART","order_type":"Pickup"},
                 {"user_id":"1","order_status":"KART","order_type":"Delivery"},
                 {"user_id":"7","order_status":"DONE","order_type":"Delivery"},
-                {"user_id":"9","order_status":"SENDING","order_type":"Pickup"}]
+                {"user_id":"9","order_status":"SENDING","order_type":"Pickup"},
+                {"user_id":"4","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"1","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"2","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"3","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"6","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"7","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"8","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"9","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"1","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"2","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"3","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"4","order_status":"KART","order_type":"Delivery"}
+                ]
 
