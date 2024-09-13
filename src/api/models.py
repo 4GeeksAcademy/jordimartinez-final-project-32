@@ -31,6 +31,7 @@ class Order_Type(PyEnum):
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=False, nullable=False)
+    document_number = db.Column(db.Integer, unique=False, nullable=False)
     address = db.Column(db.String(200), unique=False, nullable=False)
     telephone = db.Column(db.String(16), unique=False, nullable=False)
     email = db.Column(db.String(200), unique=False, nullable=False)
@@ -147,7 +148,7 @@ class Order(db.Model):
     order_status = db.Column(SQLAlchemyEnum(Order_Status), nullable=False)
     order_type = db.Column(SQLAlchemyEnum(Order_Type), nullable=False)
 
-    user = db.relationship('User', back_populates='order', uselist=False)
+    user = db.relationship('User', back_populates='order', uselist=True)
     order_products = db.relationship('OrderProduct', back_populates='order', uselist=True)
 
     def serialize(self):

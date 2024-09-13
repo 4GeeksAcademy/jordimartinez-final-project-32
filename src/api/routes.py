@@ -13,7 +13,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 
 from werkzeug.security import check_password_hash
 from base64 import b64encode
-from api.utils import set_password
+from api.utils import set_password, send_email
 import cloudinary.uploader as uploader
 from api.populate import meds, category_list, clients, orders_list, reviews_list
 
@@ -309,17 +309,19 @@ def register_user():
     data_form = request.form
     
     data = { "name" : data_form.get("name"),
-        "address" : data_form("address"),
-        "telephone" : data_form("telephone"),
-        "email" : data_form("email"),
-        "password" : data_form("password"),
-        "rol" : data_form.get("rol", "CLIENT").upper(),
-        "birthday" : data_form("birthday"),
-        "status" : "ACTIVE"
-    }
+            "document_number" : data_form("document_number"),
+            "address" : data_form("address"),
+            "telephone" : data_form("telephone"),
+            "email" : data_form("email"),
+            "password" : data_form("password"),
+            "rol" : data_form.get("rol", "CLIENT").upper(),
+            "birthday" : data_form("birthday"),
+            "status" : "ACTIVE"
+            }
 
     #All data in variables
     name = data.get("name", None)
+    document_number = data.get("document_number", None)
     address = data.get("address", None)
     telephone = data.get("telephone", None)
     email = data.get("email", None)
@@ -339,7 +341,8 @@ def register_user():
         salt = b64encode(os.urandom(32)).decode("utf-8")
         password = set_password(password, salt)
 
-        user = User(name=name, address=address,telephone=telephone,email=email,password=password,rol=rol,birthday=birthday,status=status,salt=salt)
+        user = User(name=name,document_number=document_number,address=address,telephone=telephone,email=email,
+                    password=password,rol=rol,birthday=birthday,status=status,salt=salt)
 
         
         db.session.add(user)
@@ -401,9 +404,8 @@ def update_user():
 
 @api.route('/order', methods=['GET'])
 def get_orders():
-    orders = Order()
-    orders = orders.query.all()
-    return jsonify([item.serialize() for item in orders]), 200
+    orders = Order.query.all()
+    return jsonify([item.serialize_complete() for item in orders]), 200
 
 @api.route('/order/<int:theid>', methods=['GET'])
 def get_one_order(theid = None):
@@ -461,13 +463,15 @@ def update_status(theid):
             order.order_status = 'DONE'
         else:
             return jsonify({"message":"Order its done"}), 200
-        try:
-            db.session.commit()
-            return jsonify({"message": f"Order status updated successfully: {order.order_status}"}), 200
-        except Exception as error:
-            print(error.args)
-            return jsonify({"message": f"{error.args}"}), 500  
-    return jsonify({"message": "Order does not exist"}), 404
+        
+    status_order_update(user, order)
+
+    try:
+        db.session.commit()
+        return jsonify({"message": f"Order status updated successfully: {order.order_status}"}), 200
+    except Exception as error:
+        print(error.args)
+        return jsonify({"message": f"{error.args}"}), 500  
 
 @api.route('/review/<int:theid>', methods=['GET'])
 def get_reviews(theid):
@@ -480,7 +484,7 @@ def get_reviews(theid):
 @api.route('/all_reviews', methods=['GET'])
 def get_all_reviews():
     review = Reviews.query.all()
-    return jsonify([item.serialize() for item in review]), 200
+    return jsonify([item.serialize_complete() for item in review]), 200
 
 @api.route('/review/<int:theid>', methods=['GET'])
 def get_one_review(theid):
@@ -719,6 +723,7 @@ def populate_user():
         user = User(
             name=client['name'],
             address=client['address'],
+            document_number=client['document_number'],
             telephone=client['telephone'],
             email=client['email'],
             rol=rol_enum,
@@ -817,4 +822,39 @@ def populate_all():
     populate_reviews()
     product_in_order()
     return jsonify("Everything has been created, even the universe"), 200
+
+@api.route("/reset-password", methods=["POST"])
+def reset_password():
+    body = request.json
+    access_token = create_access_token(identity=body, expires_delta=expires_delta)
+    message = f"""
+        <h1> Si solicito recuperar la contraseña, ingrese al siguiente link</h1>
+        <a href="{os.getenv("FRONTEND_URL")}password-update?token={access_token}">
+            ir a recuperar contraseña
+        </a>
+    """
+
+    data = {
+        "subject": "Recuperación de contraseña",
+        "to": body,
+        "message": message
+    }
+
+    sended_email = send_email(data.get("subject"), data.get("to"), data.get("message"))
+    print(sended_email)
+    return jsonify("Trabajando por un mejor servicio =) "), 200
+
+def status_order_update(user, order):
+    message = f"""Congratz! Your order #{order.order_id} has changed status to: {order.order_status}
+                                    We hope to keep hearing from you! {user.name}
+    """
+    data = {
+        "subject": f"Order {order.order_id} Status Update",
+        "to": user.email,
+        "message": message
+    }
+
+    sended_email = send_email(data.get("subject"), data.get("to"), data.get("message"))
+    print(sended_email)
+    return jsonify("Trabajando por un mejor servicio =) "), 200
 
