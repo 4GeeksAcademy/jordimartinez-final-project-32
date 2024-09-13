@@ -22,6 +22,7 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
+
 expires_in_minutes = 10
 expires_delta = timedelta(minutes=expires_in_minutes)
 

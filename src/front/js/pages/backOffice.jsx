@@ -29,7 +29,7 @@ export const BackOffice = () => {
             const success = await actions.deleteProduct(id);
             if (success) {
                 alert("Product deleted successfully");
-                actions.getAllProducts();  // Actualiza la lista de productos
+                actions.getAllProducts();
             } else {
                 alert("Error deleting product");
             }
