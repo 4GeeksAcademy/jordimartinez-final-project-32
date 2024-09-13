@@ -61,3 +61,8 @@
 .subbuttons-container .text-secondary {
     font-size: 0.75rem;
 }
+
+.custom-text {
+    font-size: 0.875rem; 
+    text-align: justify;
+}

@@ -1,5 +1,5 @@
 
-medicamentos = [    
+meds = [    
     {"generic_name": "Tylenol", "active_ingredient": "Paracetamol", "category_id": 1, "price": 50, "stock_quantity": 20, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725572644/tylenol-caja-con-frasco-20-tabletas-980-x-980-px-1_fggvd2.jpg", "description": "Analgésico y antipirético"},
     {"generic_name": "Advil", "active_ingredient": "Ibuprofeno", "category_id": 1, "price": 60, "stock_quantity": 30, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725572538/7607_Advil_Max_400mg_10_c%C3%A1psulas_ynvlin.avif", "description": "Analgésico y antiinflamatorio"},
     {"generic_name": "Amoxil", "active_ingredient": "Amoxicilina", "category_id": 2, "price": 70, "stock_quantity": 25, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725573078/amoxil_y2mtsv.jpg", "description": "Antibiótico de amplio espectro"},
@@ -97,3 +97,63 @@ medicamentos = [
     {"generic_name": "SulZinc", "active_ingredient": "Sulfato de zinc", "category_id": 9, "price": 50, "stock_quantity": 40, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725572634/SulZinc_muhbm7.jpg", "description": "Suplemento de zinc"},
     {"generic_name": "Electrolit", "active_ingredient": "Cloruro de potasio", "category_id": 9, "price": 85, "stock_quantity": 10, "image_url": "https://res.cloudinary.com/dekagxdn6/image/upload/v1725572577/Electrolit_d2hxry.webp", "description": "Suplemento de potasio"},
 ]
+
+category_list = ['Analgesico', 'Antibiotico', 'Dermatológico y cosmético', 'Nutrición', 'Pediátrico', 
+                 'Primeros auxilios', 'Salud digestiva', 'Tratamientos', 'Vitaminas']
+
+clients = [{"name":"Daniel Perdomo", "address":"Rincon 3451", "telephone":"555-7891","email":"daniel.perdomo@gmail.com","password":"87001498110","rol":"Admin","birthday":"1987, 1, 18","status":"Active"},
+        {"name":"Jordi Beppe", "address":"Gral Flores 1450", "telephone":"555-9123","email":"jordi.beppe@gmail.com","password":"45678213","rol":"Admin","birthday":"1994, 2, 23","status":"Active"},
+        {"name":"Anthonny Miranda", "address":"Avda. Artigas 874", "telephone":"555-3249","email":"anthonny.miranda@gmail.com","password":"asdewfgqer123","rol":"Admin","birthday":"1997, 5, 13","status":"Active"},
+        {"name":"Ana Carreño", "address":"Ituzaingo 2341", "telephone":"555-8421","email":"ana.carrenio@gmail.com","password":"xxmmanammxx","rol":"Admin","birthday":"1997, 8, 16","status":"Active"},
+        {"name":"Luis Madero", "address":"Manuel de lobos 388", "telephone":"555-1234","email":"luis.ma@gmail.com","password":"dsadsa","rol":"Seller","birthday":"1987, 12, 23","status":"Active"},
+        {"name":"Reina Cuadrado", "address":"Rivadavia 456", "telephone":"555-9456","email":"reina.cuadrado@gmail.com","password":"grgrgrgr123","rol":"Seller","birthday":"1999, 5, 16","status":"Active"},
+        {"name":"Linda Gonzalez", "address":"Gral Flores 1654", "telephone":"555-8432","email":"linda.gonzalez@gmail.com","password":"12346578","rol":"Client","birthday":"2002, 5, 26","status":"Active"},
+        {"name":"Manuel Iglesias", "address":"Cassanello 832", "telephone":"555-8712","email":"manu.iglesias@gmail.com","password":"12345678","rol":"Client","birthday":"2001, 12, 5","status":"Active"},
+        {"name":"Walter de Leon", "address":"18 de Julio 481", "telephone":"555-1234","email":"walter.deleon@gmail.com","password":"12345678","rol":"Client","birthday":"1988, 7, 1","status":"Active"},
+        {"name":"Hugo Carrizo", "address":"Soriano 4598", "telephone":"555-8521","email":"hugo.carrizo@gmail.com","password":"12345678","rol":"Client","birthday":"2005, 4, 4","status":"Active"}]
+
+
+# user_id, product_id, comment
+reviews_list = [{"user_id":"3", "product_id": "6", "comment": "My best decision ever"},
+                {"user_id":"1", "product_id": "6","comment": "Couldnt stop using this"},
+                {"user_id":"2", "product_id":"6", "comment": "The pain went away"},
+                {"user_id":"6", "product_id":"4", "comment": "Nice way to spend a weekend"},
+                {"user_id":"5", "product_id":"4", "comment": "Easy med against the pain"},
+                {"user_id":"4", "product_id":"8", "comment": "My wife couldnt believe we bought this"},
+                {"user_id":"3", "product_id":"8", "comment": "Unreasonably priced"},
+                {"user_id":"8", "product_id":"7", "comment": "It hurt when i breath, but after buying this i was the happiest man alive"},
+                {"user_id":"9", "product_id":"3", "comment": "Batman should buy this"},
+                {"user_id":"9", "product_id":"1", "comment": "Like a flash"},
+                {"user_id":"3", "product_id":"2", "comment": "At first i was decided not to buy this"},
+                {"user_id":"3", "product_id":"2", "comment": "It was a different approach"},
+                {"user_id":"2", "product_id":"9", "comment": "Worked"},
+                {"user_id":"1", "product_id":"13", "comment": "Took a few days"},
+                {"user_id":"2", "product_id":"2", "comment": "This is a review"}]
+
+
+# #order_id, product_id, stock
+# products_in_order = [{"order_id":"1","product_id":"4","stock":"3"},
+#                     {"order_id":"4","product_id":"2","stock":"4"},
+#                     {"order_id":"6","product_id":"5","stock":"7"},
+#                     {"order_id":"8","product_id":"2","stock":"1"},
+#                     {"order_id":"3","product_id":"6","stock":"10"},
+#                     {"order_id":"3","product_id":"1","stock":"1"},
+#                     {"order_id":"2","product_id":"3","stock":"6"},
+#                     {"order_id":"2","product_id":"7","stock":"2"},
+#                     {"order_id":"2","product_id":"9","stock":"2"},
+#                     {"order_id":"9","product_id":"17","stock":"2"},
+#                      ]
+
+
+orders_list = [{"user_id":"4","order_status":"KART","order_type":"Pickup"},
+                {"user_id":"8","order_status":"PENDING","order_type":"Delivery"},
+                {"user_id":"6","order_status":"KART","order_type":"Pickup"},
+                {"user_id":"3","order_status":"KART","order_type":"Pickup"},
+                {"user_id":"4","order_status":"SENDING","order_type":"Delivery"},
+                {"user_id":"8","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"2","order_status":"PENDING","order_type":"Pickup"},
+                {"user_id":"3","order_status":"KART","order_type":"Pickup"},
+                {"user_id":"1","order_status":"KART","order_type":"Delivery"},
+                {"user_id":"7","order_status":"DONE","order_type":"Delivery"},
+                {"user_id":"9","order_status":"SENDING","order_type":"Pickup"}]
+

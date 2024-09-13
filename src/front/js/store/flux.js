@@ -58,6 +58,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				try {
 					let response = await fetch(`${process.env.BACKEND_URL}/api/category`);
 					let data = await response.json();
+					console.log(data);
 			
 					setStore({
 						category: data
@@ -74,7 +75,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				try {
 					let response = await fetch(`${process.env.BACKEND_URL}/api/product`);
 					let data = await response.json();
-					
+
+					console.log(data);
 			
 					setStore({
 						product: data

@@ -1,13 +1,58 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 
 const CategoriesTemplate = () => {
+    const { theid } = useParams(); 
+
+    const categoryTitles = {
+        1: "Analgésicos",
+        2: "Antibióticos",
+        3: "Dermatológicos y cosméticos",
+        4: "Nutrición/suplementos",
+        5: "Pediátricos",
+        6: "Primeros auxilios",
+        7: "Salud digestiva",
+        8: "Tratamientos",
+        9: "Vitaminas",
+ 
+    };
+
+    const categoryTips1 = {
+        1: "¡Conoce algunos tips sobre los Analgésicos!",
+        2: "¡Conoce algunos tips sobre los Antibióticos!",
+        3: "¡Conoce algunos tips sobre los productos Dermatológicos y cosméticos!",
+        4: "¡Conoce algunos tips sobre los productos de Nutrición/suplementos!",
+        5: "¡Conoce algunos tips sobre los productos Pediátricos!",
+        6: "¡Conoce algunos tips sobre los productos de Primeros auxilios!",
+        7: "¡Conoce algunos tips sobre los productos de la Salud digestiva!",
+        8: "¡Conoce algunos tips sobre los productos de Tratamientos!",
+        9: "¡Conoce algunos tips sobre las Vitaminas!",
+ 
+    };
+
+    const categoryTips2 = {
+        1: "Usar analgésicos adecuadamente es fundamental para tratar el dolor sin causar efectos adversos. Sigue las recomendaciones de dosificación, ten en cuenta las precauciones y consulta a un profesional de la salud si tienes alguna duda o condición médica que pueda afectar el uso de estos medicamentos.",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+        7: "",
+        8: "",
+        9: "",
+    };
+
+    const categoryTitle = categoryTitles[theid] || "Categoría Desconocida";
+    const categoryTip1 = categoryTips1[theid] || "Consejos no disponibles para esta categoría.";
+    const categoryTip2 = categoryTips2[theid] || "Consejos no disponibles para esta categoría.";
+
     return (
      <div className="container pt-4">
         
 {/*PLANTILLA TITULO*/}
 
-        <div className="mb-3">
-            <h2>Titulo para cada categoria</h2>
+        <div className="mb-3 mt-3">
+            <h1><strong>{categoryTitle}</strong></h1>
         </div>
 
 {/*PLANTILLA CARRUSEL*/}
@@ -42,8 +87,8 @@ const CategoriesTemplate = () => {
 {/* COLUMNAS IZQUIERDA */}
 
                 <div className="col-md-3">
-                    <div className="bg-secondary text-white p-3 position-relative" style={{ height: '50px' }}>
-                        <h4 className="m-0">Título prueba</h4>
+                    <div className="bg-secondary text-white p-3 position-relative" style={{ height: '75px' }}>
+                        <h4 className="m-0 text-center">{categoryTitle}</h4>
 
 {/* Línea vertical extendida */}
 
@@ -86,9 +131,13 @@ const CategoriesTemplate = () => {
                     </div>
                     {/* Cuadro de texto fijo con borde gris claro */}
                     <div className="mt-4 p-3 border border-light" style={{ backgroundColor: '#f8f9fa' }}>
-                        <h4>Consejos y recomendaciones de cada categoria</h4>
-                        <p className="mb-0">
-                            Este es un texto fijo que se mostrará dentro de un cuadro con un borde gris claro.
+                        <h4><strong>{categoryTip1}</strong></h4>
+                        <p className="mb-0 custom-text">
+                            {categoryTip2}
+                        </p>
+                        <h3><strong>¡Precauciones Generales!</strong></h3>
+                        <p>
+                           asdasdsadas 
                         </p>
                     </div>
                 </div>
@@ -97,7 +146,7 @@ const CategoriesTemplate = () => {
 {/* COLUMNAS DERECHA */}
 
             <div className="col-md-9 text-gray">
-                <h3 className="fw-bold text-secondary">Titulo prueba</h3>
+                <h3 className="fw-bold text-secondary">{categoryTitle}</h3>
 
 {/* CARRUSEL CON IMÁGENES EN MINIATURA */}
 
