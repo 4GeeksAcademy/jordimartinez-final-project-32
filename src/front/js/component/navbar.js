@@ -59,9 +59,9 @@ export const Navbar = () => {
                             <i className="fas fa-user"></i>
                         </a>
                         <ul className="dropdown-menu dropdown-start">
-                            <li><Link className="dropdown-item" to="#">Login</Link></li>
+                            <li><Link className="dropdown-item" to="login">Login</Link></li>
                             <li><hr className="dropdown-divider" /></li>
-                            <li><a className="dropdown-item" href="#">Registrarse</a></li>
+                            <li><Link className="dropdown-item" to="register">Registrarse</Link></li>
                         </ul>
                     </div>
                     <Link to="/kart">
