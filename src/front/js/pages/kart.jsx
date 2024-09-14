@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
 
+const PayPalButton = paypal.Buttons.driver("react", { React, ReactDOM});
+
 export const Kart = () => {
     const { store, actions } = useContext(Context);
 
@@ -9,6 +11,21 @@ export const Kart = () => {
             actions.updateKartQuantity(productId, quantity);
         }
     };
+
+    const createOrder = (data, actions) => {
+        return actions.order.create({
+            purchase_units: [
+                {
+                    amount: {
+                        value: "0.01",
+                    },
+                },
+            ],
+        });
+    }
+    const onApprove = (data, actions) => {
+        return actions.order.capture();
+    }
 
     return (
         <section className="h-100">
@@ -64,7 +81,9 @@ export const Kart = () => {
 
                         <div className="card">
                             <div className="card-body">
-                                <button type="button" data-mdb-button-init data-mdb-ripple-init className="btn btn-warning btn-block btn-lg">Proceed to Pay</button>
+                                <PayPalButton createOrder={(data, actions) => this.createOrder(data, actions)}
+                                onApprove={(data, actions) => this.onApprove(data, actions)}
+                                />
                             </div>
                         </div>
                     </div>
