@@ -40,8 +40,8 @@ export const ProductView = () => {
                     <div className="col-7 mt-5">
                         <h2 className="mb-3">{details.generic_name}</h2>
                         <p><strong>Ingrediente Activo:</strong> {details.active_ingredient}</p>
-                        <p><strong>Categoría:</strong> {details.category_id}</p>
-                        <p><strong>Precio:</strong> ${details.price}</p>
+                        {/* <p><strong>Categoría:</strong> {details.category_id}</p> */}
+                        <p><strong>Precio:</strong> ${details.price}.00</p>
                         <p><strong>Cantidad en Stock:</strong> {details.stock_quantity}</p>
                         <p><strong>Descripción:</strong> {details.description}</p>
                         <button className="btn btn-success ms-5" onClick={() => actions.addToKart(details)}>
