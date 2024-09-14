@@ -64,10 +64,14 @@ export const Navbar = () => {
                             <li><Link className="dropdown-item" to="register">Registrarse</Link></li>
                         </ul>
                     </div>
-
-                    <Link to="/">
-                        <span className="col-1 me-4 ms-2">
+                    <Link to="/kart">
+                        <span className="col-1 me-4 ms-2 position-relative">
                             <i className="fas fa-shopping-cart"></i>
+                            {store.kart.length > 0 && (
+                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {store.kart.reduce((total, item) => total + item.quantity, 0)}
+                                </span>
+                            )}
                         </span>
                     </Link>
                 </div>
@@ -75,3 +79,4 @@ export const Navbar = () => {
         </nav>
     );
 };
+

@@ -10,6 +10,7 @@ import { AddProduct } from "./pages/addProduct.jsx";
 import { BackOffice } from "./pages/backOffice.jsx";
 import { ProductView } from "./pages/productView.jsx";
 import injectContext from "./store/appContext";
+import { Kart } from "./pages/kart.jsx";
 
 import { SearchResults } from "./component/searchResult.jsx";
 
@@ -40,7 +41,8 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<Demo />} path="/demo" />                       
                         <Route element={<BackOffice />} path="/backoffice" />            
-                        <Route element={<AddProduct />} path="/addproduct" />                        
+                        <Route element={<AddProduct />} path="/addproduct" />           
+                        <Route element={<Kart />} path="/kart" />                        
 						<Route element={<AddProduct />} path="/editproduct/:id" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<CategoriesTemplate />} path="/category/:theid" />

@@ -16,7 +16,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				
 			],
 			category: JSON.parse(localStorage.getItem("category")) || [],
-			product: JSON.parse(localStorage.getItem("product")) || []
+			product: JSON.parse(localStorage.getItem("product")) || [],
+			user: JSON.parse(localStorage.getItem("user")) || [],
+            kart: JSON.parse(localStorage.getItem("kart")) || []
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -81,6 +83,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 			
 					localStorage.setItem("product", JSON.stringify(data));
+				} catch (error) {
+					console.log(error);
+				}
+			},
+
+			getAllUsers: async () => {
+				const store = getStore();
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/user`);
+					let data = await response.json();
+					
+			
+					setStore({
+						user: data
+					});
+			
+					localStorage.setItem("user", JSON.stringify(data));
 				} catch (error) {
 					console.log(error);
 				}
@@ -153,9 +172,44 @@ const getState = ({ getStore, getActions, setStore }) => {
                     item.category_id.toString().includes(query)
                 );
                 setStore({ search: searchResult });		
-			}
+			},
 
+			addToKart: (product) => {
+                const store = getStore();
+                const existingProduct = store.kart.find(item => item.product_id === product.product_id);
 
+                if (existingProduct) {
+                    const updatedKart = store.kart.map(item => {
+                        if (item.product_id === product.product_id) {
+                            return { ...item, quantity: item.quantity + 1 };
+                        }
+                        return item;
+                    });
+                    setStore({ kart: updatedKart });
+                    localStorage.setItem("kart", JSON.stringify(updatedKart));
+                } else {
+                    const updatedKart = [...store.kart, { ...product, quantity: 1 }];
+                    setStore({ kart: updatedKart });
+                    localStorage.setItem("kart", JSON.stringify(updatedKart));
+                }
+            },
+            updateKartQuantity: (productId, quantity) => {
+                const store = getStore();
+                const updatedKart = store.kart.map(item => {
+                    if (item.product_id === productId) {
+                        return { ...item, quantity: quantity };
+                    }
+                    return item;
+                });
+                setStore({ kart: updatedKart });
+                localStorage.setItem("kart", JSON.stringify(updatedKart));
+            },
+            removeFromKart: (productId) => {
+                const store = getStore();
+                const updatedKart = store.kart.filter(product => product.product_id !== productId);
+                setStore({ kart: updatedKart });
+                localStorage.setItem("kart", JSON.stringify(updatedKart));
+            },
 		}
 	};
 };
