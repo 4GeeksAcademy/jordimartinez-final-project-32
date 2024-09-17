@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { Context } from "../store/appContext"
 import { Navigate } from "react-router-dom"
 
-const Profile = () => {
+export const Profile = () => {
 
     const { store } = useContext(Context)
     const { user } = store
@@ -23,5 +23,3 @@ const Profile = () => {
         </>
     )
 }
-
-export default Profile

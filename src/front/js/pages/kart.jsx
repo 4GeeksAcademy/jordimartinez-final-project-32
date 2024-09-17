@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
 
-const PayPalButton = paypal.Buttons.driver("react", { React, ReactDOM});
 
 export const Kart = () => {
+    
     const { store, actions } = useContext(Context);
+    
 
     const handleQuantityChange = (productId, quantity) => {
         if (quantity > 0) {
