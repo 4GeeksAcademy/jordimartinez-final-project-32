@@ -166,7 +166,6 @@ def add_product():
     data_form = request.form
     data_files = request.files
 
-   
     data = {
         "generic_name": data_form.get("generic_name"),
         "active_ingredient":data_form.get("active_ingredient"),
@@ -176,11 +175,8 @@ def add_product():
         "description":data_form.get("description"),
         "image_url":data_files.get("image")
     }
-    # print(data)
     
     result_cloud = uploader.upload(data.get("image_url"))
-
-
 
     if data is not None:
         product = Product(generic_name=data['generic_name'], active_ingredient=data['active_ingredient'],
@@ -275,7 +271,7 @@ def update_product(theid):
         db.session.rollback()
         return jsonify({"message": "Error updating product", "error": str(e)}), 500
     
-@api.route('/user', methods=['GET'])
+@api.route('/user/all', methods=['GET'])
 @jwt_required()
 def get_users():
     user_id = User.query.get(get_jwt_identity())
@@ -289,7 +285,7 @@ def get_users():
         else:
             return jsonify("You dont have access to this method"), 405
 
-@api.route('/user/', methods=['GET'])
+@api.route('/user', methods=['GET'])
 @jwt_required()
 def get_user():
     user_id = get_jwt_identity()  
@@ -300,48 +296,51 @@ def get_user():
     else:
         return jsonify({"message": "User not found"}), 404
     
-@api.route('/user', methods=['POST'])
+@api.route('/test', methods=['POST'])
+def test():
+    print("Test")
+    return jsonify("Hola!"),200
+
+@api.route('/user/register', methods=['POST'])
 def register_user():
-    data_form = request.form
     
-    data = { "name" : data_form.get("name"),
-            "document_number" : data_form("document_number"),
-            "address" : data_form("address"),
-            "telephone" : data_form("telephone"),
-            "email" : data_form("email"),
-            "password" : data_form("password"),
-            "rol" : data_form.get("rol", "CLIENT").upper(),
-            "birthday" : data_form("birthday"),
-            "status" : "ACTIVE"
+    data_form = request.json
+    data = {"name" : data_form.get("name"),
+            "document_number" : data_form.get("document_number"),
+            "address" : data_form.get("address"),
+            "telephone" : data_form.get("telephone"),
+            "email" : data_form.get("email"),
+            "password" : data_form.get("password"),
+            "rol" : data_form.get("rol"),
+            "birthday" : data_form.get("birthday"),
+            "status" : data_form.get("status")
             }
-
+    
     #All data in variables
-    name = data.get("name", None)
-    document_number = data.get("document_number", None)
-    address = data.get("address", None)
-    telephone = data.get("telephone", None)
-    email = data.get("email", None)
-    password = data.get("password", None)
-    rol = data.get("rol", None)
-    birthday = data.get("birthday", None)
-    status = data.get("status", None)
+    name = data.get("name")
+    document_number = data.get("document_number")
+    address = data.get("address")
+    telephone = data.get("telephone")
+    email = data.get("email")
+    password = data.get("password")
+    rol = data.get("rol")
+    birthday = data.get("birthday")
+    status = data.get("status")
 
+   
     if email is None or password is None:
-        return jsonify("To login you need to provide an email and a password"), 400
+        return jsonify("Email and Password are needed"), 400
     else:
         user = User.query.filter_by(email=email).one_or_none()
-
         if user is not None:
             return jsonify("User exists, please login!"), 400
 
         salt = b64encode(os.urandom(32)).decode("utf-8")
         password = set_password(password, salt)
-
         user = User(name=name,document_number=document_number,address=address,telephone=telephone,email=email,
                     password=password,rol=rol,birthday=birthday,status=status,salt=salt)
-
-        
         db.session.add(user)
+
         try:
             db.session.commit()
             return jsonify({"message": "User created!!"}), 201

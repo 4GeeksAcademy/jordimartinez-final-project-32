@@ -1,11 +1,34 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
-
 
 export const Kart = () => {
     
     const { store, actions } = useContext(Context);
-    
+
+    const [PayPalButton, setPayPalButton] = useState(null);
+
+    useEffect(() => {
+        // Asegúrate de que el SDK de PayPal esté cargado
+        const script = document.createElement("script");
+        script.src = "https://www.paypal.com/sdk/js?client-id=AZds00aWFN3sUQQbk6z17SS3f3VyOfpCEMLmOO9nZJfW4bo3ZGNeZXXvUVsndMak4XTKHYaXn-7VWfa3";
+
+        script.addEventListener("load", () => {
+            const PayPalButton = window.paypal.Buttons.driver("react", { React, ReactDOM });
+            setPayPalButton(() => PayPalButton);
+        });
+
+        script.addEventListener("error", () => {
+            console.error("Error al cargar el SDK de PayPal");
+        });
+
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
+
+
 
     const handleQuantityChange = (productId, quantity) => {
         if (quantity > 0) {
@@ -23,10 +46,11 @@ export const Kart = () => {
                 },
             ],
         });
-    }
+    };
+
     const onApprove = (data, actions) => {
         return actions.order.capture();
-    }
+    };
 
     return (
         <section className="h-100">
@@ -36,7 +60,6 @@ export const Kart = () => {
                         <div className="d-flex justify-content-between align-items-center mb-4">
                             <h3 className="fw-normal mb-0">Shopping Cart</h3>
                         </div>
-
                         {store.kart.map((product, index) => (
                             <div key={index} className="card rounded-3 mb-4">
                                 <div className="card-body p-4">
@@ -69,7 +92,6 @@ export const Kart = () => {
                                 </div>
                             </div>
                         ))}
-
                         <div className="card mb-4">
                             <div className="card-body p-4 d-flex flex-row">
                                 <div data-mdb-input-init className="form-outline flex-fill">
@@ -79,12 +101,14 @@ export const Kart = () => {
                                 <button type="button" data-mdb-button-init data-mdb-ripple-init className="btn btn-outline-warning btn-lg ms-3">Apply</button>
                             </div>
                         </div>
-
                         <div className="card">
                             <div className="card-body">
-                                <PayPalButton createOrder={(data, actions) => this.createOrder(data, actions)}
-                                onApprove={(data, actions) => this.onApprove(data, actions)}
-                                />
+                                {PayPalButton && (
+                                    <PayPalButton
+                                        createOrder={(data, actions) => createOrder(data, actions)}
+                                        onApprove={(data, actions) => onApprove(data, actions)}
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -93,4 +117,3 @@ export const Kart = () => {
         </section>
     );
 };
-

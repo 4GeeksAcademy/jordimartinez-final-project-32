@@ -14,7 +14,7 @@ export const Profile = () => {
                     <>
                         <h1>Email: {user?.email}</h1>
                         <h1>Lastname: {user?.lastname}</h1>
-                        <img src={user?.avatar} />
+                        {/* <img src={user?.avatar} /> */}
                     </>
                     :
                     <Navigate to="/login" />
