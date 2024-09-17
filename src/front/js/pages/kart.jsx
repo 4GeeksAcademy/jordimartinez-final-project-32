@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
-import { EnvironmentPlugin } from "webpack";
 
 export const Kart = () => {
+    
     const { store, actions } = useContext(Context);
+
     const [PayPalButton, setPayPalButton] = useState(null);
 
     useEffect(() => {
@@ -26,6 +27,8 @@ export const Kart = () => {
             document.body.removeChild(script);
         };
     }, []);
+
+
 
     const handleQuantityChange = (productId, quantity) => {
         if (quantity > 0) {
