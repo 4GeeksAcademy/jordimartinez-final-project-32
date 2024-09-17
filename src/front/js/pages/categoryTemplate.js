@@ -1,9 +1,14 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";  
+import { useParams, Link, useLocation } from "react-router-dom";  
+import { Context } from "../store/appContext"; 
 
 const CategoriesTemplate = () => {
     const { theid } = useParams();
     const categoryId = parseInt(theid, 10);
+    const { store, actions } = useContext(Context);
+    const [recommendedProducts, setRecommendedProducts] = useState([]);
+    const location = useLocation();
+    const currentCategoryId = location.pathname.split("/").pop();
 
     const categoryTitles = {
         1: "Analgésicos",
@@ -394,6 +399,21 @@ const CategoriesTemplate = () => {
         ],
     };
 
+    const getTitleClass = () => {
+        switch (currentCategoryId) {
+            case '1': return 'category-title-1';
+            case '2': return 'category-title-2';
+            case '3': return 'category-title-3';
+            case '4': return 'category-title-4';
+            case '5': return 'category-title-5';
+            case '6': return 'category-title-6';
+            case '7': return 'category-title-7';
+            case '8': return 'category-title-8';
+            case '9': return 'category-title-9';
+            default: return '';
+        }
+    };  
+
     const categoryTitle = categoryTitles[theid] || "Categoría Desconocida";
     const categoryTip1 = categoryTips1[theid] || "Consejos no disponibles para esta categoría.";
     const categoryTip2 = categoryTips2[theid] || "Consejos no disponibles para esta categoría.";
@@ -401,6 +421,16 @@ const CategoriesTemplate = () => {
     const categoryTip4 = categoryTips4[theid] || "Consejos no disponibles para esta categoría.";
     const categoryTip5 = categoryTips5[theid] || "Consejos no disponibles para esta categoría.";
     const images = categoryImages[categoryId] || [];
+    const categoryClass = `bg-category-${categoryId}` || 'bg-category-1';
+
+    useEffect(() => {
+        if (store.product && categoryId) {
+            const filteredProducts = store.product.filter(product => product.category_id === categoryId);
+            const shuffledProducts = filteredProducts.sort(() => 0.5 - Math.random());
+            const selectedProducts = shuffledProducts.slice(0, 15);
+            setRecommendedProducts(selectedProducts);
+        }
+    }, [store.product, categoryId]);
 
     return (
      <div className="container pt-4">
@@ -408,12 +438,12 @@ const CategoriesTemplate = () => {
 {/*PLANTILLA TITULO*/}
 
         <div className="mb-3 mt-3">
-            <h1><strong>{categoryTitle}</strong></h1>
+            <h1 className={`fw-bold ${getTitleClass()}`}><strong>{categoryTitle}</strong></h1>
         </div>
 
 {/*PLANTILLA CARRUSEL*/}
 
-            <div id="carouselExample" className="carousel slide carousel-custom">
+            <div id="carouselExample" className="carousel slide carousel-custom carousel-dark slide">
                 <div className="carousel-inner">
                     {images.map((image, index) => (
                         <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
@@ -438,47 +468,95 @@ const CategoriesTemplate = () => {
 
 {/* COLUMNAS IZQUIERDA */}
 
-                <div className="col-md-3">
-                    <div className="bg-secondary text-white p-3 position-relative" style={{ height: '75px' }}>
-                        <h4 className="m-0 text-center">{categoryTitle}</h4>
-
-{/* Línea vertical extendida */}
-
-                        <div className="position-absolute start-100 top-0 bottom-0" style={{ width: '2px', backgroundColor: '#000' }}>    
-                        </div>
-                    </div>
+            <div className="col-md-3 vertical-line">
+                <div className={`text-white p-3 position-relative ${categoryClass}`} style={{ height: '75px' }}>
+                    <h4 className="m-0 text-center">{categoryTitle}</h4>
+                </div>
 
 {/* Botones circulares */}
 
                 <div className="mt-3">
                     <div className="mb-3 d-flex flex-column align-items-start">
 
-{/* Botones para Categoria Mayor 1 */}
-
-                        <div className="d-flex align-items-center mb-2">
-                            <button className="circle-button"></button>
-                            <span className="ms-2">Categoria Mayor 1</span>
-                        </div>
-
-{/* Botones para Categoria Mayor 2 */}
+{/* Botones para Categoria Analgésicos */}
 
                         <div className="mb-3 d-flex align-items-center">
-                            <button className="circle-button"></button>
-                            <span className="ms-2">Categoria Mayor 2</span>
+                            <Link to="/category/1" className="text-decoration-none">
+                                <button className={`circle-button ${currentCategoryId === '1' ? 'selected category-1' : ''}`}></button>
+                                <span className={`ms-2 ${currentCategoryId === '1' ? 'text-bold text-category-1' : 'text-black'}`}>Analgésicos</span>
+                            </Link>
                         </div>
 
-{/* Botones para Categoria Mayor 3 */}
+{/* Botones para Categoria Antibióticos */}
 
                         <div className="mb-3 d-flex align-items-center">
-                            <button className="circle-button"></button>
-                            <span className="ms-2">Categoria Mayor 3</span>
+                            <Link to="/category/2" className="text-decoration-none">
+                                <button className={`circle-button ${currentCategoryId === '2' ? 'selected category-2' : ''}`}></button>
+                                <span className={`ms-2 ${currentCategoryId === '2' ? 'text-bold text-category-2' : 'text-black'}`}>Antibióticos</span>
+                            </Link>
                         </div>
 
-{/* Botones para Categoria Mayor 4 */}
+{/* Botones para Categoria Dermatológicos y cosméticos */}
 
                         <div className="mb-3 d-flex align-items-center">
-                            <button className="circle-button"></button>
-                            <span className="ms-2">Categoria Mayor 4</span>
+                            <Link to="/category/3" className="text-decoration-none">
+                                <button className={`circle-button ${currentCategoryId === '3' ? 'selected category-3' : ''}`}></button>
+                                <span className={`ms-2 ${currentCategoryId === '3' ? 'text-bold text-category-3' : 'text-black'}`}>Dermatológicos y cosméticos</span>
+                            </Link>
+                        </div>
+
+{/* Botones para Categoria Nutrición/suplementos */}
+
+                        <div className="mb-3 d-flex align-items-center">
+                            <Link to="/category/4" className="text-decoration-none">
+                                <button className={`circle-button ${currentCategoryId === '4' ? 'selected category-4' : ''}`}></button>
+                                <span className={`ms-2 ${currentCategoryId === '4' ? 'text-bold text-category-4' : 'text-black'}`}>Nutrición/suplementos</span>
+                            </Link>
+                        </div>
+
+{/* Botones para Categoria Pediátricos */}
+
+                        <div className="mb-3 d-flex align-items-center">
+                            <Link to="/category/5" className="text-decoration-none">
+                                <button className={`circle-button ${currentCategoryId === '5' ? 'selected category-5' : ''}`}></button>
+                                <span className={`ms-2 ${currentCategoryId === '5' ? 'text-bold text-category-5' : 'text-black'}`}>Pediátricos</span>
+                            </Link>
+                        </div>
+
+{/* Botones para Categoria Primeros auxilios */}
+
+                        <div className="mb-3 d-flex align-items-center">
+                            <Link to="/category/6" className="text-decoration-none">
+                                <button className={`circle-button ${currentCategoryId === '6' ? 'selected category-6' : ''}`}></button>
+                                <span className={`ms-2 ${currentCategoryId === '6' ? 'text-bold text-category-6' : 'text-black'}`}>Primeros auxilios</span>
+                            </Link>
+                        </div>
+
+{/* Botones para Categoria Salud digestiva */}
+
+                        <div className="mb-3 d-flex align-items-center">
+                            <Link to="/category/7" className="text-decoration-none">
+                                <button className={`circle-button ${currentCategoryId === '7' ? 'selected category-7' : ''}`}></button>
+                                <span className={`ms-2 ${currentCategoryId === '7' ? 'text-bold text-category-7' : 'text-black'}`}>Salud digestiva</span>
+                            </Link>
+                        </div>
+
+{/* Botones para Categoria Tratamientos */}
+
+                        <div className="mb-3 d-flex align-items-center">
+                            <Link to="/category/8" className="text-decoration-none">
+                                <button className={`circle-button ${currentCategoryId === '8' ? 'selected category-8' : ''}`}></button>
+                                <span className={`ms-2 ${currentCategoryId === '8' ? 'text-bold text-category-8' : 'text-black'}`}>Tratamientos</span>
+                            </Link>
+                        </div>
+
+{/* Botones para Categoria Vitaminas */}
+
+                        <div className="mb-3 d-flex align-items-center">
+                            <Link to="/category/9" className="text-decoration-none">
+                                <button className={`circle-button ${currentCategoryId === '9' ? 'selected category-9' : ''}`}></button>
+                                <span className={`ms-2 ${currentCategoryId === '9' ? 'text-bold text-category-9' : 'text-black'}`}>Vitaminas</span>
+                            </Link>
                         </div>
                     </div>
 
@@ -508,104 +586,87 @@ const CategoriesTemplate = () => {
 {/* COLUMNAS DERECHA */}
 
             <div className="col-md-9 text-gray">
-                <h3 className="fw-bold text-secondary">{categoryTitle}</h3>
-
-{/* CARRUSEL CON IMÁGENES EN MINIATURA */}
-
-                <div id="carouselExample2" className="carousel slide mt-3">
-                    <div className="carousel-inner">
-                        <div className="carousel-item active">
-                            <div className="d-flex">
-                                <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                            </div>
-                        </div>
-                        <div className="carousel-item">
-                            <div className="d-flex">
-                                <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                            </div>
-                        </div>
-                    </div>
-                    <button className="carousel-control-prev" type="button" data-bs-target="#carouselExample2" data-bs-slide="prev">
-                        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span className="visually-hidden">Previous</span>
-                    </button>
-                    <button className="carousel-control-next" type="button" data-bs-target="#carouselExample2" data-bs-slide="next">
-                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span className="visually-hidden">Next</span>
-                    </button>
-                </div>
+                <h3 className={`fw-bold ${getTitleClass()}`}>{categoryTitle}</h3>
 
 {/* NUEVO CARRUSEL CON PRODUCTOS DESTACADOS */}
 
-                <div className="mt-5">
-                    <h5>Productos Destacados</h5>
-                    <div id="carouselExample3" className="carousel slide mt-3">
-                        <div className="carousel-inner">
-                            <div className="carousel-item active">
-                                <div className="d-flex">
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                </div>
+                    <div className="mt-5">
+                        <h5>Productos Destacados</h5>
+                        <div id="carouselExample2" className="carousel slide mt-3 carousel-dark slide">
+                            <div className="carousel-inner">
+                                {recommendedProducts.reduce((acc, product, index) => {
+                                    if (index % 3 === 0) acc.push([]);
+                                    acc[acc.length - 1].push(product);
+                                    return acc;
+                                }, []).map((products, slideIndex) => (
+                                    <div key={slideIndex} className={`carousel-item ${slideIndex === 0 ? 'active' : ''}`}>
+                                        <div className="d-flex">
+                                            {products.map((product) => (
+                                                <div key={product.product_id} className="card me-2" style={{ width: '18rem' }}>
+                                                    <Link to={`/product/${product.product_id}`}>
+                                                        <img 
+                                                            src={product.image_url} 
+                                                            className="card-img-top" 
+                                                            alt={product.generic_name} 
+                                                            style={{ height: '200px', objectFit: 'cover' }}
+                                                        />
+                                                    </Link>
+                                                    <div className="card-body">
+                                                        <h5 className="card-title">{product.generic_name}</h5>
+                                                        <p className="card-text">${product.price}.00</p>
+                                                        <p className="card-text">{product.description}</p>
+                                                        <Link to={`/product/${product.product_id}`} className="btn btn-primary">Ver Producto</Link>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                            <div className="carousel-item">
-                                <div className="d-flex">
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                </div>
-                            </div>
-                        </div>
-                        <button className="carousel-control-prev" type="button" data-bs-target="#carouselExample3" data-bs-slide="prev">
+                        <button className="carousel-control-prev" type="button" data-bs-target="#carouselExample2" data-bs-slide="prev">
                             <span className="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span className="visually-hidden">Previous</span>
                         </button>
-                        <button className="carousel-control-next" type="button" data-bs-target="#carouselExample3" data-bs-slide="next">
+                        <button className="carousel-control-next" type="button" data-bs-target="#carouselExample2" data-bs-slide="next">
                             <span className="carousel-control-next-icon" aria-hidden="true"></span>
                             <span className="visually-hidden">Next</span>
                         </button>
                     </div>
                 </div>
 
-{/* NUEVO CARRUSEL CON PRODUCTOS MÁS VENDIDOS */}
+{/* NUEVO CUADRO DE PRODUCTOS EN MOZAICO */}
 
-                <div className="mt-5">
-                    <h5>Productos más vendidos</h5>
-                    <div id="carouselExample4" className="carousel slide mt-3">
-                        <div className="carousel-inner">
-                            <div className="carousel-item active">
-                                <div className="d-flex">
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                </div>
+                <div className="mt-4 p-3 border border-light" style={{ backgroundColor: 'white', width: '110%' }}>
+                    <h3><strong>¡Compra ahora!</strong></h3>
+                    <div className="row">
+                        {recommendedProducts.reduce((acc, product, index) => {
+                            if (index % 3 === 0) acc.push([]);
+                            acc[acc.length - 1].push(product);
+                            return acc;
+                        }, []).map((products, rowIndex) => (
+                            <div key={rowIndex} className="row mb-3">
+                                {products.map((product) => (
+                                    <div key={product.product_id} className="col-md-4 mb-3 mt-4">
+                                        <div className="card mb-2" style={{ border: 'none' }}>
+                                            <Link to={`/product/${product.product_id}`}>
+                                                <img 
+                                                    src={product.image_url} 
+                                                    className="card-img-top" 
+                                                    alt={product.generic_name} 
+                                                    style={{ height: '150px', objectFit: 'cover' }}
+                                                />
+                                            </Link>
+                                            <div className="card-body">
+                                                <h6 className="card-title">{product.generic_name}</h6>
+                                                <p className="card-text">${product.price}.00</p>
+                                                <p className="card-text">{product.description}</p>
+                                                <Link to={`/product/${product.product_id}`} className="btn btn-primary">Ver Producto</Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                            <div className="carousel-item">
-                                <div className="d-flex">
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                    <img src="https://via.placeholder.com/150x150" className="d-block w-25" alt="..." />
-                                </div>
-                            </div>
-                        </div>
-                        <button className="carousel-control-prev" type="button" data-bs-target="#carouselExample4" data-bs-slide="prev">
-                            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span className="visually-hidden">Previous</span>
-                        </button>
-                        <button className="carousel-control-next" type="button" data-bs-target="#carouselExample4" data-bs-slide="next">
-                            <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span className="visually-hidden">Next</span>
-                        </button>
+                        ))}
                     </div>
                 </div>
             </div>
