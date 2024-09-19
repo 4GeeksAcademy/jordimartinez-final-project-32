@@ -226,24 +226,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                         body: JSON.stringify(userData)
                     });
 					
-                    if (response.status === 201) {
-						const data = await response.json();
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Registro exitoso!',
-                            text: 'Usuario registrado correctamente.',
-                        });
-                        return data;
-                    } else {
-						const errorData = await response.json();
-						console.log(error)
-                        // Swal.fire({
-						// 	icon: 'error',
-                        //     title: 'Error',
-                        //     text: errorData.message || 'Hubo un problema al registrar el usuario.',
-                        // });
-                        return null;
-                    }
+                        return response.status;
+                   
                 } catch (error) {                    
 					console.error('Error en la solicitud:', error);
                     return null;
@@ -264,26 +248,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 						const data = await response.json();
                         localStorage.setItem('token', data.token);
                         setStore({ token: data.token });
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Inicio de sesión exitoso!',
-                            text: 'Has iniciado sesión correctamente.',
-                        });
-                        return data;
+                        
+                        return response.status;
                     } else {
-						Swal.fire({
-							icon: 'error',
-                            title: 'Error',
-                            text: 'Correo electrónico o contraseña incorrectos.',
-                        });
-                        return null;
+						
+                        return response.status;
                     }
                 } catch (error) {
-					Swal.fire({
-						icon: 'error',
-                        title: 'Error',
-                        text: 'Hubo un problema con la solicitud.',
-                    });
+					
                     console.error('Error en la solicitud:', error);
                     return null;
                 }

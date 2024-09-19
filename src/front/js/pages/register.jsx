@@ -31,14 +31,14 @@ export const Register = () => {
        
         try {
             const response = await actions.registerUser(user);
-            if (response.status === 201) {
+            if (response === 201) {
                 setUser(initialState);
                 Swal.fire({
                     icon: 'success',
                     title: '¡Registro exitoso!',
                     text: 'Usuario registrado correctamente.',
                 });
-            } else if (response.status === 400) {
+            } else if (response === 400) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -100,7 +100,7 @@ export const Register = () => {
                                             <label className="form-label" htmlFor="form3Example7cg">Fecha de Nacimiento</label>
                                         </div>
                                         <div className="d-flex justify-content-center">
-                                            <button type="submit" className="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Registrar</button>
+                                            <button type="submit" className="btn btn-success btn-block btn-lg gradient-custom-4">Registrar</button>
                                         </div>
                                         <p className="text-center text-muted mt-5 mb-0">¿Ya tienes una cuenta? <a href="/login" className="fw-bold text-body"><u>Inicia sesión aquí</u></a></p>
                                     </form>
