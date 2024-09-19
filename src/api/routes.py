@@ -285,6 +285,7 @@ def get_users():
         else:
             return jsonify("You dont have access to this method"), 405
 
+
 @api.route('/user', methods=['GET'])
 @jwt_required()
 def get_user():

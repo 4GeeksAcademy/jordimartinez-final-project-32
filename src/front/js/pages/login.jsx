@@ -22,7 +22,20 @@ export const Login = () => {
         e.preventDefault();
         const success = await actions.loginUser(formData);
         if (success) {
-            navigate('/dashboard'); 
+            
+           
+            Swal.fire({
+                icon: 'success',
+                title: '¡Inicio de sesión!',
+                text: 'Inicio de sesión exitoso.',
+            });
+        }
+        else{
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error al iniciar sesión',
+            });
         }
     };
 

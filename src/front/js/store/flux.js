@@ -246,6 +246,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					
                     if (response.ok) {
 						const data = await response.json();
+						console.log(token);
+						
                         localStorage.setItem('token', data.token);
                         setStore({ token: data.token });
                         
