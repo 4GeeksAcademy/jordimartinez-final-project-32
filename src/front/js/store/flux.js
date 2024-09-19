@@ -18,6 +18,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			category: JSON.parse(localStorage.getItem("category")) || [],
 			product: JSON.parse(localStorage.getItem("product")) || [],
 			user: JSON.parse(localStorage.getItem("user")) || [],
+			token: localStorage.getItem("token") || null,
             kart: JSON.parse(localStorage.getItem("kart")) || []
 		},
 		actions: {
@@ -234,34 +235,33 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            loginUser: async (credentials) => {
-                try {
+            loginUser: async (user) => {
+				console.log(user)
+				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
-						method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(credentials)
-                    });
-					
-                    if (response.ok) {
-						const data = await response.json();
-						console.log(token);
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(user)
+					});
+					const data = await response.json();
+					if (response.status === 200) {
+						setStore({
+							token: data.token,
+						});
+						localStorage.setItem("token", data.token);
 						
-                        localStorage.setItem('token', data.token);
-                        setStore({ token: data.token });
-                        
-                        return response.status;
-                    } else {
-						
-                        return response.status;
-                    }
-                } catch (error) {
-					
-                    console.error('Error en la solicitud:', error);
-                    return null;
-                }
-            },
+						getActions().getUserLogin()
+						return true;
+					} else {
+						return false;
+					}
+				} catch (error) {
+					console.error("Error en el login:", error);
+					return false;
+				}
+			},
 			
             updateUser: async (userData) => {
 				const store = getStore();
@@ -342,14 +342,40 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
             logoutUser: () => {
-                localStorage.removeItem('token');
-                setStore({ token: null });
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Cierre de sesión exitoso!',
-                    text: 'Has cerrado sesión correctamente.',
-                });
+                setStore({
+					token: null,
+					user: null
+				});
+				localStorage.removeItem("token");
+				localStorage.removeItem("user");
+				Swal.fire({
+					icon: 'success',
+					title: '¡Cierre de sesión exitoso!',
+					text: 'Has cerrado sesión correctamente.',
+				});
             },
+
+			getUserLogin: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`
+						}
+					});
+					const data = await response.json();
+			
+					if (response.ok) {
+						setStore({
+							user: data
+						});
+						localStorage.setItem("user", JSON.stringify(data));
+					}
+				} catch (error) {
+					console.error("Error al obtener los datos del usuario:", error);
+				}
+			},
+
 			getAllUsers: async () => {
 				const store = getStore();
 				try {
