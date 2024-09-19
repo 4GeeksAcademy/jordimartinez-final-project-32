@@ -13,6 +13,10 @@ export const Navbar = () => {
         navigate("/search-results");
     };
 
+    const handleLogout = () => {
+        actions.logoutUser();
+    };
+
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary mb-5" style={{ backgroundColor: '#e3f2fd', position: 'fixed', top: '0', width: '100%', zIndex: '1000' }}>
             <div className="container-fluid">
@@ -59,9 +63,19 @@ export const Navbar = () => {
                             <i className="fas fa-user"></i>
                         </a>
                         <ul className="dropdown-menu dropdown-start">
-                            <li><Link className="dropdown-item" to="login">Login</Link></li>
-                            <li><hr className="dropdown-divider" /></li>
-                            <li><Link className="dropdown-item" to="register">Registrarse</Link></li>
+                            {store.token ? (
+                                <>
+                                    <li><Link className="dropdown-item" to="/profile">Perfil</Link></li>
+                                    <li><hr className="dropdown-divider" /></li>
+                                    <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
+                                </>
+                            ) : (
+                                <>
+                                    <li><Link className="dropdown-item" to="/login">Login</Link></li>
+                                    <li><hr className="dropdown-divider" /></li>
+                                    <li><Link className="dropdown-item" to="/register">Registrarse</Link></li>
+                                </>
+                            )}
                         </ul>
                     </div>
                     <Link to="/kart">

@@ -1,38 +1,32 @@
 import React, { useContext, useEffect, useState } from "react";
+import ReactDOM from "react-dom";
 import { Context } from "../store/appContext";
+import { useNavigate } from "react-router-dom";
 
 export const Kart = () => {
-    
     const { store, actions } = useContext(Context);
-
     const [PayPalButton, setPayPalButton] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        // Asegúrate de que el SDK de PayPal esté cargado
         const script = document.createElement("script");
         script.src = "https://www.paypal.com/sdk/js?client-id=AZds00aWFN3sUQQbk6z17SS3f3VyOfpCEMLmOO9nZJfW4bo3ZGNeZXXvUVsndMak4XTKHYaXn-7VWfa3";
-
         script.addEventListener("load", () => {
             const PayPalButton = window.paypal.Buttons.driver("react", { React, ReactDOM });
             setPayPalButton(() => PayPalButton);
         });
-
         script.addEventListener("error", () => {
             console.error("Error al cargar el SDK de PayPal");
         });
-
         document.body.appendChild(script);
-
         return () => {
             document.body.removeChild(script);
         };
     }, []);
 
-
-
     const handleQuantityChange = (productId, quantity) => {
         if (quantity > 0) {
-            actions.updateKartQuantity(productId, quantity);
+            actions.updateKartQuantity(productId, quantity, store.user.id);
         }
     };
 
@@ -41,7 +35,7 @@ export const Kart = () => {
             purchase_units: [
                 {
                     amount: {
-                        value: "0.01",
+                        value: store.kart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2),
                     },
                 },
             ],
@@ -49,7 +43,10 @@ export const Kart = () => {
     };
 
     const onApprove = (data, actions) => {
-        return actions.order.capture();
+        return actions.order.capture().then(() => {
+            actions.clearKart(store.user.id);
+            navigate("/order-confirmation");
+        });
     };
 
     return (
@@ -84,7 +81,7 @@ export const Kart = () => {
                                             <h5 className="mb-0">${product.price * product.quantity}.00</h5>
                                         </div>
                                         <div className="col-md-1 col-lg-1 col-xl-1 text-end">
-                                            <button className="btn btn-danger" onClick={() => actions.removeFromKart(product.product_id)}>
+                                            <button className="btn btn-danger" onClick={() => actions.removeFromKart(product.product_id, store.user.id)}>
                                                 <i className="fas fa-trash fa-lg"></i>
                                             </button>
                                         </div>

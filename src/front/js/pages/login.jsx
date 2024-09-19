@@ -22,7 +22,20 @@ export const Login = () => {
         e.preventDefault();
         const success = await actions.loginUser(formData);
         if (success) {
-            navigate('/dashboard'); 
+            
+           
+            Swal.fire({
+                icon: 'success',
+                title: '¡Inicio de sesión!',
+                text: 'Inicio de sesión exitoso.',
+            });
+        }
+        else{
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error al iniciar sesión',
+            });
         }
     };
 
@@ -45,7 +58,7 @@ export const Login = () => {
                                             <label className="form-label" htmlFor="form3Example2cg">Contraseña</label>
                                         </div>
                                         <div className="d-flex justify-content-center">
-                                            <button type="submit" className="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Iniciar Sesión</button>
+                                            <button type="submit" className="btn btn-success btn-block btn-lg gradient-custom-4">Iniciar Sesión</button>
                                         </div>
                                         <p className="text-center text-muted mt-5 mb-0">¿No tienes una cuenta? <a href="/register" className="fw-bold text-body"><u>Regístrate aquí</u></a></p>
                                     </form>

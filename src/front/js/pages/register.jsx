@@ -10,7 +10,6 @@ const initialState = {
     email: "",
     password: "",
     birthday: "",
-    avatar: null,
     rol: "CLIENT",  
     status: "ACTIVE"
 };
@@ -20,37 +19,26 @@ export const Register = () => {
     const [user, setUser] = useState(initialState);
 
     const handleChange = ({ target }) => {
-        const value = target.name === "avatar" ? target.files[0] : target.value;
         setUser({
             ...user,
-            [target.name]: value
+            [target.name]: target.value
         });
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const formData = new FormData();
-        formData.append("name", user.name);
-        formData.append("document_number", user.document_number);
-        formData.append("address", user.address);
-        formData.append("telephone", user.telephone);
-        formData.append("email", user.email);
-        formData.append("password", user.password);
-        formData.append("birthday", user.birthday);
-        formData.append("rol", "CLIENT");
-        formData.append("status", "ACTIVE");
-
+       
         try {
-            const response = await actions.registerUser(formData);
-            if (response) {
+            const response = await actions.registerUser(user);
+            if (response === 201) {
                 setUser(initialState);
                 Swal.fire({
                     icon: 'success',
                     title: '¡Registro exitoso!',
                     text: 'Usuario registrado correctamente.',
                 });
-            } else if (response.status === 400) {
+            } else if (response === 400) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -112,7 +100,7 @@ export const Register = () => {
                                             <label className="form-label" htmlFor="form3Example7cg">Fecha de Nacimiento</label>
                                         </div>
                                         <div className="d-flex justify-content-center">
-                                            <button type="submit" className="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Registrar</button>
+                                            <button type="submit" className="btn btn-success btn-block btn-lg gradient-custom-4">Registrar</button>
                                         </div>
                                         <p className="text-center text-muted mt-5 mb-0">¿Ya tienes una cuenta? <a href="/login" className="fw-bold text-body"><u>Inicia sesión aquí</u></a></p>
                                     </form>

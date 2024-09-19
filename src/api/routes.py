@@ -281,6 +281,7 @@ def get_users():
         return jsonify("There are no users"), 404
 
 
+
 @api.route('/user', methods=['GET'])
 @jwt_required()
 def get_user():

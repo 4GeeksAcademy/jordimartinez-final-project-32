@@ -215,29 +215,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            getAllUsers: async () => {
-                const store = getStore();
-                try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/user/all`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${store.token}`
-                        }
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        setStore({ user: data });
-                        localStorage.setItem("user", JSON.stringify(data));
-                    } else {
-                        console.error('Error al obtener la lista de usuarios');
-                    }
-                } catch (error) {
-                    console.error('Error en la solicitud:', error);
-                }
-            },
-
+			
             registerUser: async (userData) => {
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/user/register`, {
@@ -247,91 +225,61 @@ const getState = ({ getStore, getActions, setStore }) => {
                         },
                         body: JSON.stringify(userData)
                     });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Registro exitoso!',
-                            text: 'Usuario registrado correctamente.',
-                        });
-                        return data;
-                    } else {
-                        const errorData = await response.json();
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: errorData.message || 'Hubo un problema al registrar el usuario.',
-                        });
-                        return null;
-                    }
-                } catch (error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Hubo un problema con la solicitud.',
-                    });
-                    console.error('Error en la solicitud:', error);
+					
+                        return response.status;
+                   
+                } catch (error) {                    
+					console.error('Error en la solicitud:', error);
                     return null;
                 }
             },
 
             loginUser: async (credentials) => {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
-                        method: 'POST',
+					const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
+						method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(credentials)
                     });
-
+					
                     if (response.ok) {
-                        const data = await response.json();
+						const data = await response.json();
+						console.log(token);
+						
                         localStorage.setItem('token', data.token);
                         setStore({ token: data.token });
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Inicio de sesión exitoso!',
-                            text: 'Has iniciado sesión correctamente.',
-                        });
-                        return data;
+                        
+                        return response.status;
                     } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Correo electrónico o contraseña incorrectos.',
-                        });
-                        return null;
+						
+                        return response.status;
                     }
                 } catch (error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Hubo un problema con la solicitud.',
-                    });
+					
                     console.error('Error en la solicitud:', error);
                     return null;
                 }
             },
-
+			
             updateUser: async (userData) => {
-                const store = getStore();
+				const store = getStore();
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/user`, {
                         method: 'PUT',
                         headers: {
-                            'Content-Type': 'application/json',
+							'Content-Type': 'application/json',
                             'Authorization': `Bearer ${store.token}`
                         },
                         body: JSON.stringify(userData)
                     });
-
+					
                     if (response.ok) {
-                        const data = await response.json();
+						const data = await response.json();
                         setStore({ currentUser: data });
                         Swal.fire({
-                            icon: 'success',
+							icon: 'success',
                             title: '¡Actualización exitosa!',
                             text: 'Tu información ha sido actualizada correctamente.',
                         });
@@ -354,14 +302,14 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return null;
                 }
             },
-
+						
             deleteUser: async (id) => {
-                const store = getStore();
+				const store = getStore();
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
-                        method: 'DELETE',
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
+						method: 'DELETE',
                         headers: {
-                            'Content-Type': 'application/json',
+							'Content-Type': 'application/json',
                             'Authorization': `Bearer ${store.token}`
                         }
                     });
@@ -401,7 +349,28 @@ const getState = ({ getStore, getActions, setStore }) => {
                     title: '¡Cierre de sesión exitoso!',
                     text: 'Has cerrado sesión correctamente.',
                 });
-            }
+            },
+			getAllUsers: async () => {
+				const store = getStore();
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/all`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${store.token}`
+						}
+					});
+					if (response.ok) {
+						const data = await response.json();
+						setStore({ user: data });
+						localStorage.setItem("user", JSON.stringify(data));
+					} else {
+						console.error('Error al obtener la lista de usuarios');
+					}
+				} catch (error) {
+					console.error('Error en la solicitud:', error);
+				}
+			}
 		}
 	};
 };
