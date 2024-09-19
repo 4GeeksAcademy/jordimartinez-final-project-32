@@ -10,7 +10,6 @@ const initialState = {
     email: "",
     password: "",
     birthday: "",
-    avatar: null,
     rol: "CLIENT",  
     status: "ACTIVE"
 };
@@ -20,30 +19,19 @@ export const Register = () => {
     const [user, setUser] = useState(initialState);
 
     const handleChange = ({ target }) => {
-        const value = target.name === "avatar" ? target.files[0] : target.value;
         setUser({
             ...user,
-            [target.name]: value
+            [target.name]: target.value
         });
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const formData = new FormData();
-        formData.append("name", user.name);
-        formData.append("document_number", user.document_number);
-        formData.append("address", user.address);
-        formData.append("telephone", user.telephone);
-        formData.append("email", user.email);
-        formData.append("password", user.password);
-        formData.append("birthday", user.birthday);
-        formData.append("rol", "CLIENT");
-        formData.append("status", "ACTIVE");
-
+       
         try {
-            const response = await actions.registerUser(formData);
-            if (response) {
+            const response = await actions.registerUser(user);
+            if (response.status === 201) {
                 setUser(initialState);
                 Swal.fire({
                     icon: 'success',
