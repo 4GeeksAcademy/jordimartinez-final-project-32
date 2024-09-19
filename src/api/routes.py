@@ -538,14 +538,13 @@ def login():
     data = request.json
     email = data.get("email", None)
     password = data.get("password", None)
-
     if email is None or password is None:
         return jsonify({"message": "Email and password required"}), 400
     else:
         user = User.query.filter_by(email=email).one_or_none()
 
         if user is None:
-            return jsonify({"message":"Incorrect Email or Password"}), 400
+            return jsonify({"message":"User is empty"}), 400
         else:
             if check_password(user.password, password, user.salt):
                 token = create_access_token(identity=user.user_id)
@@ -553,32 +552,33 @@ def login():
             else:
                 return jsonify({"message": "Bad Info"}), 400    
     
-@api.route('/update-password', methods=['PUT'])
+@api.route('/user/update-password', methods=['PUT'])
 @jwt_required()
 def update_pass():
-    #Data que viene de entrada
-    user = get_jwt_identity()
+    user_identity = get_jwt_identity()
     body = request.json
 
-    #Consiguiendo correo para actualizar la password
-    user = get_user(user)
-    email = user.get('email')
+    user_data = get_user(user_identity) 
+    email = user_data.get('email')
 
     user = User.query.filter_by(email=email).one_or_none()
 
     if user is not None:
-        salt = b64encode(os.urandom(32).decode("utf-8"))
-        password = set_password(body, salt)
+        salt = b64encode(os.urandom(32)).decode("utf-8")
+        password = set_password(body['password'], salt)
 
-        user.salt=salt
-        user.password=password
+        user.salt = salt
+        user.password = password
 
         try:
             db.session.commit()
             return jsonify("Password has been updated"), 201
         except Exception as error:
             print(error.args)
-            return jsonify("Password couldnt be updated"), 500
+            return jsonify("Password couldn't be updated"), 500
+    else:
+        return jsonify("User not found"), 404
+
 
 @api.route('/order/products/<int:theid>', methods=['GET'])
 @jwt_required()
