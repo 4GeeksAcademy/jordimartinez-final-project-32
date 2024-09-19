@@ -274,35 +274,24 @@ def update_product(theid):
 @api.route('/user/all', methods=['GET'])
 def get_users():
     user = User.query.all()
-
     if user is None:
         return jsonify([item.serialize() for item in user]), 200
     else:
         return jsonify("There are no users"), 404
 
-
-
 @api.route('/user', methods=['GET'])
 @jwt_required()
 def get_user():
-    user_id = get_jwt_identity()  
-    user = User.query.get(user_id)
+    user = get_jwt_identity()  
 
     if user is not None:
         return jsonify(user.serialize()), 200
     else:
         return jsonify({"message": "User not found"}), 404
     
-@api.route('/test', methods=['POST'])
-def test():
-    print("Test")
-    return jsonify("Hola!"),200
-
 @api.route('/user/register', methods=['POST'])
 def register_user():
-    
     data_form = request.json
-    print(data_form)
     data = {"name" : data_form.get("name"),
             "document_number" : data_form.get("document_number"),
             "address" : data_form.get("address"),
@@ -350,10 +339,9 @@ def register_user():
 @api.route('/user/<int:theid>', methods=['DELETE'])
 @jwt_required()
 def delete_user(theid=None):
-    user_id = get_jwt_identity()  
-    user_working = User.query.get(user_id)
+    user = get_jwt_identity()  
 
-    if user_working.rol == 'CLIENT':
+    if user.rol == 'CLIENT':
         return jsonify("You shouldnt be here"), 405
     if theid is not None:
         user = User.query.get(theid)
@@ -372,8 +360,7 @@ def delete_user(theid=None):
 @api.route('/user/', methods=['PUT'])
 @jwt_required()
 def update_user():
-    user_id = get_jwt_identity()  
-    user = User.query.get(user_id)
+    user = get_jwt_identity()  
 
     if not user:
         return jsonify({"message": "User not found"}), 404
@@ -426,8 +413,7 @@ def delete_order(theid=None):
 
 @api.route('/order/deleteall', methods=['DELETE'])
 def delete_orders():
-    orders = Order()
-    orders = orders.query.all()
+    orders = Order.query.all()
 
     for item in orders:
         db.session.delete(item)
@@ -440,7 +426,6 @@ def delete_orders():
 def update_status(theid):
     order = Order.query.get(theid)
     user = User.query.get(get_jwt_identity())
-    user = User.query.get(user.user_id)
 
     if user.rol == 'CLIENT':
         return jsonify("Method Not Allowed"), 405
@@ -672,11 +657,11 @@ def populate_category():
 
     try: 
         db.session.commit()
-        return jsonify("Adding categories"), 200
+        return "Adding categories"
     except Exception as error:
         print(error.args)
         db.session.rollback()
-        return jsonify(f"{error.args}"), 500
+        return f"{error.args}"
 
 @api.route('/product/populate', methods=['GET'])
 def populate_product():
@@ -700,11 +685,11 @@ def populate_product():
         db.session.add(product)
     try:
         db.session.commit()
-        return jsonify({"message": "Products populated successfully"}), 200
+        return "Products populated successfully"
     except Exception as e:
         print(e.args)
         db.session.rollback()
-        return jsonify({"message": str(e)}), 500
+        return f"str(e)"
     
 @api.route('/user/populate', methods=['GET'])
 def populate_user():
@@ -730,12 +715,12 @@ def populate_user():
     
     try:
         db.session.commit()
-        return jsonify("User has been added"), 200
+        return "User has been added"
     except Exception as error:
         print(error.args)
         db.session.rollback()
         
-        return jsonify(f"{error.args}"), 500
+        return f"{error.args}"
     
 @api.route('/order/populate', methods=['GET'])
 def populate_order():
@@ -755,10 +740,10 @@ def populate_order():
         db.session.add(order)
     try:
         db.session.commit()
-        return jsonify("Adding order"), 200
+        return "Adding order"
     except Exception as error:
         db.session.rollback()
-        return jsonify(f"{error}"), 500
+        return f"{error}"
     
 def product_in_order():
 
@@ -774,11 +759,11 @@ def product_in_order():
         db.session.add(order_product)
     try: 
         db.session.commit()
-        return jsonify({"Message": "Product in order, correct"}), 200
+        return "Product in order, correct"
     except Exception as e:
         print(e.args)
         db.session.rollback()
-        return jsonify({"Error":f"{e.args}"}),500
+        return f"{e.args}"
 
 @api.route('/all_products_in_orders', methods=['GET'])
 def all_products_in_orders():
@@ -800,21 +785,22 @@ def populate_reviews():
 
     try:
         db.session.commit()
-        return jsonify("Added review"), 200
+        return "Added review"
     except Exception as error:
         print(error.args)
         db.session.rollback()
-        return jsonify(f"{error.args}"), 500
+        return f"{error.args}"
 
 @api.route('/populate_all', methods=['GET'])
 def populate_all():
-    populate_category()
-    populate_product()
-    populate_user()
-    populate_order()
-    populate_reviews()
-    product_in_order()
-    return jsonify("Everything has been created, even the universe"), 200
+    results = {}
+    results['category']=populate_category()
+    results['product']=populate_product()
+    results['user']=populate_user()
+    results['order']=populate_order()
+    results['reviews']=populate_reviews()
+    results['product_order']=product_in_order()
+    return jsonify(f"{results}"), 200
 
 @api.route("/reset-password", methods=["POST"])
 def reset_password():
