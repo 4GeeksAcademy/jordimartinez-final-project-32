@@ -272,18 +272,14 @@ def update_product(theid):
         return jsonify({"message": "Error updating product", "error": str(e)}), 500
     
 @api.route('/user/all', methods=['GET'])
-@jwt_required()
 def get_users():
-    user_id = User.query.get(get_jwt_identity())
-    user = User.query.get(user_id)
+    user = User.query.all()
 
     if user is None:
-        return jsonify({"message":"user not found"}), 404
+        return jsonify([item.serialize() for item in user]), 200
     else:
-        if user.rol == 'ADMIN':
-            return jsonify(user.serialize()), 200
-        else:
-            return jsonify("You dont have access to this method"), 405
+        return jsonify("There are no users"), 404
+
 
 @api.route('/user', methods=['GET'])
 @jwt_required()
