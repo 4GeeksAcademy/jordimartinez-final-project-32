@@ -91,9 +91,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     const response = await fetch( `${process.env.BACKEND_URL}/api/product`, {
                         method: 'POST',
-                        // headers: {
-                        //     'Content-Type': 'application/json'
-                        // },
                         body: product
                     });
 
@@ -339,7 +336,52 @@ const getState = ({ getStore, getActions, setStore }) => {
 				});
             },
 
-			getUserById: async (id) => {
+getUserById: async (id) => {
+				const store = getStore();
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${store.token}`
+						}
+					});
+					let data = await response.json();
+			
+					if (response.ok) {
+						return data;
+					} else {
+						console.error("Error fetching user:", data.message);
+						return null;
+					}
+				} catch (error) {
+					console.log("Error fetching user:", error);
+					return null;
+				}
+			},
+
+			getUserLogin: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`
+						}
+					});
+					const data = await response.json();
+			
+					if (response.ok) {
+						setStore({
+							user: data
+						});
+						localStorage.setItem("user", JSON.stringify(data));
+					}
+				} catch (error) {
+					console.error("Error al obtener los datos del usuario:", error);
+				}
+			},
+
+			getAllUsers: async () => {
 				const store = getStore();
 				try {
 					let response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {

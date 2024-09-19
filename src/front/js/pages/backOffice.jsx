@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 export const BackOffice = () => {    
     const { store } = useContext(Context);
     const [activeTab, setActiveTab] = useState("products");
+
     const navigate = useNavigate();
 
     useEffect(() => {
