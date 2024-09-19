@@ -88,23 +88,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			getAllUsers: async () => {
-				const store = getStore();
-				try {
-					let response = await fetch(`${process.env.BACKEND_URL}/api/user`);
-					let data = await response.json();
-					
-			
-					setStore({
-						user: data
-					});
-			
-					localStorage.setItem("user", JSON.stringify(data));
-				} catch (error) {
-					console.log(error);
-				}
-			},
-
 			addProduct: async (product) => {
                 try {
                     const response = await fetch( `${process.env.BACKEND_URL}/api/product`, {
@@ -210,6 +193,215 @@ const getState = ({ getStore, getActions, setStore }) => {
                 setStore({ kart: updatedKart });
                 localStorage.setItem("kart", JSON.stringify(updatedKart));
             },
+			getCurrentUser: async () => {
+                const store = getStore();
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/user`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${store.token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        setStore({ currentUser: data });
+                    } else {
+                        console.error('Error al obtener la información del usuario');
+                    }
+                } catch (error) {
+                    console.error('Error en la solicitud:', error);
+                }
+            },
+
+            getAllUsers: async () => {
+                const store = getStore();
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/user/all`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${store.token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        setStore({ user: data });
+                        localStorage.setItem("user", JSON.stringify(data));
+                    } else {
+                        console.error('Error al obtener la lista de usuarios');
+                    }
+                } catch (error) {
+                    console.error('Error en la solicitud:', error);
+                }
+            },
+
+            registerUser: async (userData) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/user/register`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(userData)
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Registro exitoso!',
+                            text: 'Usuario registrado correctamente.',
+                        });
+                        return data;
+                    } else {
+                        const errorData = await response.json();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorData.message || 'Hubo un problema al registrar el usuario.',
+                        });
+                        return null;
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un problema con la solicitud.',
+                    });
+                    console.error('Error en la solicitud:', error);
+                    return null;
+                }
+            },
+
+            loginUser: async (credentials) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(credentials)
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        localStorage.setItem('token', data.token);
+                        setStore({ token: data.token });
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Inicio de sesión exitoso!',
+                            text: 'Has iniciado sesión correctamente.',
+                        });
+                        return data;
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Correo electrónico o contraseña incorrectos.',
+                        });
+                        return null;
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un problema con la solicitud.',
+                    });
+                    console.error('Error en la solicitud:', error);
+                    return null;
+                }
+            },
+
+            updateUser: async (userData) => {
+                const store = getStore();
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/user`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${store.token}`
+                        },
+                        body: JSON.stringify(userData)
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        setStore({ currentUser: data });
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Actualización exitosa!',
+                            text: 'Tu información ha sido actualizada correctamente.',
+                        });
+                        return data;
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un problema al actualizar tu información.',
+                        });
+                        return null;
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un problema con la solicitud.',
+                    });
+                    console.error('Error en la solicitud:', error);
+                    return null;
+                }
+            },
+
+            deleteUser: async (id) => {
+                const store = getStore();
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${store.token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        getActions().getAllUsers();
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Usuario eliminado!',
+                            text: 'El usuario ha sido eliminado correctamente.',
+                        });
+                        return true;
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un problema al eliminar el usuario.',
+                        });
+                        return false;
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un problema con la solicitud.',
+                    });
+                    console.error('Error en la solicitud:', error);
+                    return false;
+                }
+            },
+
+            logoutUser: () => {
+                localStorage.removeItem('token');
+                setStore({ token: null });
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Cierre de sesión exitoso!',
+                    text: 'Has cerrado sesión correctamente.',
+                });
+            }
 		}
 	};
 };

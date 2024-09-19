@@ -18,8 +18,8 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import CategoriesTemplate from "./pages/categoryTemplate";
 
-import { Login } from "./pages/login.js";
-import { Register } from "./pages/register.js";
+import { Login } from "./pages/login.jsx";
+import { Register } from "./pages/register.jsx";
 import { ResetPass } from "./pages/resetpass.js";
 import { UpdatePassword } from "./pages/updatepass.js";
 import { Profile } from "./pages/profile.js";
