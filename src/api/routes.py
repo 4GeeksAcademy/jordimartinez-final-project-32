@@ -274,7 +274,7 @@ def update_product(theid):
 @api.route('/user/all', methods=['GET'])
 def get_users():
     user = User.query.all()
-    if user is None:
+    if user is not None:
         return jsonify([item.serialize() for item in user]), 200
     else:
         return jsonify("There are no users"), 404
