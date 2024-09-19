@@ -305,6 +305,7 @@ def test():
 def register_user():
     
     data_form = request.json
+    print(data_form)
     data = {"name" : data_form.get("name"),
             "document_number" : data_form.get("document_number"),
             "address" : data_form.get("address"),
