@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const ProductView = () => {
     const { store, actions } = useContext(Context);
     const [searchTerm, setSearchTerm] = useState("");
-
+    
     const filteredProducts = store.product.filter(product =>
         product.generic_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.active_ingredient.toLowerCase().includes(searchTerm.toLowerCase()) ||
