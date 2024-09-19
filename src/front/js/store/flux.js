@@ -261,45 +261,31 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			
-            updateUser: async (userData) => {
+            updateUser: async (id, user) => {
 				const store = getStore();
-                try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/user`, {
-                        method: 'PUT',
-                        headers: {
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
+						method: 'PUT',
+						headers: {
 							'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${store.token}`
-                        },
-                        body: JSON.stringify(userData)
-                    });
-					
-                    if (response.ok) {
-						const data = await response.json();
-                        setStore({ currentUser: data });
-                        Swal.fire({
-							icon: 'success',
-                            title: '¡Actualización exitosa!',
-                            text: 'Tu información ha sido actualizada correctamente.',
-                        });
-                        return data;
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Hubo un problema al actualizar tu información.',
-                        });
-                        return null;
-                    }
-                } catch (error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Hubo un problema con la solicitud.',
-                    });
-                    console.error('Error en la solicitud:', error);
-                    return null;
-                }
-            },
+							'Authorization': `Bearer ${store.token}`
+						},
+						body: JSON.stringify(user)
+					});
+					let data = await response.json();
+			
+					if (response.ok) {
+						return true;
+					} else {
+						console.error("Error updating user:", data.message);
+						return false;
+					}
+				} catch (error) {
+					console.log("Error updating user:", error);
+					return false;
+				}
+			},
+			
 						
             deleteUser: async (id) => {
 				const store = getStore();
@@ -352,6 +338,30 @@ const getState = ({ getStore, getActions, setStore }) => {
 					text: 'Has cerrado sesión correctamente.',
 				});
             },
+
+			getUserById: async (id) => {
+				const store = getStore();
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${store.token}`
+						}
+					});
+					let data = await response.json();
+			
+					if (response.ok) {
+						return data;
+					} else {
+						console.error("Error fetching user:", data.message);
+						return null;
+					}
+				} catch (error) {
+					console.log("Error fetching user:", error);
+					return null;
+				}
+			},
 
 			getUserLogin: async () => {
 				try {

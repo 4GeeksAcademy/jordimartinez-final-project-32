@@ -6,10 +6,6 @@ const UserView = () => {
     const { store, actions } = useContext(Context);
     const [searchTerm, setSearchTerm] = useState("");
 
-    // useEffect(() => {
-    //     actions.getUser();
-    // }, []);
-
     const filteredUsers = Array.isArray(store.user) ? store.user.filter(user =>
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase())
