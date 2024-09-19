@@ -93,9 +93,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     const response = await fetch( `${process.env.BACKEND_URL}/api/product`, {
                         method: 'POST',
-                        // headers: {
-                        //     'Content-Type': 'application/json'
-                        // },
                         body: product
                     });
 
