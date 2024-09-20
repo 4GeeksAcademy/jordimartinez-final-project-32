@@ -367,7 +367,11 @@ def update_user():
     for key, value in data.items():
         if not value:  
             return jsonify({"message": f"{key} is required"}), 400
-        if hasattr(user, key):  
+        if hasattr(user, key):
+            if key == 'password':
+                salt = b64encode(os.urandom(32)).decode("utf-8")
+                value = set_password(value, salt) 
+                continue
             setattr(user, key, value)
         else:
             return jsonify({"message": f"Invalid attribute: {key}"}), 400
@@ -572,6 +576,7 @@ def login():
         else:
             if check_password(user.password, password, user.salt):
                 token = create_access_token(identity=user.user_id)
+                print(token)
                 return jsonify({"token":token}), 200
             else:
                 return jsonify({"message": "Bad Info"}), 400    
