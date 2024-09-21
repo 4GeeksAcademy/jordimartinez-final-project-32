@@ -12,16 +12,33 @@ export const EditUser = () => {
     });
     const { userId } = useParams();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false); 
 
     useEffect(() => {
         const fetchUser = async () => {
-            const userData = await actions.getUserById(userId);
-            if (userData) {
-                setUser(userData);
+            try {
+                const userData = await actions.getUserById(userId);
+                if (userData) {
+                    setUser(userData);
+                } else {
+                    alert("Error al obtener los datos del usuario.");
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                alert("Ocurrió un error al cargar el usuario.");
+            } finally {
+                setLoading(false);
             }
         };
-        fetchUser();
-    }, [userId, actions]);
+
+        if (userId) {
+            fetchUser();
+        } else {
+            alert("ID de usuario inválido.");
+            navigate("/backoffice");
+        }
+    }, [userId, actions, navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -33,6 +50,8 @@ export const EditUser = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSaving(true);
+
         const success = await actions.putUser(userId, user);
 
         if (success) {
@@ -41,7 +60,12 @@ export const EditUser = () => {
         } else {
             alert("Error al actualizar el usuario");
         }
+        setSaving(false);
     };
+    
+    if (loading) {
+        return <div>Cargando datos del usuario...</div>;
+    }
 
     return (
         <div className="container mt-5">
@@ -102,7 +126,9 @@ export const EditUser = () => {
                         <option value="INACTIVE">Inactivo</option>
                     </select>
                 </div>
-                <button type="submit" className="btn btn-primary">Guardar Cambios</button>
+                <button type="submit" className="btn btn-primary" disabled={saving}>
+                    {saving ? "Guardando..." : "Guardar Cambios"}
+                </button>
             </form>
         </div>
     );

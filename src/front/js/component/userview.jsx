@@ -53,7 +53,7 @@ const UserView = () => {
                 <tbody>
                     {filteredUsers.map((user, index) => (
                         <tr key={user.user_id}>
-                            <th scope="row">{index + 1}</th>
+                            <th scope="row">{user.user_id}</th> 
                             <td>{user.name}</td>
                             <td>{user.email}</td>
                             <td>{user.rol}</td>
