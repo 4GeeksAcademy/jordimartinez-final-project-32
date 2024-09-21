@@ -286,6 +286,17 @@ def get_user():
     else:
         return jsonify({"message": "User not found"}), 404
     
+@api.route('/theuser/<int:theid>', methods=['GET'])
+def get_one_user(theid=None):
+    if theid is not None:
+        user = User.query.get(theid)
+        if user is not None:
+            return jsonify(user.serialize()), 200
+        else:
+            return jsonify({"message": "User not found"}), 404
+    return jsonify({"message": "Id is None"}), 400
+
+  
 @api.route('/user/register', methods=['POST'])
 def register_user():
     data_form = request.json
@@ -371,11 +382,27 @@ def update_user():
             if key == 'password':
                 salt = b64encode(os.urandom(32)).decode("utf-8")
                 value = set_password(value, salt) 
-                continue
             setattr(user, key, value)
         else:
             return jsonify({"message": f"Invalid attribute: {key}"}), 400
     
+    try:
+        db.session.commit()
+        return jsonify({"message": "User updated succesfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": "Error updating User", "error": str(e)}), 500
+
+@api.route('/user/update_status/<int:theid>', methods=['PUT'])
+@jwt_required()
+def update_user_status_rol(theid):
+    admin = User.query.get(get_jwt_identity())
+    user = User.query.get(theid)
+    if admin.rol != 'Admin':
+        return jsonify({"message": "User is not an Admin"}), 405
+    data = request.get_json()
+    for key, value in data.items():
+        if not value:
     try:
         db.session.commit()
         return jsonify({"message": "User updated succesfully"}), 200
@@ -401,13 +428,6 @@ def update_user_status_rol(theid):
             setattr(user, key, value)
         else:
             return jsonify({"message": f"Invalid attribute: {key}"}), 400
-
-    try:
-        db.session.commit()
-        return jsonify({"message": "User updated succesfully"}), 200
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"message": "Error updating User", "error": str(e)}), 500
 
 @api.route('/order', methods=['GET'])
 def get_orders():

@@ -60,7 +60,8 @@ const UserView = () => {
                             <td>
                                 <div className="d-flex justify-content-evenly">
                                     <Link to={`/edituser/${user.user_id}`}><i className="fas fa-pencil-alt right-icons me-2"></i></Link>
-                                    <button onClick={() => deleteUser(user.user_id)} className="btn btn-link p-0"><i className="fas fa-trash-alt right-icons"></i></button>
+                                    {/* <a onClick={() => deleteUser(user.user_id)}><i className="fas fa-trash-alt right-icons"></i></a> */}
+
                                 </div>
                             </td>
                         </tr>

@@ -22,6 +22,7 @@ export const Login = () => {
         e.preventDefault();
         const success = await actions.loginUser(formData);
         if (success) {
+            navigate("/");
             
            
             Swal.fire({
@@ -50,12 +51,12 @@ export const Login = () => {
                                     <h2 className="text-uppercase text-center mb-5">Iniciar Sesión</h2>
                                     <form onSubmit={handleSubmit}>
                                         <div className="form-outline mb-4">
-                                            <input type="email" id="form3Example1cg" className="form-control form-control-lg" name="email" value={formData.email} onChange={handleChange} required />
                                             <label className="form-label" htmlFor="form3Example1cg">Correo Electrónico</label>
+                                            <input type="email" id="form3Example1cg" className="form-control form-control-lg" name="email" value={formData.email} onChange={handleChange} required />
                                         </div>
                                         <div className="form-outline mb-4">
-                                            <input type="password" id="form3Example2cg" className="form-control form-control-lg" name="password" value={formData.password} onChange={handleChange} required />
                                             <label className="form-label" htmlFor="form3Example2cg">Contraseña</label>
+                                            <input type="password" id="form3Example2cg" className="form-control form-control-lg" name="password" value={formData.password} onChange={handleChange} required />
                                         </div>
                                         <div className="d-flex justify-content-center">
                                             <button type="submit" className="btn btn-success btn-block btn-lg gradient-custom-4">Iniciar Sesión</button>
