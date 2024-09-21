@@ -263,7 +263,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             updateUser: async (userData) => {
 				const store = getStore();
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/user`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/user/update`, {
                         method: 'PUT',
                         headers: {
 							'Content-Type': 'application/json',
@@ -272,33 +272,19 @@ const getState = ({ getStore, getActions, setStore }) => {
                         body: JSON.stringify(userData)
                     });
 					
-                    if (response.ok) {
+					if (response.ok) {
 						const data = await response.json();
-                        setStore({ currentUser: data });
-                        Swal.fire({
-							icon: 'success',
-                            title: '¡Actualización exitosa!',
-                            text: 'Tu información ha sido actualizada correctamente.',
-                        });
-                        return data;
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Hubo un problema al actualizar tu información.',
-                        });
-                        return null;
-                    }
-                } catch (error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Hubo un problema con la solicitud.',
-                    });
-                    console.error('Error en la solicitud:', error);
-                    return null;
-                }
-            },
+						setStore({ user: userData }); // Asegúrate de que se actualiza el estado del usuario
+						return data; // Retorna el usuario actualizado
+					} else {
+						console.error('Error al actualizar');
+						return null;
+					}
+				} catch (error) {
+					console.error('Error en la solicitud:', error);
+					return null;
+				}
+			},
 						
             deleteUser: async (id) => {
 				const store = getStore();
@@ -361,6 +347,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 						}
 					});
 					const data = await response.json();
+
+					console.log("Datos del usuario:", data);
 			
 					if (response.ok) {
 						setStore({
