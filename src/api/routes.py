@@ -383,13 +383,13 @@ def update_user():
         db.session.rollback()
         return jsonify({"message": "Error updating User", "error": str(e)}), 500
 
-@api.route('/user/update_status<int:theid>', methods=['PUT'])
+@api.route('/user/update_status/<int:theid>', methods=['PUT'])
 @jwt_required()
 def update_user_status_rol(theid):
     admin = User.query.get(get_jwt_identity())
     user = User.query.get(theid)
 
-    if admin.rol != 'Admin':
+    if admin.rol.value is not 'Admin':
         return jsonify({"message": "User is not an Admin"}), 405
     
     data = request.get_json()
@@ -401,14 +401,13 @@ def update_user_status_rol(theid):
             setattr(user, key, value)
         else:
             return jsonify({"message": f"Invalid attribute: {key}"}), 400
-    
+
     try:
         db.session.commit()
         return jsonify({"message": "User updated succesfully"}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "Error updating User", "error": str(e)}), 500
-
 
 @api.route('/order', methods=['GET'])
 def get_orders():
