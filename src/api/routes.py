@@ -397,18 +397,25 @@ def update_user_status_rol(theid):
     admin = User.query.get(get_jwt_identity())
     user = User.query.get(theid)
 
-    if admin.rol.value is not 'Admin':
+    if admin.rol.value != 'Admin':
         return jsonify({"message": "User is not an Admin"}), 405
     
     data = request.get_json()
-
-    for key, value in data.items():
-        if not value:  
-            return jsonify({"message": f"{key} is required"}), 400
-        if hasattr(user, key):  
-            setattr(user, key, value)
-        else:
-            return jsonify({"message": f"Invalid attribute: {key}"}), 400
+    
+    user.name = data["name"]
+    user.email = data["email"]
+    user.rol = data["rol"]
+    user.rol = user.rol.upper()
+    user.status = data["status"]
+    user.status = user.status.upper()
+    
+    try:
+        db.session.commit()
+        return jsonify({"message": "User updated succesfully"}), 200
+    except Exception as e:
+        print(e.args)
+        db.session.rollback()
+        return jsonify({"message": "Error updating User", "error": str(e)}), 500
 
 @api.route('/order', methods=['GET'])
 def get_orders():
