@@ -280,7 +280,6 @@ def get_users():
 @jwt_required()
 def get_user():
     user = User.query.get(get_jwt_identity())
-
     if user is not None:
         return jsonify(user.serialize()), 200
     else:
@@ -294,8 +293,6 @@ def get_one_user(theid=None):
             return jsonify(user.serialize()), 200
         else:
             return jsonify({"message": "User not found"}), 404
-    return jsonify({"message": "Id is None"}), 400
-
   
 @api.route('/user/register', methods=['POST'])
 def register_user():
@@ -393,22 +390,6 @@ def update_user():
         db.session.rollback()
         return jsonify({"message": "Error updating User", "error": str(e)}), 500
 
-@api.route('/user/update_status/<int:theid>', methods=['PUT'])
-@jwt_required()
-def update_user_status_rol(theid):
-    admin = User.query.get(get_jwt_identity())
-    user = User.query.get(theid)
-    if admin.rol != 'Admin':
-        return jsonify({"message": "User is not an Admin"}), 405
-    data = request.get_json()
-    for key, value in data.items():
-        if not value:
-    try:
-        db.session.commit()
-        return jsonify({"message": "User updated succesfully"}), 200
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"message": "Error updating User", "error": str(e)}), 500
 
 @api.route('/user/update_status/<int:theid>', methods=['PUT'])
 @jwt_required()

@@ -40,12 +40,12 @@ const Layout = () => {
                     <br />
                     <Routes>
                         <Route element={<Home />} path="/" />
-                        <Route element={<Demo />} path="/demo" />                       
-                        <Route element={<BackOffice />} path="/backoffice" />            
-                        <Route element={<AddProduct />} path="/addproduct" />           
-                        <Route element={<Kart />} path="/kart" />                        
-						<Route element={<AddProduct />} path="/editproduct/:id" />
-                        <Route element={<EditUser />} path="/edituser/:id" />
+                        <Route element={<Demo />} path="/demo" />
+                        <Route element={<BackOffice />} path="/backoffice" />
+                        <Route element={<AddProduct />} path="/addproduct" />
+                        <Route element={<Kart />} path="/kart" />
+                        <Route element={<AddProduct />} path="/editproduct/:id" />
+                        <Route element={<EditUser />} path="/edituser/:user_id" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<CategoriesTemplate />} path="/category/:theid" />
                         <Route element={<ProductView />} path="/product/:theid" />
