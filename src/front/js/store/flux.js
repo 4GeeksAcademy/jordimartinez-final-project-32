@@ -76,8 +76,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				try {
 					let response = await fetch(`${process.env.BACKEND_URL}/api/product`);
 					let data = await response.json();
-
-					console.log(data);
 			
 					setStore({
 						product: data
@@ -260,8 +258,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			
-            updateUser: async (userData) => {
+            updateUser: async (id, user) => {
 				const store = getStore();
+
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/user/update`, {
                         method: 'PUT',
@@ -338,6 +337,30 @@ const getState = ({ getStore, getActions, setStore }) => {
 				});
             },
 
+getUserById: async (id) => {
+				const store = getStore();
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${store.token}`
+						}
+					});
+					let data = await response.json();
+			
+					if (response.ok) {
+						return data;
+					} else {
+						console.error("Error fetching user:", data.message);
+						return null;
+					}
+				} catch (error) {
+					console.log("Error fetching user:", error);
+					return null;
+				}
+			},
+
 			getUserLogin: async () => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/user`, {
@@ -364,22 +387,81 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getAllUsers: async () => {
 				const store = getStore();
 				try {
-					const response = await fetch(`${process.env.BACKEND_URL}/api/user/all`, {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
 						method: 'GET',
 						headers: {
 							'Content-Type': 'application/json',
 							'Authorization': `Bearer ${store.token}`
 						}
 					});
+					let data = await response.json();
+			
 					if (response.ok) {
-						const data = await response.json();
-						setStore({ user: data });
-						localStorage.setItem("user", JSON.stringify(data));
+						return data;
 					} else {
-						console.error('Error al obtener la lista de usuarios');
+						console.error("Error fetching user:", data.message);
+						return null;
 					}
 				} catch (error) {
-					console.error('Error en la solicitud:', error);
+					console.log("Error fetching user:", error);
+					return null;
+				}
+			},
+
+			getUserLogin: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`
+						}
+					});
+					const data = await response.json();
+			
+					if (response.ok) {
+						setStore({
+							user: data
+						});
+						localStorage.setItem("user", JSON.stringify(data));
+					}
+				} catch (error) {
+					console.error("Error al obtener los datos del usuario:", error);
+				}
+			},
+
+			getAllUsers: async () => {
+				// const store = getStore();
+				// try {
+				// 	const response = await fetch(`${process.env.BACKEND_URL}/api/user/all`, {
+				// 		method: 'GET',
+				// 		headers: {
+				// 			'Content-Type': 'application/json',
+				// 			'Authorization': `Bearer ${store.token}`
+				// 		}
+				// 	});
+				// 	if (response.ok) {
+				// 		const data = await response.json();
+				// 		setStore({ user: data });
+				// 		localStorage.setItem("user", JSON.stringify(data));
+				// 	} else {
+				// 		console.error('Error al obtener la lista de usuarios');
+				// 	}
+				// } catch (error) {
+				// 	console.error('Error en la solicitud:', error);
+				// }
+				const store = getStore();
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/user/all`);
+					// method: 'GET',
+					let data = await response.json();
+			
+					setStore({
+						user: data
+					});
+			
+					localStorage.setItem("user", JSON.stringify(data));
+				} catch (error) {
+					console.log(error);
 				}
 			}
 		}

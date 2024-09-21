@@ -6,14 +6,10 @@ const UserView = () => {
     const { store, actions } = useContext(Context);
     const [searchTerm, setSearchTerm] = useState("");
 
-    useEffect(() => {
-        actions.getAllUsers();
-    }, []);
-
-    const filteredUsers = store.user.filter(user =>
+    const filteredUsers = Array.isArray(store.user) ? store.user.filter(user =>
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    ) : [];
 
     const deleteUser = async (id) => {
         const confirmed = window.confirm("¿Estás seguro de que deseas eliminar este usuario?");
@@ -21,7 +17,7 @@ const UserView = () => {
             const success = await actions.deleteUser(id);
             if (success) {
                 alert("Usuario eliminado con éxito");
-                actions.getAllUsers();
+                actions.getUser();
             } else {
                 alert("Error al eliminar el usuario");
             }
@@ -31,7 +27,7 @@ const UserView = () => {
     return (
         <div>
             <div className="row mt-5 d-flex justify-content-between">
-                <form className="d-flex justify-content-center col-8 me-3" role="search">
+                <form className="d-flex justify-content-center col-8 me-3" role="search" onSubmit={(e) => e.preventDefault()}>
                     <input
                         className="form-control me-2"
                         type="search"
@@ -64,7 +60,7 @@ const UserView = () => {
                             <td>
                                 <div className="d-flex justify-content-evenly">
                                     <Link to={`/edituser/${user.user_id}`}><i className="fas fa-pencil-alt right-icons me-2"></i></Link>
-                                    <a onClick={() => deleteUser(user.user_id)}><i className="fas fa-trash-alt right-icons"></i></a>
+                                    <button onClick={() => deleteUser(user.user_id)} className="btn btn-link p-0"><i className="fas fa-trash-alt right-icons"></i></button>
                                 </div>
                             </td>
                         </tr>

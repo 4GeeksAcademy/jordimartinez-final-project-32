@@ -864,4 +864,3 @@ def status_order_update(user, order):
     sended_email = send_email(data.get("subject"), data.get("to"), data.get("message"))
     print(sended_email)
     return jsonify("Trabajando por un mejor servicio =) "), 200
-
