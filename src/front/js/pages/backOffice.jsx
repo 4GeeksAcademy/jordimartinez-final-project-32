@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ProductView from "../component/productview.jsx";
 import UserView from "../component/userview.jsx";
+import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 
 export const BackOffice = () => {    
     const { store } = useContext(Context);
     const [activeTab, setActiveTab] = useState("products");
+
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!store.token || store.user.rol !== "ADMIN") {
+        if (!store.token || store.user.rol === "CLIENT") {
             navigate("/login");
         }
     }, [store.token, store.user.rol, navigate]);
