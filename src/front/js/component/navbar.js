@@ -28,7 +28,7 @@ export const Navbar = () => {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li className="nav-item dropdown">
+                        <li className="nav-item dropdown me-1">
                             <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Productos
                             </a>
@@ -56,7 +56,17 @@ export const Navbar = () => {
                         <button className="btn btn-outline-success" type="submit">Buscar</button>
                     </form>
 
-                    <div className="col-2"></div>
+
+                    <div className="col-3 d-flex center align-items-center">
+                        <i className="fas fa-user-circle fa-xl me-2"></i>
+                        {store.token && store.user ? (
+                            <Link to="/profile" className="fw-bold" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                Bienvenido, {store.user.name}!
+                            </Link>
+                        ) : (
+                            <span className="fw-bold">Bienvenido, Invitado</span>
+                        )}
+                    </div>
 
                     <div className="nav-item dropdown col-1">
                         <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -93,4 +103,3 @@ export const Navbar = () => {
         </nav>
     );
 };
-

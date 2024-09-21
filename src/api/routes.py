@@ -122,8 +122,7 @@ def delete_categories():
 @api.route('/category/<int:theid>', methods=['PUT'])
 @jwt_required()
 def update_category(theid):
-    user_id = User.query.get(get_jwt_identity())
-    user = User.query.get(user_id)
+    user = User.query.get(get_jwt_identity())
 
     if user.rol == 'CLIENT':
             return jsonify("Not allowed"), 405
@@ -206,7 +205,6 @@ def get_one_product(theid=None):
 @jwt_required()
 def delete_product(theid=None):
     user = User.query.get(get_jwt_identity())
-    user = User.query.get(user)
 
     if user.rol == 'CLIENT':
         return jsonify("You are not allowed here"), 405
@@ -227,8 +225,7 @@ def delete_product(theid=None):
 
 @api.route('/product/deleteall', methods=['DELETE'])
 def delete_products():
-    products = Product()
-    products = products.query.all()
+    products = Product.query.all()
 
     for item in products:
         db.session.delete(item)
@@ -282,7 +279,7 @@ def get_users():
 @api.route('/user', methods=['GET'])
 @jwt_required()
 def get_user():
-    user = get_jwt_identity()  
+    user = User.query.get(get_jwt_identity())
 
     if user is not None:
         return jsonify(user.serialize()), 200
@@ -357,10 +354,10 @@ def delete_user(theid=None):
         else: 
             return jsonify({"message": "User is not in our database"}), 404
         
-@api.route('/user/', methods=['PUT'])
+@api.route('/user/update', methods=['PUT'])
 @jwt_required()
 def update_user():
-    user = get_jwt_identity()  
+    user = User.query.get(get_jwt_identity())
 
     if not user:
         return jsonify({"message": "User not found"}), 404
@@ -368,13 +365,43 @@ def update_user():
     data = request.get_json()
 
     for key, value in data.items():
-        if not value in data(key):
+        if not value:  
             return jsonify({"message": f"{key} is required"}), 400
         if hasattr(user, key):
+            if key == 'password':
+                salt = b64encode(os.urandom(32)).decode("utf-8")
+                value = set_password(value, salt) 
+                continue
             setattr(user, key, value)
         else:
             return jsonify({"message": f"Invalid attribute: {key}"}), 400
-        
+    
+    try:
+        db.session.commit()
+        return jsonify({"message": "User updated succesfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": "Error updating User", "error": str(e)}), 500
+
+@api.route('/user/update_status/<int:theid>', methods=['PUT'])
+@jwt_required()
+def update_user_status_rol(theid):
+    admin = User.query.get(get_jwt_identity())
+    user = User.query.get(theid)
+
+    if admin.rol.value is not 'Admin':
+        return jsonify({"message": "User is not an Admin"}), 405
+    
+    data = request.get_json()
+
+    for key, value in data.items():
+        if not value:  
+            return jsonify({"message": f"{key} is required"}), 400
+        if hasattr(user, key):  
+            setattr(user, key, value)
+        else:
+            return jsonify({"message": f"Invalid attribute: {key}"}), 400
+
     try:
         db.session.commit()
         return jsonify({"message": "User updated succesfully"}), 200
@@ -548,6 +575,7 @@ def login():
         else:
             if check_password(user.password, password, user.salt):
                 token = create_access_token(identity=user.user_id)
+                print(token)
                 return jsonify({"token":token}), 200
             else:
                 return jsonify({"message": "Bad Info"}), 400    

@@ -260,29 +260,30 @@ const getState = ({ getStore, getActions, setStore }) => {
 			
             updateUser: async (id, user) => {
 				const store = getStore();
-				try {
-					let response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
-						method: 'PUT',
-						headers: {
+
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/user/update`, {
+                        method: 'PUT',
+                        headers: {
 							'Content-Type': 'application/json',
-							'Authorization': `Bearer ${store.token}`
-						},
-						body: JSON.stringify(user)
-					});
-					let data = await response.json();
-			
+                            'Authorization': `Bearer ${store.token}`
+                        },
+                        body: JSON.stringify(userData)
+                    });
+					
 					if (response.ok) {
-						return true;
+						const data = await response.json();
+						setStore({ user: userData }); // Asegúrate de que se actualiza el estado del usuario
+						return data; // Retorna el usuario actualizado
 					} else {
-						console.error("Error updating user:", data.message);
-						return false;
+						console.error('Error al actualizar');
+						return null;
 					}
 				} catch (error) {
-					console.log("Error updating user:", error);
-					return false;
+					console.error('Error en la solicitud:', error);
+					return null;
 				}
 			},
-			
 						
             deleteUser: async (id) => {
 				const store = getStore();
@@ -369,6 +370,8 @@ getUserById: async (id) => {
 						}
 					});
 					const data = await response.json();
+
+					console.log("Datos del usuario:", data);
 			
 					if (response.ok) {
 						setStore({
