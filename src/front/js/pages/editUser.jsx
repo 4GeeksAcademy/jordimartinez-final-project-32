@@ -16,6 +16,7 @@ export const EditUser = () => {
     const [saving, setSaving] = useState(false); 
 
     useEffect(() => {
+        console.log("userId from URL:", userId);
         const fetchUser = async () => {
             try {
                 const userData = await actions.getUserById(userId);
@@ -107,7 +108,7 @@ export const EditUser = () => {
                     >
                         <option value="">Selecciona un rol</option>
                         <option value="ADMIN">Admin</option>
-                        <option value="USER">User</option>
+                        <option value="SELLER">Seller</option>
                         <option value="CLIENT">Client</option>
                     </select>
                 </div>
@@ -122,8 +123,9 @@ export const EditUser = () => {
                         required
                     >
                         <option value="">Selecciona un estado</option>
-                        <option value="ACTIVE">Activo</option>
-                        <option value="INACTIVE">Inactivo</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="INACTIVE">Inactive</option>
+                        <option value="BANNED">Banned</option>
                     </select>
                 </div>
                 <button type="submit" className="btn btn-primary" disabled={saving}>
