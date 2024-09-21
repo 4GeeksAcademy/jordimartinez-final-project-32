@@ -305,7 +305,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
-			
+
 						
 			deleteUser: async (id) => {
 				const store = getStore();
@@ -352,6 +352,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						method: 'GET',
 						headers: {
 							'Content-Type': 'application/json',
+
 						}
 					});
 					let data = await response.json();
@@ -377,6 +378,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 						}
 					});
 					const data = await response.json();
+
+					console.log("Datos del usuario:", data);
 			
 					if (response.ok) {
 						setStore({
@@ -430,6 +433,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						localStorage.setItem("user", JSON.stringify(data));
 					}
 				} catch (error) {
+
 					console.error("Error al obtener los datos del usuario:", error);
 				}
 			},
@@ -457,7 +461,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const store = getStore();
 				try {
 					let response = await fetch(`${process.env.BACKEND_URL}/api/user/all`);
+
 					method: 'GET'
+
 					let data = await response.json();
 			
 					setStore({

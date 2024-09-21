@@ -295,7 +295,8 @@ def get_one_user(theid=None):
         else:
             return jsonify({"message": "User not found"}), 404
     return jsonify({"message": "Id is None"}), 400
-    
+
+  
 @api.route('/user/register', methods=['POST'])
 def register_user():
     data_form = request.json
@@ -402,11 +403,6 @@ def update_user_status_rol(theid):
     data = request.get_json()
     for key, value in data.items():
         if not value:
-            return jsonify({"message": f"{key} is required"}), 400
-        if hasattr(user, key):
-            setattr(user, key, value)
-        else:
-            return jsonify({"message": f"Invalid attribute: {key}"}), 400
     try:
         db.session.commit()
         return jsonify({"message": "User updated succesfully"}), 200
@@ -414,6 +410,24 @@ def update_user_status_rol(theid):
         db.session.rollback()
         return jsonify({"message": "Error updating User", "error": str(e)}), 500
 
+@api.route('/user/update_status/<int:theid>', methods=['PUT'])
+@jwt_required()
+def update_user_status_rol(theid):
+    admin = User.query.get(get_jwt_identity())
+    user = User.query.get(theid)
+
+    if admin.rol.value is not 'Admin':
+        return jsonify({"message": "User is not an Admin"}), 405
+    
+    data = request.get_json()
+
+    for key, value in data.items():
+        if not value:  
+            return jsonify({"message": f"{key} is required"}), 400
+        if hasattr(user, key):  
+            setattr(user, key, value)
+        else:
+            return jsonify({"message": f"Invalid attribute: {key}"}), 400
 
 @api.route('/order', methods=['GET'])
 def get_orders():

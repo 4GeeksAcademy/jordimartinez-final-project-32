@@ -34,6 +34,7 @@ export const EditUser = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const success = await actions.putUser(userId, user);
+
         if (success) {
             alert("Usuario actualizado con éxito");
             navigate("/backoffice");
@@ -106,3 +107,4 @@ export const EditUser = () => {
         </div>
     );
 };
+
