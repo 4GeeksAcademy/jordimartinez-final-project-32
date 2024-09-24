@@ -1,3 +1,268 @@
-/* 
-    General Styles used on every website (Don't Repeat Yourself)
-*/
+#carouselExample .carousel-control-prev,
+#carouselExample .carousel-control-next {
+    width: 5%; 
+}
+
+#carouselExample .carousel-inner img {
+    border-radius: 15px; 
+}
+
+#carouselExample .carousel-control-prev,
+#carouselExample .carousel-control-next {
+    border-radius: 50%; 
+}
+
+.vertical-line {
+    border-right: 2px solid rgb(235, 235, 235);
+    height: 100%;
+}
+
+.category-title-1 { color: lightgreen; } 
+.category-title-2 { color: darkgreen; } 
+.category-title-3 { color: pink; }
+.category-title-4 { color: orange; } 
+.category-title-5 { color: yellow; } 
+.category-title-6 { color: red; } 
+.category-title-7 { color: purple; } 
+.category-title-8 { color: skyblue; } 
+.category-title-9 { color: rgb(224, 224, 22); } 
+
+.bg-category-1 { background-color: lightgreen; }
+.bg-category-2 { background-color: darkgreen; }
+.bg-category-3 { background-color: pink; }
+.bg-category-4 { background-color: orange; }
+.bg-category-5 { background-color: yellow; }
+.bg-category-6 { background-color: red; }
+.bg-category-7 { background-color: purple; }
+.bg-category-8 { background-color: skyblue; }
+.bg-category-9 { background-color: rgb(224, 224, 22); }
+
+.text-category-1 { color: lightgreen; }
+.text-category-2 { color: darkgreen; }
+.text-category-3 { color: pink; }
+.text-category-4 { color: orange; }
+.text-category-5 { color: yellow; }
+.text-category-6 { color: red; }
+.text-category-7 { color: purple; }
+.text-category-8 { color: skyblue; }
+.text-category-9 { color: rgb(224, 224, 22); }
+.text-black { color: black; }
+
+.text-bold {
+    font-weight: bold;
+}
+
+.circle-button.selected.category-1 {
+    background-color: lightgreen;
+    border-color: lightgreen;
+}
+
+.circle-button.selected.category-2 {
+    background-color: darkgreen;
+    border-color: darkgreen;
+}
+
+.circle-button.selected.category-3 {
+    background-color: pink;
+    border-color: pink;
+}
+
+.circle-button.selected.category-4 {
+    background-color: orange;
+    border-color: orange;
+}
+
+.circle-button.selected.category-5 {
+    background-color: yellow;
+    border-color: yellow;
+}
+
+.circle-button.selected.category-6 {
+    background-color: red;
+    border-color: red;
+}
+
+.circle-button.selected.category-7 {
+    background-color: purple;
+    border-color: purple;
+}
+
+.circle-button.selected.category-8 {
+    background-color: skyblue;
+    border-color: skyblue;
+}
+
+.circle-button.selected.category-9 {
+    background-color: rgb(224, 224, 22);
+    border-color: rgb(224, 224, 22);
+}
+
+.circle-button {
+    width: 13px;
+    height: 13px; 
+    border-radius: 50%; 
+    border: 1px solid black;
+    background-color: white;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.circle-button.selected {
+    background-color: black;
+    border-color: black;
+    color: white;
+}
+
+.circle-button:hover,.circle-button:focus {
+    background-color: black;
+    border-color: black;
+}
+
+.circle-button:active {
+    background-color: gray;
+}
+
+.circle-button-small {
+    width: 13px;
+    height: 13px; 
+    border-radius: 50%; 
+    border: 1px solid black;
+    background-color: white;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.circle-button-small:hover,
+.circle-button-small:focus {
+    background-color: black;
+    border-color: black;
+}
+
+.circle-button-small:active {
+    background-color: gray;
+}
+
+.custom-text {
+    font-size: 0.875rem; 
+    text-align: justify;
+}
+
+.carousel-custom .carousel-item img {
+    height: 300px;
+    width: 100%;
+    object-fit: cover; 
+    object-position: bottom; 
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+    background-color: black;
+    border-radius: 50%;  
+    width: 50px; 
+    height: 50px; 
+    border: 4px solid white;
+}
+
+#carouselExample2 .carousel-inner {
+    padding: 0 60px; 
+}
+
+#carouselExample2 .carousel-control-prev,
+#carouselExample2 .carousel-control-next {
+    width: 5%;
+}
+
+.profile-container {
+    background-color: #f0f0f0; 
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px; 
+    margin: 50px auto; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column; 
+    margin-bottom: 10px; 
+}
+
+.info-item input {
+    margin-top: 5px; 
+    padding: 5px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    width: 100%; 
+    max-width: 400px; 
+}
+
+.info-item1 span {
+    margin-left: 124px; 
+}
+
+.info-item2 span {
+    margin-left: 144px; 
+}
+
+.info-item3 span {
+    margin-left: 119px; 
+}
+
+.info-item4 span {
+    margin-left: 113px; 
+}
+.info-item5 span {
+    margin-left: 30px; 
+}
+
+.user-info {
+    margin-top: 20px;
+}
+
+.info-item1, .info-item2, .info-item3, .info-item4, .info-item5 {
+    margin-bottom: 20px;
+}
+
+.profile-container button {
+    background-color: #007bff; 
+    color: white; 
+    border: none; 
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+}
+
+.profile-container button:hover {
+    background-color: #0056b3; 
+}
+
+.profile-container .btn-secondary {
+    background-color: #6c757d; 
+}
+
+.profile-container .btn-secondary:hover {
+    background-color: #5a6268; 
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; 
+    margin-top: 20px; 
+}
+
+.form-container p {
+    display: flex;
+    align-items: center; 
+}
+
+.form-container input {
+    margin-left: 10px; 
+    padding: 5px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    width: 60%;
+    max-width: 400px; 
+}
