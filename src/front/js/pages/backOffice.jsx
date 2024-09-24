@@ -11,8 +11,11 @@ export const BackOffice = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!store.token || store.user.rol === "CLIENT") {
+        if (!store.token) {
             navigate("/login");
+        }
+        else if( store.user.rol !== "ADMIN" || store.user.rol !== "SELLER"){
+            navigate("/")
         }
     }, [store.token, store.user.rol, navigate]);
 
