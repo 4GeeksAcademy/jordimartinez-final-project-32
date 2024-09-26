@@ -543,7 +543,6 @@ def delete_review(theid=None):
 
 @api.route('/review/delete_all', methods=['DELETE'])
 def delete_reviews():
-    # Este metodo debe borrarse al final, solo esta para limpiar la bd
     review = Reviews()
     review = review.query.all()
 
@@ -591,20 +590,28 @@ def login():
 @api.route('/user/update-password', methods=['PUT'])
 @jwt_required()
 def update_pass():
+
     user_identity = get_jwt_identity()
     body = request.json
-
-    user_data = get_user(user_identity) 
-    email = user_data.get('email')
-
-    user = User.query.filter_by(email=email).one_or_none()
-
+    user = User.query.get(user_identity)
+ 
     if user is not None:
+
+        print("Hash almacenado:", user.password)
+        print("Contraseña ingresada:", body['current_password'])
+
+        if not check_password_hash(user.password, body['current_password']):
+            print("Verificación fallida")
+            return jsonify("La contraseña actual es incorrecta"), 400
+        
+        else:
+            print("Verificación exitosa")
+        
         salt = b64encode(os.urandom(32)).decode("utf-8")
-        password = set_password(body['password'], salt)
+        new_password_hashed = set_password(body['password'], salt)
 
         user.salt = salt
-        user.password = password
+        user.password = new_password_hashed
 
         try:
             db.session.commit()
