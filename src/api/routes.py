@@ -590,29 +590,16 @@ def login():
 @api.route('/user/update-password', methods=['PUT'])
 @jwt_required()
 def update_pass():
-
     user_identity = get_jwt_identity()
     body = request.json
     user = User.query.get(user_identity)
- 
-    if user is not None:
-
-        print("Hash almacenado:", user.password)
-        print("Contraseña ingresada:", body['current_password'])
-
-        if not check_password_hash(user.password, body['current_password']):
-            print("Verificación fallida")
-            return jsonify("La contraseña actual es incorrecta"), 400
-        
-        else:
-            print("Verificación exitosa")
-        
+    
+    if check_password(user.password, body['current_password'], user.salt):
+        print("procedemos a cambiar la contraseña")
         salt = b64encode(os.urandom(32)).decode("utf-8")
         new_password_hashed = set_password(body['password'], salt)
-
         user.salt = salt
         user.password = new_password_hashed
-
         try:
             db.session.commit()
             return jsonify("Password has been updated"), 201
@@ -620,8 +607,7 @@ def update_pass():
             print(error.args)
             return jsonify("Password couldn't be updated"), 500
     else:
-        return jsonify("User not found"), 404
-
+        return jsonify("Contraseña equivocada"), 400
 
 @api.route('/order/products/<int:theid>', methods=['GET'])
 @jwt_required()
