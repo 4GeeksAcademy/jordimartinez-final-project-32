@@ -21,9 +21,10 @@ import CategoriesTemplate from "./pages/categoryTemplate";
 
 import { Login } from "./pages/login.jsx";
 import { Register } from "./pages/register.jsx";
-import { ResetPass } from "./pages/resetpass.js";
 import { UpdatePassword } from "./pages/updatepass.js";
 import { Profile } from "./pages/profile.js";
+import { ResetPassword } from "./pages/resetpassword.jsx";
+import { RequestPassword } from "./pages/requestpassword.js";
 
 const Layout = () => {
 
@@ -53,9 +54,10 @@ const Layout = () => {
                         <Route element={<h1>Not found!</h1>} />
                         <Route element={<Login />} path="/login" />
                         <Route element={<Register />} path="/register" />
-                        <Route element={<ResetPass />} path="/resetPass" />
                         <Route element={<UpdatePassword />} path="/passwordUpdate" />
                         <Route element={<Profile />} path="/profile" />
+                        <Route element={<ResetPassword />} path="/resetpassword" />
+                        <Route element={<RequestPassword />} path="/requestpassword" />
                     </Routes>
                     <Footer />
                 </ScrollToTop>
