@@ -871,15 +871,14 @@ def status_order_update(user, order):
 @jwt_required()
 def update_password_token():
     #Viene como un diccionario dentro de un diccionario hay que revisar que esta pasando ahi
-    email = get_jwt_identity()
+    token = get_jwt_identity()
     body = request.json
-    email = email.get('email')
+    email = token.get('email')
    
     if not body:
         return jsonify({"error": "Password is required"}), 400
 
     user = User.query.filter_by(email=email).one_or_none()
-    print(user)
 
     if user is not None:
 
