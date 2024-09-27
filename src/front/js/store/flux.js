@@ -282,7 +282,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			resetPassword: async (tokenUpdate, newPassword) => {
 				try {
-					const response = await fetch(`${process.env.BACKEND_URL}/api/update-password-token`, {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/update-password-token`, {
 						method: "PUT",
 						headers: {
 							"Authorization": `Bearer ${tokenUpdate}`,
@@ -290,9 +290,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 						},
 						body: JSON.stringify(newPassword)
 					})
-					console.log(response)
+					if (!response.ok) {
+						throw new Error("Failed to update password");
+					}
+					return response;
 				} catch (error) {
-					console.log(error)
+					console.log("Error in resetPassword action:", error);
+					return null;
 				}
 			},
 			putUser: async (user, id) => {

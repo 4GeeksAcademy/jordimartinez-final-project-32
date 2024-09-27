@@ -16,7 +16,7 @@ export const ResetPassword = () => {
             return;
         }
 
-        const response = actions.resetPassword(searchParams.get("token"), newPass)
+        const response = await actions.resetPassword(searchParams.get("token"), newPassword)
         console.log("Respuesta:", response);
 
         const responseData = await response.json();

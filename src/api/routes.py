@@ -837,7 +837,7 @@ def reset_password():
     access_token = create_access_token(identity=body, expires_delta=expires_delta)
     message = f"""
         <h1> Si solicito recuperar la contraseña, ingrese al siguiente link</h1>
-        <a href="{os.getenv("FRONTEND_URL")}?token={access_token}">
+        <a href="{os.getenv("FRONTEND_URL")}/resetpassword?token={access_token}">
             ir a recuperar contraseña
         </a>
     """
@@ -870,14 +870,21 @@ def status_order_update(user, order):
 @api.route('/user/update-password-token', methods=['PUT'])
 @jwt_required()
 def update_password_token():
+    #Viene como un diccionario dentro de un diccionario hay que revisar que esta pasando ahi
     email = get_jwt_identity()
     body = request.json
+    email = email.get('email')
+   
+    if not body:
+        return jsonify({"error": "Password is required"}), 400
+
     user = User.query.filter_by(email=email).one_or_none()
+    print(user)
 
     if user is not None:
 
         salt = b64encode(os.urandom(32)).decode("utf-8")
-        password = set_password(body['password'], salt)
+        password = set_password(body, salt)
 
         user.salt = salt
         user.password = password
