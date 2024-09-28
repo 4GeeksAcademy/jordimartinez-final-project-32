@@ -151,7 +151,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				);
 				setStore({ search: searchResult });
 			},
-
 			addToKart: (product) => {
 				const store = getStore();
 				const existingProduct = store.kart.find(item => item.product_id === product.product_id);
@@ -281,7 +280,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
-
+			resetPassword: async (tokenUpdate, newPassword) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/update-password-token`, {
+						method: "PUT",
+						headers: {
+							"Authorization": `Bearer ${tokenUpdate}`,
+							"Content-type": "application/json"
+						},
+						body: JSON.stringify(newPassword)
+					})
+					if (!response.ok) {
+						throw new Error("Failed to update password");
+					}
+					return response;
+				} catch (error) {
+					console.log("Error in resetPassword action:", error);
+					return null;
+				}
+			},
 			putUser: async (user, id) => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
@@ -305,7 +322,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
-
 
 			deleteUser: async (id) => {
 				const store = getStore();

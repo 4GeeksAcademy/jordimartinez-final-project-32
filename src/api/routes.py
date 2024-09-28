@@ -543,7 +543,6 @@ def delete_review(theid=None):
 
 @api.route('/review/delete_all', methods=['DELETE'])
 def delete_reviews():
-    # Este metodo debe borrarse al final, solo esta para limpiar la bd
     review = Reviews()
     review = review.query.all()
 
@@ -593,19 +592,14 @@ def login():
 def update_pass():
     user_identity = get_jwt_identity()
     body = request.json
-
-    user_data = get_user(user_identity) 
-    email = user_data.get('email')
-
-    user = User.query.filter_by(email=email).one_or_none()
-
-    if user is not None:
+    user = User.query.get(user_identity)
+    
+    if check_password(user.password, body['current_password'], user.salt):
+        print("procedemos a cambiar la contraseña")
         salt = b64encode(os.urandom(32)).decode("utf-8")
-        password = set_password(body['password'], salt)
-
+        new_password_hashed = set_password(body['password'], salt)
         user.salt = salt
-        user.password = password
-
+        user.password = new_password_hashed
         try:
             db.session.commit()
             return jsonify("Password has been updated"), 201
@@ -613,8 +607,7 @@ def update_pass():
             print(error.args)
             return jsonify("Password couldn't be updated"), 500
     else:
-        return jsonify("User not found"), 404
-
+        return jsonify("Contraseña equivocada"), 400
 
 @api.route('/order/products/<int:theid>', methods=['GET'])
 @jwt_required()
@@ -844,14 +837,14 @@ def reset_password():
     access_token = create_access_token(identity=body, expires_delta=expires_delta)
     message = f"""
         <h1> Si solicito recuperar la contraseña, ingrese al siguiente link</h1>
-        <a href="{os.getenv("FRONTEND_URL")}password-update?token={access_token}">
+        <a href="{os.getenv("FRONTEND_URL")}/resetpassword?token={access_token}">
             ir a recuperar contraseña
         </a>
     """
 
     data = {
         "subject": "Recuperación de contraseña",
-        "to": body,
+        "to": body['email'],
         "message": message
     }
 
@@ -872,3 +865,34 @@ def status_order_update(user, order):
     sended_email = send_email(data.get("subject"), data.get("to"), data.get("message"))
     print(sended_email)
     return jsonify("Trabajando por un mejor servicio =) "), 200
+
+
+@api.route('/user/update-password-token', methods=['PUT'])
+@jwt_required()
+def update_password_token():
+    #Viene como un diccionario dentro de un diccionario hay que revisar que esta pasando ahi
+    token = get_jwt_identity()
+    body = request.json
+    email = token.get('email')
+   
+    if not body:
+        return jsonify({"error": "Password is required"}), 400
+
+    user = User.query.filter_by(email=email).one_or_none()
+
+    if user is not None:
+
+        salt = b64encode(os.urandom(32)).decode("utf-8")
+        password = set_password(body, salt)
+
+        user.salt = salt
+        user.password = password
+
+        try:
+            db.session.commit()
+            return jsonify("Password has been updated"), 201
+        except Exception as error:
+            print(error.args)
+            return jsonify("Password couldn't be updated"), 500
+        
+    return jsonify("User is undefined")
